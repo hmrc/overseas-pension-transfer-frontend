@@ -28,7 +28,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.PensionSchemeDetailsQuery
-import repositories.DashboardSessionRepository
 
 import scala.concurrent.Future
 

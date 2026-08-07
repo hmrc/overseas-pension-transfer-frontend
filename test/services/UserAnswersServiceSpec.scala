@@ -29,8 +29,6 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
 

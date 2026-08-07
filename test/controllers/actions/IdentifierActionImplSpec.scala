@@ -23,7 +23,6 @@ import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.*
 import play.api.mvc.Results.*
 import play.api.test.FakeRequest

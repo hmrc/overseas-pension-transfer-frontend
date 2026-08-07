@@ -25,10 +25,8 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueView
 
 import scala.concurrent.Future

@@ -25,7 +25,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 
 import java.net.URLEncoder

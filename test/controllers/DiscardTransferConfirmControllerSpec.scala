@@ -31,7 +31,6 @@ import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import views.html.DiscardTransferConfirmView
 

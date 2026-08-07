@@ -21,14 +21,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
-import uk.gov.hmrc.mongo.lock.LockRepository
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import scala.concurrent.Future
 
 import scala.concurrent.Future
 

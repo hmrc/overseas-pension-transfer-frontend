@@ -30,15 +30,14 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
-import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.Lock
 import views.html.DashboardView
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.concurrent.duration.Duration
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   implicit class FakeRequestOps[A](req: FakeRequest[A]) {
@@ -306,7 +305,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must render the search bar when dashboard search feature is enabled" in {
-
+      when(mockEnhancedLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
       val mockService = mock[TransferService]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
@@ -363,7 +362,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must filter transfers when a search term is provided and render the clear link" in {
-
+      when(mockEnhancedLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
       val mockService = mock[TransferService]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
@@ -449,7 +448,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must show all transfers again when search term is cleared" in {
-
+      when(mockEnhancedLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
       val mockService = mock[TransferService]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")

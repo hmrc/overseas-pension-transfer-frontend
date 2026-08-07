@@ -26,10 +26,8 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 

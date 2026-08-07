@@ -26,7 +26,6 @@ import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 

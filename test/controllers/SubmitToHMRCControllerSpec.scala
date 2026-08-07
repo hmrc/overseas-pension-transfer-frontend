@@ -26,12 +26,9 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SubmitToHMRCPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import views.html.SubmitToHMRCView
 

@@ -25,10 +25,8 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter

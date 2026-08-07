@@ -30,7 +30,6 @@ import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.qropsSchemeManagerDetails.SchemeManagersEmailView
 

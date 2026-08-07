@@ -31,7 +31,6 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{AddressService, CountryService}
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView

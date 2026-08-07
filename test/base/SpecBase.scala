@@ -44,11 +44,13 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
-import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.PlayMongoModule
 import uk.gov.hmrc.mongo.lock.MongoLockRepository
+
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Awaitable}
 import scala.util.Random
 
 trait SpecBase
@@ -148,8 +150,7 @@ trait SpecBase
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
     sessionData: SessionData = sessionDataMemberNameQtNumber,
-    identifierAction: Option[IdentifierAction] = None,
-    schemeDataAction: Option[SchemeDataAction] = None
+    identifierAction: Option[IdentifierAction] = None
   ): GuiceApplicationBuilder = {
 
     val identifierActionBinding: Binding[IdentifierAction] = identifierAction match {
@@ -372,5 +373,7 @@ trait SpecBase
 
   def incompleteJson(): JsObject =
     Json.obj("transferDetails" -> Json.obj())
+
+  def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
 }

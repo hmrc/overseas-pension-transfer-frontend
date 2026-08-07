@@ -21,14 +21,15 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
 import models.NormalMode
 import models.assets.PropertyEntry
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.assets.PropertyQuery
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+
 import scala.concurrent.Future
 
 class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {

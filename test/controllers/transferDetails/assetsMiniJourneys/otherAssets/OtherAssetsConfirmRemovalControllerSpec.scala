@@ -32,9 +32,6 @@ import play.api.test.Helpers.*
 import queries.assets.OtherAssetsQuery
 import services.UserAnswersService
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import scala.concurrent.Future
 
 import scala.concurrent.Future
 

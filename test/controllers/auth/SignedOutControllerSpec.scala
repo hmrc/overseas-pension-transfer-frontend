@@ -21,10 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.auth.SignedOutView
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import scala.concurrent.Future
-//import com.mongodb.client.result.
+
 class SignedOutControllerSpec extends AnyFreeSpec with SpecBase {
 
   "SignedOut Controller" - {

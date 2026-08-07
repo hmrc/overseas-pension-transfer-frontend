@@ -34,7 +34,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PspDeclarationView

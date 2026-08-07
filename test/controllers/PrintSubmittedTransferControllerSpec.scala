@@ -27,7 +27,6 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
