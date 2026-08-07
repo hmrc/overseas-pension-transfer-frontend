@@ -19,6 +19,8 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import base.SpecBase
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
@@ -26,6 +28,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
+
+import scala.concurrent.Future
 
 class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -88,7 +92,7 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
 
     "must redirect to CYA page when valid data is submitted" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, moreUnquotedSharesDeclarationRoute)
@@ -105,7 +109,7 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
 
     "must redirect to CYA page when mode = CheckMode" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, moreUnquotedSharesDeclarationRouteCheckMode)
@@ -122,7 +126,7 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
 
     "must redirect to Final CYA page when mode = FinalCheckMode" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, moreUnquotedSharesDeclarationRouteFinalCheckMode)

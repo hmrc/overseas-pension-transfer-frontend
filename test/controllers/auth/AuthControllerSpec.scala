@@ -25,7 +25,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 
 import java.net.URLEncoder
@@ -36,7 +35,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
   "signOut" - {
     "must clear session-data and redirect to sign out, specifying the exit survey as the continue URL" in {
 
-      val mockSessionRepository  = mock[SessionRepository]
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
@@ -45,7 +43,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       val application =
         applicationBuilder(emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -66,7 +63,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
     "must clear empty-user-answers on sign out" in {
 
-      val mockSessionRepository  = mock[SessionRepository]
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
@@ -75,7 +71,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       val application =
         applicationBuilder(emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()

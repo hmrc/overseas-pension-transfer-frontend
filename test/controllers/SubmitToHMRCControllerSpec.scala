@@ -26,12 +26,9 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SubmitToHMRCPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import views.html.SubmitToHMRCView
 
@@ -88,15 +85,10 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -137,7 +129,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSA declaration screen for PSA when value is true" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
@@ -155,7 +147,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSP declaration screen for PSP when value is true" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
@@ -165,15 +157,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder()
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction]
-            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
-          bind[SchemeDataAction].to[FakeSchemeDataAction]
-        )
-        .build()
+      val application =
+        applicationBuilder(emptyUserAnswers, sessionDataMemberNameQtNumber, Some(fakeIdentifierAction)).build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -189,7 +174,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to task list when value is false, regardless of user type" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
@@ -199,15 +184,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder()
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction]
-            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
-          bind[SchemeDataAction].to[FakeSchemeDataAction]
-        )
-        .build()
+      val application =
+        applicationBuilder(emptyUserAnswers, sessionDataMemberNameQtNumber, Some(fakeIdentifierAction)).build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =

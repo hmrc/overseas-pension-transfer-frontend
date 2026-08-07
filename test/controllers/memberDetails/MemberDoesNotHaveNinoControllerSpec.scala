@@ -30,7 +30,6 @@ import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.memberDetails.MemberDoesNotHaveNinoView
 
@@ -87,7 +86,6 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must redirect to the member date of birth when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
@@ -96,7 +94,6 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -136,7 +133,6 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -145,7 +141,6 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

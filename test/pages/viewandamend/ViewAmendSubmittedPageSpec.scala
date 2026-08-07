@@ -19,32 +19,28 @@ package pages.viewandamend
 import base.SpecBase
 import models.QtStatus.AmendInProgress
 import models.{NormalMode, PstrNumber, QtStatus, TransferId}
-import org.scalatest.wordspec.AnyWordSpec
 
 import java.util.UUID
 
-class ViewAmendSubmittedPageSpec extends AnyWordSpec with SpecBase {
+class ViewAmendSubmittedPageSpec extends SpecBase {
 
   val transferId: TransferId = TransferId(UUID.randomUUID().toString)
   val pstrNumber: PstrNumber = PstrNumber("QT123456")
   val qtStatus: QtStatus     = AmendInProgress
   val versionNumber: String  = "1"
 
-  ".nextPage" when {
+  "nextPage in normal mode" - {
 
-    "in normal mode" should {
-
-      "redirect to the view and amend page" in {
-        ViewAmendSubmittedPage
-          .nextPage(NormalMode, userAnswersMemberName)
-          .url mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend().url
-      }
+    "should redirect to the view and amend page" in {
+      ViewAmendSubmittedPage
+        .nextPage(NormalMode, userAnswersMemberName)
+        .url mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend().url
     }
   }
 
-  ".userAnswersError" should {
+  ".userAnswersError" - {
 
-    "redirect the user to SubmittedTransferSummaryController.onPageLoad" in {
+    "should redirect the user to SubmittedTransferSummaryController.onPageLoad" in {
       ViewAmendSubmittedPage
         .userAnswersError(
           transferId,

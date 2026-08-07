@@ -28,7 +28,6 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertySummary
@@ -42,14 +41,10 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController.onPageLoad(NormalMode, 0).url
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
-      .overrides(
-        bind[UserAnswersService].toInstance(mockUserAnswersService),
-        bind[SessionRepository].toInstance(mockSessionRepository)
-      )
+      .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
       .build()
 
   "PropertyCYA Controller" - {

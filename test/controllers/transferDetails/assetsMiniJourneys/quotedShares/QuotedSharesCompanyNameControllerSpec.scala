@@ -25,10 +25,8 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNamePage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameView
 
 import scala.concurrent.Future
@@ -87,13 +85,10 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumber)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -112,15 +107,10 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

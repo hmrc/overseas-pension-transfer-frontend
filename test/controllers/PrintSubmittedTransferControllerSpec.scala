@@ -25,10 +25,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -44,10 +42,6 @@ import java.time.ZoneId
 import scala.concurrent.Future
 
 class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
-
-  private val mockSessionRepository  = mock[SessionRepository]
-  private val application            = new GuiceApplicationBuilder().build()
-  private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
   private val mockUserAnswersService = mock[UserAnswersService]
 
   "TransferSubmitted Controller" - {
@@ -57,7 +51,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
       val application =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -113,8 +106,10 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
             SchemeManagerDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
           )
 
-        val expectedMpsLink =
+        val expectedMpsLink = {
+          val appConfig = application.injector.instanceOf[FrontendAppConfig]
           s"${appConfig.pensionSchemeSummaryUrl}1234567890"
+        }
 
         val view = application.injector.instanceOf[PrintSubmittedTransferView]
 
@@ -136,7 +131,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
     "redirect to JourneyRecovery page when the sessionRepo is empty" in {
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

@@ -23,7 +23,6 @@ import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.*
 import play.api.mvc.Results.*
 import play.api.test.FakeRequest
@@ -38,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
-  private val application = new GuiceApplicationBuilder().build()
+  private val application = applicationBuilder().build()
 
   private val bodyParsers       = application.injector.instanceOf[BodyParsers.Default]
   private val appConfig         = application.injector.instanceOf[FrontendAppConfig]

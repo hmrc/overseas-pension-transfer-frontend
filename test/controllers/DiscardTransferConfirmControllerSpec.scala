@@ -31,7 +31,6 @@ import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import views.html.DiscardTransferConfirmView
 
@@ -100,7 +99,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         "must release lock and redirect + clear answers when YES selected" in {
           val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
 
-          val mockSessionRepository  = mock[SessionRepository]
           val mockUserAnswersService = mock[UserAnswersService]
           val mockLockService        = mock[LockService]
 
@@ -112,7 +110,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           val application =
             applicationBuilder(userAnswers = userAnswers)
               .overrides(
-                bind[SessionRepository].toInstance(mockSessionRepository),
                 bind[UserAnswersService].toInstance(mockUserAnswersService),
                 bind[LockService].toInstance(mockLockService)
               )
@@ -169,7 +166,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         "must return Internal Server Error when clearUserAnswers returns a Left(DeleteFailed)" in {
           val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
 
-          val mockSessionRepository  = mock[SessionRepository]
           val mockUserAnswersService = mock[UserAnswersService]
           val mockLockService        = mock[LockService]
 
@@ -182,7 +178,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           val application =
             applicationBuilder(userAnswers = userAnswers)
               .overrides(
-                bind[SessionRepository].toInstance(mockSessionRepository),
                 bind[UserAnswersService].toInstance(mockUserAnswersService),
                 bind[LockService].toInstance(mockLockService)
               )

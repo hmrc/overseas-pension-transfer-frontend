@@ -26,7 +26,6 @@ import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -36,7 +35,6 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
-  private val mockSessionRepository  = mock[SessionRepository]
 
   private val qtReference   = QtNumber("QT112233")
   override val pstr         = PstrNumber("87654321AB")
@@ -46,8 +44,7 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private def buildApp = applicationBuilder(userAnswers = emptyUserAnswers)
     .overrides(
       bind[UserAnswersService].toInstance(mockUserAnswersService),
-      bind[LockService].toInstance(mockLockService),
-      bind[SessionRepository].toInstance(mockSessionRepository)
+      bind[LockService].toInstance(mockLockService)
     )
     .build()
 

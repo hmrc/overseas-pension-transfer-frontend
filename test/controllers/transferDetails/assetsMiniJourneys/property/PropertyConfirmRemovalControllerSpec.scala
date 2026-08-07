@@ -21,12 +21,16 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
 import models.NormalMode
 import models.assets.PropertyEntry
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.assets.PropertyQuery
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
+
+import scala.concurrent.Future
 
 class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
 
@@ -52,7 +56,7 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       val entries     = List(PropertyEntry(propertyAddress, 1000, "description"))
       val userAnswers = emptyUserAnswers.set(PropertyQuery, entries).success.value
 

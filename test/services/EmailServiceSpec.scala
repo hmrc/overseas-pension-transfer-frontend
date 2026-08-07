@@ -27,7 +27,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberNamePage
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.{display24h, emailDisplayDate, emailDisplayTime}

@@ -27,10 +27,8 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.TypeOfAssetPage
-import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.test.Helpers.*
 import views.html.transferDetails.TypeOfAssetView
 
 import scala.concurrent.Future
@@ -88,14 +86,11 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     }
 
     "must redirect to the next asset mini-journey page when valid data is submitted" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

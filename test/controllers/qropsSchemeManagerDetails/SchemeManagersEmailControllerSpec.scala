@@ -30,7 +30,6 @@ import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.qropsSchemeManagerDetails.SchemeManagersEmailView
 
@@ -81,7 +80,6 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -90,7 +88,6 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -129,7 +126,6 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -138,7 +134,6 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

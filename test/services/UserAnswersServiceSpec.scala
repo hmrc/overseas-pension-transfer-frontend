@@ -29,8 +29,6 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,7 +40,6 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   private val mockUserAnswersConnector = mock[UserAnswersConnector]
   private val mockAuthService          = mock[AuthorisingPsaService]
-  private val mockSessionRepository    = mock[SessionRepository]
 
   val service: UserAnswersService =
     new UserAnswersService(mockUserAnswersConnector, mockAuthService, mockSessionRepository)

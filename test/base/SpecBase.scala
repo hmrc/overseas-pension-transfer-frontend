@@ -22,9 +22,11 @@ import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import org.mockito.Mockito.reset
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
@@ -32,20 +34,33 @@ import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassP
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
+import play.api.inject.{Binding, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
+import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.freespec.AnyFreeSpec
+import uk.gov.hmrc.mongo.play.PlayMongoModule
+import uk.gov.hmrc.mongo.lock.MongoLockRepository
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Awaitable}
 import scala.util.Random
 
-trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
-
+trait SpecBase
+    extends AnyFreeSpec
+    with Matchers
+    with TryValues
+    with OptionValues
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
   protected final val minYear: Int  = 1901
   private val clockMillis: Long     = 1718118467838L
   val clock: Clock                  = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
@@ -122,16 +137,38 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
+  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
+  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
+  protected val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
+  protected val mockMongoLockRepository: MongoLockRepository               = mock[MongoLockRepository]
+
+  override protected def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+    reset(mockEnhancedLockRepository)
+  }
+
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
-    sessionData: SessionData = sessionDataMemberNameQtNumber
-  ): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction]
-      )
+    sessionData: SessionData = sessionDataMemberNameQtNumber,
+    identifierAction: Option[IdentifierAction] = None
+  ): GuiceApplicationBuilder = {
+
+    val identifierActionBinding: Binding[IdentifierAction] = identifierAction match {
+      case None     => bind[IdentifierAction].to[FakeIdentifierAction]
+      case Some(ia) => bind[IdentifierAction].toInstance(ia)
+    }
+
+    val bindings = Seq(
+      bind[MongoLockRepository].toInstance(mockMongoLockRepository),
+      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
+      bind[SchemeDataAction].to[FakeSchemeDataAction],
+      bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
+      bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
+      bind[SessionRepository].to(mockSessionRepository)
+    ) :+ identifierActionBinding
+
+    new GuiceApplicationBuilder().disable[PlayMongoModule].overrides(bindings)
+  }
 
   def fakeIdentifierRequest[A](
     fakeRequest: FakeRequest[A],
@@ -336,5 +373,7 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 
   def incompleteJson(): JsObject =
     Json.obj("transferDetails" -> Json.obj())
+
+  def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
 }
