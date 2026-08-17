@@ -22,10 +22,10 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class QuotedSharesCompanyNameFormProvider @Inject() extends Mappings {
-  private val lineLength    = 160
-  def apply(): Form[String] =
+  private final val MaxLineLength = 160
+  def apply(): Form[String]       =
     Form(
       "value" -> text("quotedSharesCompanyName.error.required")
-        .verifying(maxLength("quotedSharesCompanyName.error.length", lineLength))
+        .verifying(maxLength("quotedSharesCompanyName.error.length", MaxLineLength))
     )
 }

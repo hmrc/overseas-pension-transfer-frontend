@@ -74,7 +74,7 @@ trait Constraints {
       case _                         =>
         Invalid(errorKey, regex)
     }
-  private final val LineLength                                                                   = 35
+  private final val LineLength                                                             = 35
   protected def maxLength(errorKey: String, maximum: Int = LineLength): Constraint[String] =
     Constraint {
       case str if str.length <= maximum =>

@@ -28,7 +28,7 @@ import play.api.data.Forms
 import javax.inject.Inject
 
 class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
-  private val length16                                                         = 16
+  private final val PostcodeMaxLength                                          = 16
   def apply()(implicit request: DisplayRequest[_]): Form[MembersLastUKAddress] = {
     val memberName = request.memberName
     Form(
@@ -58,7 +58,7 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex wit
             raw => formatUkPostcode(raw),
             formatted => formatted
           )
-          .verifying(maxLength("membersLastUKAddress.error.postcode.length", length16))
+          .verifying(maxLength("membersLastUKAddress.error.postcode.length", PostcodeMaxLength))
           .verifying(
             "membersLastUKAddress.error.postcode.incorrect",
             { postcode =>
