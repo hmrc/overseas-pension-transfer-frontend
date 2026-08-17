@@ -59,6 +59,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       val entries                = List(OtherAssetsEntry("Other", 1000))
       val userAnswers            = emptyUserAnswers.set(OtherAssetsQuery, entries).success.value
       val mockUserAnswersService = mock[UserAnswersService]

@@ -30,7 +30,6 @@ import pages.memberDetails.MemberNinoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import views.html.memberDetails.MemberNinoView
 
@@ -82,6 +81,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
     "must redirect to the members date of birth when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))

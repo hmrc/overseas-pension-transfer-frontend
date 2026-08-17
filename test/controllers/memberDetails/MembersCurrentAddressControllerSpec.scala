@@ -34,7 +34,6 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
@@ -147,6 +146,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must redirect to the member is UK resident when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockCountryService.countries).thenReturn(testCountries)

@@ -29,7 +29,6 @@ import pages.PsaDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PsaDeclarationView
@@ -60,7 +59,8 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     }
 
     "must redirect to the next page when submitted" in {
-      val mockUserAnswersService      = mock[UserAnswersService]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
 

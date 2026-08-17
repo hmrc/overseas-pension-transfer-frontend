@@ -28,7 +28,6 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesSummary
@@ -47,9 +46,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
-      .overrides(
-        bind[UserAnswersService].toInstance(mockUserAnswersService)
-      )
+      .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
       .build()
 
   "UnquotedSharesCYA Controller" - {

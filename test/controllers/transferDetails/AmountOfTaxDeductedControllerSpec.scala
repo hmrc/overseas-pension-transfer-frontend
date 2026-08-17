@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.AmountOfTaxDeductedView
 
 import scala.concurrent.Future

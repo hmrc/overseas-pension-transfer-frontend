@@ -31,7 +31,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedShar
 
 import scala.concurrent.Future
 
-class MoreQuotedSharesDeclarationControllerSpec extends SpecBase with MockitoSugar {
+class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new MoreQuotedSharesDeclarationFormProvider()
   private val form         = formProvider()
@@ -94,6 +94,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends SpecBase with MockitoSug
 
     "must redirect to CYA page when valid data is submitted" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, moreQuotedSharesDeclarationRoute)
@@ -110,7 +111,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends SpecBase with MockitoSug
 
     "must redirect to CYA page when mode = CheckMode" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, moreQuotedSharesDeclarationRouteCheckMode)
@@ -127,7 +128,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends SpecBase with MockitoSug
 
     "must redirect to Final CYA page when mode = FinalCheckMode" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, moreQuotedSharesDeclarationRouteFinalCheckMode)

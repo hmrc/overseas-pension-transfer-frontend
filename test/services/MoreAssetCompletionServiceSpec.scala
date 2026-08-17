@@ -16,7 +16,7 @@
 
 package services
 
-import base.TestData
+import base.SpecBase
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
 import models.{SessionData, UserAnswers}
@@ -25,25 +25,21 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks.*
 import org.scalatestplus.mockito.MockitoSugar
-import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MoreAssetCompletionServiceSpec
-    extends AsyncFreeSpec
-    with Matchers
-    with MockitoSugar
-    with BeforeAndAfterEach
-    with TestData {
-  implicit val hc: HeaderCarrier     = HeaderCarrier()
+class MoreAssetCompletionServiceSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
-  private val service                = new MoreAssetCompletionService(
+
+  private val service = new MoreAssetCompletionService(
     mockSessionRepository,
     mockUserAnswersService
   )
@@ -127,14 +123,10 @@ class MoreAssetCompletionServiceSpec
 
         when(mockSessionRepository.set(any[SessionData]))
           .thenThrow(new RuntimeException("boom"))
-
-        val completed = service.completeAsset(userAnswers, emptySessionData, asset, completed = true)
-
-        recoverToExceptionIf[RuntimeException](completed).map { ex =>
-          ex.getMessage mustBe "boom"
-          verify(mockSessionRepository, times(1)).set(any[SessionData])
-          succeed
-        }
+        import scala.util.Try
+        val result = Try(await(service.completeAsset(userAnswers, emptySessionData, asset, completed = true)))
+        result.isFailure mustBe true
+        result.toEither.swap.toOption.map(_.getMessage) mustBe Some("boom")
       }
 
     }

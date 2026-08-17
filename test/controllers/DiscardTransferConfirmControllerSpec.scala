@@ -102,7 +102,8 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         }
 
         "must release lock and redirect + clear answers when YES selected" in {
-          val userAnswers            = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
+          val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
+
           val mockUserAnswersService = mock[UserAnswersService]
           val mockLockService        = mock[LockService]
 
@@ -168,7 +169,8 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         }
 
         "must return Internal Server Error when clearUserAnswers returns a Left(DeleteFailed)" in {
-          val userAnswers            = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
+          val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
+
           val mockUserAnswersService = mock[UserAnswersService]
           val mockLockService        = mock[LockService]
 

@@ -30,7 +30,6 @@ import pages.memberDetails.MemberNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import views.html.memberDetails.MemberNameView
 
@@ -85,6 +84,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
     "must redirect to the members nino page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))

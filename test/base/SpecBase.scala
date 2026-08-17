@@ -21,120 +21,46 @@ import models.address.{Countries, PropertyAddress}
 import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.*
-import org.mockito.Mockito.{mock, reset}
+import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import org.mockito.Mockito.reset
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{BeforeAndAfterAll, OptionValues, TryValues}
+import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.*
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
+import play.api.inject.{Binding, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
-import repositories.*
-import uk.gov.hmrc.mongo.play.PlayMongoModule
+import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import uk.gov.hmrc.mongo.lock.MongoLockRepository
 import utils.DateTimeFormats.localDateTimeFormatter
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.freespec.AnyFreeSpec
+import uk.gov.hmrc.mongo.play.PlayMongoModule
+import uk.gov.hmrc.mongo.lock.MongoLockRepository
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Awaitable}
 import scala.util.Random
 
 trait SpecBase
     extends AnyFreeSpec
     with Matchers
+    with TryValues
     with OptionValues
     with ScalaFutures
     with IntegrationPatience
-    with TestData
-    with BeforeAndAfterAll {
-
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
-  lazy val mockDashboardSessionRepository: DashboardSessionRepository = mock(classOf[DashboardSessionRepository])
-  lazy val mockEnhancedLockRepository: EnhancedLockRepository         = mock(classOf[EnhancedLockRepository])
-  lazy val mockSessionRepository: SessionRepository                   = mock(classOf[SessionRepository])
-  lazy val mockMongoLockRepository: MongoLockRepository               = mock(classOf[MongoLockRepository])
-
-  protected def applicationBuilder(
-    userAnswers: UserAnswers = emptyUserAnswers,
-    sessionData: SessionData = sessionDataMemberNameQtNumber
-  ): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .disable[PlayMongoModule]
-      .overrides(
-        bind[MongoLockRepository].toInstance(mockMongoLockRepository),
-        bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-        bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
-        bind[SessionRepository].toInstance(mockSessionRepository),
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction]
-      )
-
-  def fakeIdentifierRequest[A](
-    fakeRequest: FakeRequest[A],
-    authenticatedUser: AuthenticatedUser = psaUser
-  ): IdentifierRequest[A] =
-    IdentifierRequest(fakeRequest, authenticatedUser)
-
-  implicit val testIdentifierRequest: IdentifierRequest[_] =
-    IdentifierRequest(FakeRequest(), psaUser)
-
-  def fakeSchemeRequest[A](
-    fakeRequest: FakeRequest[A],
-    authenticatedUser: AuthenticatedUser = psaUser,
-    schemeDetails: PensionSchemeDetails = schemeDetails
-  ): SchemeRequest[A] =
-    SchemeRequest(fakeRequest, authenticatedUser, schemeDetails)
-
-  def fakeDisplayRequest[A](
-    fakeRequest: FakeRequest[A],
-    userAnswers: UserAnswers = emptyUserAnswers,
-    sessionData: SessionData = emptySessionData
-  ): DisplayRequest[A] =
-    DisplayRequest(
-      request = fakeRequest,
-      authenticatedUser = psaUser,
-      userAnswers = userAnswers,
-      sessionData = sessionData,
-      memberName = testMemberName.fullName,
-      qtNumber = testQtNumber,
-      dateTransferSubmitted = formattedTestDateTransferSubmitted
-    )
-
-  implicit val testDisplayRequest: DisplayRequest[_] =
-    DisplayRequest(
-      request = FakeRequest(),
-      authenticatedUser = psaUser,
-      userAnswers = emptyUserAnswers,
-      sessionData = emptySessionData,
-      memberName = testMemberName.fullName,
-      qtNumber = testQtNumber,
-      dateTransferSubmitted = formattedTestDateTransferSubmitted
-    )
-
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    reset(mockSessionRepository)
-    reset(mockDashboardSessionRepository)
-    reset(mockMongoLockRepository)
-    reset(mockEnhancedLockRepository)
-  }
-
-}
-
-trait TestData extends TryValues {
-
+    with BeforeAndAfterEach {
   protected final val minYear: Int  = 1901
   private val clockMillis: Long     = 1718118467838L
   val clock: Clock                  = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
@@ -208,6 +134,83 @@ trait TestData extends TryValues {
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
     userAnswersMemberNameQtNumber.set(DateSubmittedQuery, now).success.value
+
+  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+
+  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
+  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
+  protected val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
+  protected val mockMongoLockRepository: MongoLockRepository               = mock[MongoLockRepository]
+
+  override protected def beforeEach(): Unit = {
+    reset(mockSessionRepository)
+    reset(mockEnhancedLockRepository)
+  }
+
+  protected def applicationBuilder(
+    userAnswers: UserAnswers = emptyUserAnswers,
+    sessionData: SessionData = sessionDataMemberNameQtNumber,
+    identifierAction: Option[IdentifierAction] = None
+  ): GuiceApplicationBuilder = {
+
+    val identifierActionBinding: Binding[IdentifierAction] = identifierAction match {
+      case None     => bind[IdentifierAction].to[FakeIdentifierAction]
+      case Some(ia) => bind[IdentifierAction].toInstance(ia)
+    }
+
+    val bindings = Seq(
+      bind[MongoLockRepository].toInstance(mockMongoLockRepository),
+      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
+      bind[SchemeDataAction].to[FakeSchemeDataAction],
+      bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
+      bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
+      bind[SessionRepository].to(mockSessionRepository)
+    ) :+ identifierActionBinding
+
+    new GuiceApplicationBuilder().disable[PlayMongoModule].overrides(bindings)
+  }
+
+  def fakeIdentifierRequest[A](
+    fakeRequest: FakeRequest[A],
+    authenticatedUser: AuthenticatedUser = psaUser
+  ): IdentifierRequest[A] =
+    IdentifierRequest(fakeRequest, authenticatedUser)
+
+  implicit val testIdentifierRequest: IdentifierRequest[_] =
+    IdentifierRequest(FakeRequest(), psaUser)
+
+  def fakeSchemeRequest[A](
+    fakeRequest: FakeRequest[A],
+    authenticatedUser: AuthenticatedUser = psaUser,
+    schemeDetails: PensionSchemeDetails = schemeDetails
+  ): SchemeRequest[A] =
+    SchemeRequest(fakeRequest, authenticatedUser, schemeDetails)
+
+  def fakeDisplayRequest[A](
+    fakeRequest: FakeRequest[A],
+    userAnswers: UserAnswers = emptyUserAnswers,
+    sessionData: SessionData = emptySessionData
+  ): DisplayRequest[A] =
+    DisplayRequest(
+      request = fakeRequest,
+      authenticatedUser = psaUser,
+      userAnswers = userAnswers,
+      sessionData = sessionData,
+      memberName = testMemberName.fullName,
+      qtNumber = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
+    )
+
+  implicit val testDisplayRequest: DisplayRequest[_] =
+    DisplayRequest(
+      request = FakeRequest(),
+      authenticatedUser = psaUser,
+      userAnswers = emptyUserAnswers,
+      sessionData = emptySessionData,
+      memberName = testMemberName.fullName,
+      qtNumber = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
+    )
 
   def userAnswersWithAssets(assetsCount: Int = 1): UserAnswers =
     (0 until assetsCount).foldLeft(
@@ -370,5 +373,7 @@ trait TestData extends TryValues {
 
   def incompleteJson(): JsObject =
     Json.obj("transferDetails" -> Json.obj())
+
+  def await[T](awaitable: Awaitable[T]): T = Await.result(awaitable, Duration.Inf)
 
 }

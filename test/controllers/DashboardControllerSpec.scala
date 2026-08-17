@@ -17,13 +17,11 @@
 package controllers
 
 import base.SpecBase
-import org.mockito.Mockito.*
 import models.*
 import models.audit.JourneyStartedType.ContinueTransfer
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq as meq}
-import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
@@ -38,11 +36,9 @@ import uk.gov.hmrc.mongo.lock.Lock
 import views.html.DashboardView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.concurrent.duration.Duration
-import scala.concurrent.ExecutionContext
-
-class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with BeforeAndAfterEach {
+import scala.concurrent.{ExecutionContext, Future}
+class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   implicit class FakeRequestOps[A](req: FakeRequest[A]) {
 
@@ -132,6 +128,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must acquire lock when accessing an InProgress transfer (onTransferClick) and redirect" in {
+
       val mockService = mock[TransferService]
 
       when(mockEnhancedLockRepository.takeLock(any(), any(), any())).thenReturn(Future.successful(Some(mock[Lock])))
@@ -159,6 +156,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must show warning when trying to access a locked record (takeLock returns None)" in {
+
       val mockService = mock[TransferService]
 
       when(mockEnhancedLockRepository.takeLock(any(), any(), any()))
@@ -191,8 +189,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must releaseLock for items in TransfersOverviewQuery when dashboard loads" in {
+
       val mockService = mock[TransferService]
-      val mockView    = mock[DashboardView]
+
+      val mockView = mock[DashboardView]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S111"), PstrNumber("PSTR111"), "SchemeX")
 
@@ -284,6 +284,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must be able to acquire lock after a release (simulate unlock then access)" in {
+
       val mockService = mock[TransferService]
 
       when(mockEnhancedLockRepository.takeLock(any[String], any[String], any[Duration]))
@@ -312,11 +313,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must render the search bar when dashboard search feature is enabled" in {
-
-      val mockLockService = mock[LockService]
-      val mockService     = mock[TransferService]
-      when(mockEnhancedLockRepository.takeLock(any[String], any[String], any[Duration]))
-        .thenReturn(Future.successful(Some(mock[Lock])))
+      when(mockEnhancedLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
+      val mockService = mock[TransferService]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
@@ -352,11 +350,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       )
         .thenReturn(Future.successful(Right(dd)))
       when(mockDashboardSessionRepository.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockLockService.releaseLock(any(), any())).thenReturn(Future.successful((): Unit))
 
       val application = applicationBuilder()
         .overrides(
-          bind[LockService].toInstance(mockLockService),
           bind[TransferService].toInstance(mockService)
         )
         .build()
@@ -374,9 +370,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must filter transfers when a search term is provided and render the clear link" in {
-      val mockService     = mock[TransferService]
-      val mockLockService = mock[LockService]
-      val pensionScheme   = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+      when(mockEnhancedLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
+      val mockService = mock[TransferService]
+
+      val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val johnTransfer = AllTransfersItem(
         transferId = userAnswersTransferNumber,
@@ -413,7 +410,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .success
         .value
 
-      when(mockLockService.releaseLock(any(), any())).thenReturn(Future.successful((): Unit))
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockDashboardSessionRepository.get(any())).thenReturn(Future.successful(Some(dd)))
@@ -428,7 +424,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val application = applicationBuilder()
         .overrides(
-          bind[LockService].toInstance(mockLockService),
           bind[TransferService].toInstance(mockService)
         )
         .build()
@@ -461,9 +456,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must show all transfers again when search term is cleared" in {
-      val mockService     = mock[TransferService]
-      val mockLockService = mock[LockService]
-      val pensionScheme   = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+      when(mockEnhancedLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
+      val mockService = mock[TransferService]
+
+      val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val johnTransfer = AllTransfersItem(
         transferId = userAnswersTransferNumber,
@@ -500,7 +496,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .success
         .value
 
-      when(mockLockService.releaseLock(any(), any())).thenReturn(Future.successful((): Unit))
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockDashboardSessionRepository.get(any())).thenReturn(Future.successful(Some(dd)))
@@ -515,7 +510,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val application = applicationBuilder()
         .overrides(
-          bind[LockService].toInstance(mockLockService),
           bind[TransferService].toInstance(mockService)
         )
         .build()
@@ -540,7 +534,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   "onTransferClick with InProgress transfer" - {
     "must acquire lock, audit, and redirect when successful" in {
 
-      val mockService        = mock[TransferService]
+      val mockService = mock[TransferService]
+
       val mockLockService    = mock[LockService]
       val mockUserAnswersSvc = mock[UserAnswersService]
       val mockAuditService   = mock[AuditService]

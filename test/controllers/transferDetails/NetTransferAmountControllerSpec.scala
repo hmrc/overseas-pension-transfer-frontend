@@ -26,7 +26,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.NetTransferAmountPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.NetTransferAmountView
 
 import scala.concurrent.Future
@@ -107,7 +106,8 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =

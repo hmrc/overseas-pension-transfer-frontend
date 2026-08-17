@@ -82,6 +82,11 @@ class SessionRepositoryISpec
     clock = clock
   )
 
+  override protected def beforeEach(): Unit = {
+    deleteAll()
+    ()
+  }
+
   ".set" - {
 
     "must set the last updated time on the supplied user answers to `now`, and save them" in {
@@ -105,7 +110,7 @@ class SessionRepositoryISpec
 
         insert(sessionData).futureValue
 
-        val result = repository.get(sessionData.sessionId).futureValue
+        val result         = repository.get(sessionData.sessionId).futureValue
         val expectedResult = sessionData copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult

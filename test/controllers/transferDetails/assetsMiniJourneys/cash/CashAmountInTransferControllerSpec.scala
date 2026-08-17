@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.CashAmountInTransferView
 
 import scala.concurrent.Future
@@ -89,7 +88,8 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =
@@ -110,7 +110,8 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =

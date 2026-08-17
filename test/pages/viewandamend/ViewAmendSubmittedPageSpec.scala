@@ -29,21 +29,18 @@ class ViewAmendSubmittedPageSpec extends SpecBase {
   val qtStatus: QtStatus     = AmendInProgress
   val versionNumber: String  = "1"
 
-  ".nextPage" - {
+  "nextPage in normal mode" - {
 
-    "in normal mode" - {
-
-      "redirect to the view and amend page" in {
-        ViewAmendSubmittedPage
-          .nextPage(NormalMode, userAnswersMemberName)
-          .url mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend().url
-      }
+    "should redirect to the view and amend page" in {
+      ViewAmendSubmittedPage
+        .nextPage(NormalMode, userAnswersMemberName)
+        .url mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend().url
     }
   }
 
   ".userAnswersError" - {
 
-    "redirect the user to SubmittedTransferSummaryController.onPageLoad" in {
+    "should redirect the user to SubmittedTransferSummaryController.onPageLoad" in {
       ViewAmendSubmittedPage
         .userAnswersError(
           transferId,

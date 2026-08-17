@@ -66,7 +66,7 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar wit
     }
 
     "must clear empty-user-answers on sign out" in {
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))

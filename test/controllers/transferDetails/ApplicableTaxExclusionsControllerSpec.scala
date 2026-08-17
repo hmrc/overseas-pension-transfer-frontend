@@ -26,7 +26,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.ApplicableTaxExclusionsView
 
 import scala.concurrent.Future

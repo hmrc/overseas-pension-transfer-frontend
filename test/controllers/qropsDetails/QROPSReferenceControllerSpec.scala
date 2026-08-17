@@ -30,7 +30,6 @@ import pages.qropsDetails.QROPSReferencePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import views.html.qropsDetails.QROPSReferenceView
 

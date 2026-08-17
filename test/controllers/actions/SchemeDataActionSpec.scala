@@ -39,6 +39,7 @@ import scala.concurrent.Future
 
 class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
 
+  private val mockDashboardSessionRepository                     = mock[DashboardSessionRepository]
   private val mockPensionSchemeConnector: PensionSchemeConnector = mock[PensionSchemeConnector]
 
   class Harness(pensionSchemeConnector: PensionSchemeConnector, sessionRepository: DashboardSessionRepository)
@@ -222,7 +223,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         }
       }
 
-      "when there is no dashboard data returned and no srn is provided by on ramp request" in {
+      "when there is no dashboard data returned and no srn is provided by on ramp request" - {
         when(mockDashboardSessionRepository.get(any())) thenReturn Future.successful(None)
 
         val identifierRequest =

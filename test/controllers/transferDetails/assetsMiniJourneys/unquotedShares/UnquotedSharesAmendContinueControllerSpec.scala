@@ -28,7 +28,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueView
 
@@ -95,11 +94,13 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must return OK for a GET in CheckMode and save completion" in {
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithUnquotedShares(1)
       val application =
-        applicationBuilder(userAnswers = userAnswers).build()
+        applicationBuilder(userAnswers = userAnswers)
+          .build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesAmendContinueRouteCheck)
@@ -109,11 +110,13 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must return OK for a GET in FinalCheckMode and save completion" in {
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithUnquotedShares(1)
       val application =
-        applicationBuilder(userAnswers = userAnswers).build()
+        applicationBuilder(userAnswers = userAnswers)
+          .build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesAmendContinueRouteFinalCheck)
@@ -123,11 +126,13 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithUnquotedShares(2)
       val application =
-        applicationBuilder(userAnswers = userAnswers).build()
+        applicationBuilder(userAnswers = userAnswers)
+          .build()
 
       running(application) {
         val request =
@@ -152,7 +157,8 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
       val userAnswers = uaWithUnquotedShares(2)
       val application =
-        applicationBuilder(userAnswers).build()
+        applicationBuilder(userAnswers)
+          .build()
 
       running(application) {
         val request =
@@ -175,11 +181,13 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithUnquotedShares(0)
       val application =
-        applicationBuilder(userAnswers = userAnswers).build()
+        applicationBuilder(userAnswers = userAnswers)
+          .build()
 
       running(application) {
         val request =
@@ -199,11 +207,13 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to CYA when valid data is submitted in CheckMode" in {
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithUnquotedShares(3)
       val application =
-        applicationBuilder(userAnswers = userAnswers).build()
+        applicationBuilder(userAnswers = userAnswers)
+          .build()
 
       running(application) {
         val request =

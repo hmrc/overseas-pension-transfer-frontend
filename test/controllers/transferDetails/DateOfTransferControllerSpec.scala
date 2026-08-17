@@ -32,7 +32,6 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import views.html.transferDetails.DateOfTransferView
 

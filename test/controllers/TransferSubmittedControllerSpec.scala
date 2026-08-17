@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -40,9 +39,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockConnector          = mock[MinimalDetailsConnector]
-  private val application            = applicationBuilder().build()
-  private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
+
+  private val mockConnector = mock[MinimalDetailsConnector]
+  private val application   = applicationBuilder().build()
+  private val appConfig     = application.injector.instanceOf[FrontendAppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

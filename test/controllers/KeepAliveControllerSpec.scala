@@ -33,9 +33,8 @@ class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "when the user has answered some questions" - {
 
       "must keep the answers alive and return OK" in {
-
         when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
-        when(mockMongoLockRepository.refreshExpiry(any(), any(), any())) thenReturn Future.successful(true)
+        when(mockMongoLockRepository.refreshExpiry(any(), any(), any())).thenReturn(Future.successful(true))
         val application =
           applicationBuilder(emptyUserAnswers)
             .build()

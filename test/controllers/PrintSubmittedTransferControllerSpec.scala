@@ -27,7 +27,6 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -43,20 +42,19 @@ import java.time.ZoneId
 import scala.concurrent.Future
 
 class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
-
   private val mockUserAnswersService = mock[UserAnswersService]
 
   "TransferSubmitted Controller" - {
 
     "must return OK and render the submitted transfer view" in {
 
-      val application                     =
+      val application =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
-      val appConfig                       = application.injector.instanceOf[FrontendAppConfig]
+
       implicit val testMessages: Messages = messages(application)
 
       when(mockSessionRepository.get(any()))
@@ -108,8 +106,10 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
             SchemeManagerDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
           )
 
-        val expectedMpsLink =
+        val expectedMpsLink = {
+          val appConfig = application.injector.instanceOf[FrontendAppConfig]
           s"${appConfig.pensionSchemeSummaryUrl}1234567890"
+        }
 
         val view = application.injector.instanceOf[PrintSubmittedTransferView]
 

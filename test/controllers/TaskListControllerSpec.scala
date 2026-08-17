@@ -24,8 +24,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.govuk.SummaryListFluency
 
-import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import scala.concurrent.Future
 
 class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
@@ -53,7 +53,7 @@ class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListF
         val app =
           applicationBuilder()
             .build()
-
+        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
         running(app) {
           val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard(userAnswersTransferNumber).url)
           val res = route(app, req).value

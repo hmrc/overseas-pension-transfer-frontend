@@ -44,8 +44,9 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
-  private val qtStatus               = QtStatus.Submitted
-  private val versionNumber          = "007"
+
+  private val qtStatus      = QtStatus.Submitted
+  private val versionNumber = "007"
 
   private def schemeSummaryList =
     SummaryListViewModel(

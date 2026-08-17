@@ -26,15 +26,10 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SubmitToHMRCPage
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.*
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import uk.gov.hmrc.mongo.lock.MongoLockRepository
-import uk.gov.hmrc.mongo.play.PlayMongoModule
 import views.html.SubmitToHMRCView
 
 import scala.concurrent.Future
@@ -134,6 +129,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSA declaration screen for PSA when value is true" in {
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder().build()
@@ -151,6 +147,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSP declaration screen for PSP when value is true" in {
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
@@ -160,19 +157,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder()
-        .disable[PlayMongoModule]
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
-          bind[MongoLockRepository].toInstance(mockMongoLockRepository),
-          bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction]
-            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
-          bind[SchemeDataAction].to[FakeSchemeDataAction]
-        )
-        .build()
+      val application =
+        applicationBuilder(emptyUserAnswers, sessionDataMemberNameQtNumber, Some(fakeIdentifierAction)).build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -188,6 +174,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to task list when value is false, regardless of user type" in {
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
@@ -197,19 +184,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder()
-        .disable[PlayMongoModule]
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
-          bind[MongoLockRepository].toInstance(mockMongoLockRepository),
-          bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction]
-            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
-          bind[SchemeDataAction].to[FakeSchemeDataAction]
-        )
-        .build()
+      val application =
+        applicationBuilder(emptyUserAnswers, sessionDataMemberNameQtNumber, Some(fakeIdentifierAction)).build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =

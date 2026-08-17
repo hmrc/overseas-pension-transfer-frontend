@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyDescriptionView
 
 import scala.concurrent.Future
@@ -110,7 +109,8 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =

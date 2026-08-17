@@ -29,7 +29,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.{AuditService, UserAnswersService}
 import views.html.WhatWillBeNeededView
 
@@ -54,6 +53,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   "onSubmit" - {
     "must initialise UserAnswers, persist once, audit, and redirect" in {
+
       val mockUserAnswerSvc                           = mock[UserAnswersService]
       val mockAuditService                            = mock[AuditService]
       val eventCaptor: ArgumentCaptor[JsonAuditModel] = ArgumentCaptor.forClass(classOf[JsonAuditModel])
@@ -87,6 +87,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
     }
 
     "must redirect to JourneyRecovery when persistence fails" in {
+
       val mockUserAnswerSvc = mock[UserAnswersService]
 
       when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))

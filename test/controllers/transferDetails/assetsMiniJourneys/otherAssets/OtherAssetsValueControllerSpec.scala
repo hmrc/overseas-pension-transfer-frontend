@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueView
 
 import scala.concurrent.Future
@@ -89,7 +88,8 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =
@@ -108,7 +108,8 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =

@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberView
 
 import scala.concurrent.Future
@@ -90,7 +89,8 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
+        applicationBuilder(sessionData = sessionDataMemberNameQtNumber)
+          .build()
 
       running(application) {
         val request =
@@ -111,7 +111,8 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =

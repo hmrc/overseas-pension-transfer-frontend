@@ -27,7 +27,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassView
 
 import scala.concurrent.Future
@@ -88,7 +87,8 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
+        applicationBuilder(sessionData = sessionDataMemberNameQtNumber)
+          .build()
 
       running(application) {
         val request =
@@ -108,7 +108,8 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =

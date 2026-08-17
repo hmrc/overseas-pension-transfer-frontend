@@ -28,7 +28,6 @@ import play.api.http.Status.{BAD_GATEWAY, NO_CONTENT, OK}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
-
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future

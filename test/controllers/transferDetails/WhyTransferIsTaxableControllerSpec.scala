@@ -31,7 +31,6 @@ import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
 import services.UserAnswersService
 import views.html.transferDetails.WhyTransferIsTaxableView
 
@@ -119,7 +118,8 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder().build()
+        applicationBuilder()
+          .build()
 
       running(application) {
         val request =
