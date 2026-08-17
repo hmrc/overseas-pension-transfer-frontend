@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, NormalMode}
+import models.{AmendCheckMode, NormalMode, SessionData}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -32,12 +32,12 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import queries.DateSubmittedQuery
 import services.UserAnswersService
 import views.html.transferDetails.DateOfTransferView
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
-
 class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   implicit private val messages: Messages = stubMessages()
@@ -57,6 +57,9 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         "value.month" -> today.getMonthValue.toString,
         "value.year"  -> today.getYear.toString
       )
+
+  private val originalDate           = LocalDate.of(2025, 1, 25)
+  private val dateSubmittedAsInstant = Instant.from(originalDate.atStartOfDay(ZoneId.of("Europe/London")))
 
   "DateOfTransfer Controller" - {
 
@@ -80,7 +83,6 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
 
       "must populate the view correctly on a GET when the question has previously been answered" in {
-
         val userAnswers = emptyUserAnswers.set(DateOfTransferPage, today).success.value
 
         val application = applicationBuilder(userAnswers = userAnswers).build()
@@ -99,27 +101,15 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
 
       "must return OK and use the amend form when in AmendCheckMode" in {
-        val originalDate = LocalDate.of(2025, 1, 25)
-
-        val originalSubmission = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate)
-          .success
-          .value
+        val sessionData: SessionData = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
 
         val currentUserAnswers = emptyUserAnswers
           .set(DateOfTransferPage, originalDate.minusDays(5))
           .success
           .value
 
-        val mockUserAnswersService = mock[UserAnswersService]
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
-          .thenReturn(Future.successful(Right(originalSubmission)))
-
-        val application = applicationBuilder(userAnswers = currentUserAnswers)
-          .overrides(
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
+        val application = applicationBuilder(userAnswers = currentUserAnswers).build()
 
         running(application) {
           val request = FakeRequest(GET, routes.DateOfTransferController.onPageLoad(AmendCheckMode).url)
@@ -166,10 +156,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
 
       "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-        val mockUserAnswersService = mock[UserAnswersService]
+        val sessionData: SessionData = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
 
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
-          .thenReturn(Future.successful(Right(emptyUserAnswers.set(DateOfTransferPage, today).success.value)))
+        val mockUserAnswersService = mock[UserAnswersService]
 
         when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
           .thenReturn(Future.successful(Right(Done)))
@@ -220,20 +210,13 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
 
       "must return a Bad Request when amending with a date after the original submission date" in {
-        val originalDate = LocalDate.of(2025, 1, 25)
-        val newDate      = originalDate.plusDays(1)
-
-        val originalSubmission = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate)
-          .success
-          .value
+        val newDate = originalDate.plusDays(1)
+        val sd      = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sd)))
 
         val mockUserAnswersService = mock[UserAnswersService]
         when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
           .thenReturn(Future.successful(Right(Done)))
-
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
-          .thenReturn(Future.successful(Right(originalSubmission)))
 
         val application = applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
