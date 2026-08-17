@@ -89,13 +89,13 @@ class DateOfTransferController @Inject() (
       )
 
   private def dateSubmitted()(implicit request: DisplayRequest[AnyContent]): Future[LocalDate] = {
-    val futureOptionDataSubmitted: Future[Option[LocalDate]] =
+    val futureOptionDateSubmitted: Future[Option[LocalDate]] =
       sessionRepository.get(request.authenticatedUser.internalId).map {
         case Some(sessionData) =>
           sessionData.get(DateSubmittedQuery).map(LocalDate.ofInstant(_, ZoneId.of("Europe/London")))
         case _                 => None
       }
-    futureOptionDataSubmitted.map(
+    futureOptionDateSubmitted.map(
       _.fold[LocalDate](throw new IllegalStateException("Original submission date has not been found"))(identity)
     )
   }
