@@ -16,33 +16,26 @@
 
 package controllers.transferDetails
 
-import queries.TransferDetailsRecordVersionQuery
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
-import controllers.actions._
-import views.html.transferDetails.DateOfTransferView
-import forms.transferDetails.AmendDateOfTransferFormProvider
-import forms.transferDetails.DateOfTransferFormProvider
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
-import models.AmendCheckMode
-import models.Mode
-import models.UserAnswers
+import forms.transferDetails.{AmendDateOfTransferFormProvider, DateOfTransferFormProvider}
+import models.requests.DisplayRequest
+import models.{AmendCheckMode, Mode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.DateOfTransferPage
-import services.UserAnswersService
-import play.api.i18n.I18nSupport
-import play.api.i18n.MessagesApi
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import models.requests.DisplayRequest
 import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{DateSubmittedQuery, TransferDetailsRecordVersionQuery}
+import repositories.SessionRepository
+import services.UserAnswersService
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transferDetails.DateOfTransferView
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.Try
-
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneId}
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class DateOfTransferController @Inject() (
   override val messagesApi: MessagesApi,
@@ -53,7 +46,8 @@ class DateOfTransferController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: DateOfTransferView,
   userAnswersService: UserAnswersService,
-  amendDateOfTransferFormProvider: AmendDateOfTransferFormProvider
+  amendDateOfTransferFormProvider: AmendDateOfTransferFormProvider,
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -94,27 +88,25 @@ class DateOfTransferController @Inject() (
         }
       )
 
+  private def dateSubmitted()(implicit request: DisplayRequest[AnyContent]): Future[LocalDate] = {
+    val futureOptionDateSubmitted: Future[Option[LocalDate]] =
+      sessionRepository.get(request.authenticatedUser.internalId).map {
+        case Some(sessionData) =>
+          sessionData.get(DateSubmittedQuery).map(LocalDate.ofInstant(_, ZoneId.of("Europe/London")))
+        case _                 => None
+      }
+    futureOptionDateSubmitted.map(
+      _.fold[LocalDate](throw new IllegalStateException("Original submission date has not been found"))(identity)
+    )
+  }
+
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       if (isAmend(mode)) {
-        userAnswersService
-          .getExternalUserAnswers(
-            request.userAnswers.id,
-            request.userAnswers.pstr,
-            models.QtStatus.Submitted,
-            Some("001"),
-            request.sessionData.schemeInformation.srnNumber
-          )
-          .map {
-            case Right(originalSubmission) =>
-              val originalDate = originalSubmission
-                .get(DateOfTransferPage)
-                .getOrElse(throw new IllegalStateException("Original submission date has not been found"))
-              val form         = amendDateOfTransferFormProvider(originalDate)
-              Ok(view(prepareForm(form, request.userAnswers), mode))
-            case _                         =>
-              Ok(view(prepareForm(formProvider(), request.userAnswers), mode))
-          }
+        dateSubmitted().map { originalDate =>
+          val form = amendDateOfTransferFormProvider(originalDate)
+          Ok(view(prepareForm(form, request.userAnswers), mode))
+        }
       } else {
         Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
       }
@@ -123,24 +115,10 @@ class DateOfTransferController @Inject() (
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       if (isAmend(mode)) {
-        userAnswersService
-          .getExternalUserAnswers(
-            request.userAnswers.id,
-            request.userAnswers.pstr,
-            models.QtStatus.Submitted,
-            Some("001"),
-            request.sessionData.schemeInformation.srnNumber
-          )
-          .flatMap {
-            case Right(originalSubmission) =>
-              val originalDate = originalSubmission
-                .get(DateOfTransferPage)
-                .getOrElse(throw new IllegalStateException("Original submission date has not been found"))
-              val form         = amendDateOfTransferFormProvider(originalDate)
-              handleSubmission(form, mode, request.userAnswers)
-            case _                         =>
-              handleSubmission(formProvider(), mode, request.userAnswers)
-          }
+        dateSubmitted().flatMap { originalDate =>
+          val form = amendDateOfTransferFormProvider(originalDate)
+          handleSubmission(form, mode, request.userAnswers)
+        }
       } else {
         handleSubmission(formProvider(), mode, request.userAnswers)
       }
