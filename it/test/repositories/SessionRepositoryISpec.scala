@@ -70,6 +70,7 @@ class SessionRepositoryISpec
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1L
+  when(mockAppConfig.mongoDBEncryption) thenReturn true
 
   implicit val productionLikeTestMdcExecutionContext: ExecutionContext = MdcExecutionContext()
 
