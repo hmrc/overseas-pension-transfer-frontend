@@ -43,7 +43,8 @@ class TestAppConfig
         "pagination.transfersPerPage"         -> 10,
         "dashboard.lockTtlSeconds"            -> 30,
         "pension-scheme-summary.service-path" -> "/manage-pension-schemes/pension-scheme-summary/",
-        "submission-confirmation-template-id" -> "overseas_transfer_charge_confirm_transfer_submitted"
+        "submission-confirmation-template-id" -> "overseas_transfer_charge_confirm_transfer_submitted",
+        "mongodb.encryption"                  -> true
       ),
       servicesConfig = new ServicesConfig(
         Configuration(
