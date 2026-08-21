@@ -44,7 +44,7 @@ class DashboardSessionRepositorySpec
   override val databaseName: String = "test-dashboard"
 
   private val encryption = new EncryptionService("test-master-key")
-  private val appConfig  = new TestAppConfig
+  private val appConfig  = TestAppConfig.appConfigEncryptionOn()
 
   private val repository = new DashboardSessionRepository(
     mongoComponent = mongoComponent,
