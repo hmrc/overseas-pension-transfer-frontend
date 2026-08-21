@@ -18,11 +18,10 @@ package repositories
 
 import config.FrontendAppConfig
 import models.SessionData
-import models.SessionData.encryptedFormat
+import models.SessionData.{encryptedFormat, unencryptedFormat}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.*
-import play.api.libs.json.{Format, Json, OFormat}
-import repositories.SessionRepository.unencryptedFormat
+import play.api.libs.json.{Format, OFormat}
 import services.EncryptionService
 import uk.gov.hmrc.mdc.Mdc
 import uk.gov.hmrc.mongo.MongoComponent
@@ -108,7 +107,4 @@ class SessionRepository @Inject() (
       .toFuture()
       .map(_ => true)
   }
-}
-object SessionRepository {
-  val unencryptedFormat: OFormat[SessionData] = Json.format
 }

@@ -45,7 +45,7 @@ class SessionRepositorySpec
   override val databaseName: String = "test-session"
 
   private val encryption = new EncryptionService("test-master-key")
-  private val appConfig  = new TestAppConfig
+  private val appConfig  = TestAppConfig.appConfigEncryptionOn()
 
   private val repository = new SessionRepository(
     mongoComponent = mongoComponent,
@@ -66,7 +66,7 @@ class SessionRepositorySpec
 
   "SessionRepository" - {
 
-    "must save and retrieve SessionData with encryption" in {
+    "must save and retrieve SessionData" in {
       val session = sessionData("session-1", testQtNumber)
       repository.set(session).futureValue mustBe true
 
