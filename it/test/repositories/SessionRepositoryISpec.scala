@@ -85,7 +85,7 @@ trait SessionRepositoryISpec(protected val isEncrypted: Boolean)
     ()
   }
 
-  // If can read data node as a String then it is encrypted, otherwise it will be JsObject (unencrypted).
+  // If it can read data node as a String then it is encrypted, otherwise it will be JsObject (unencrypted).
   private def isStoredValueEncrypted: Boolean = {
     val jsObj = Json
       .parse(
