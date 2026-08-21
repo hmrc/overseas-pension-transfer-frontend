@@ -30,6 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.{AuditService, UserAnswersService}
+import uk.gov.hmrc.mongo.lock.Lock
 import views.html.WhatWillBeNeededView
 
 import scala.concurrent.Future
@@ -61,6 +62,8 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
       when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any[SessionData])).thenReturn(Future.successful(true))
+      when(mockEnhancedLockRepository.takeLock(any(), any(), any()))
+        .thenReturn(Future.successful(Some(mock[Lock])))
 
       val application =
         applicationBuilder()
@@ -93,6 +96,8 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
       when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any[SessionData])).thenReturn(Future.successful(false))
+      when(mockEnhancedLockRepository.takeLock(any(), any(), any()))
+        .thenReturn(Future.successful(Some(mock[Lock])))
 
       val application =
         applicationBuilder()
@@ -107,6 +112,31 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+    "must redirect to the dashboard when the transfer is already locked by another user" in {
+
+      val mockUserAnswerSvc = mock[UserAnswersService]
+
+      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+      when(mockSessionRepository.set(any[SessionData])).thenReturn(Future.successful(true))
+      when(mockEnhancedLockRepository.takeLock(any(), any(), any()))
+        .thenReturn(Future.successful(None))
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswerSvc)
+          )
+          .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
+        val result  = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe routes.DashboardController.onPageLoad().url
       }
     }
   }
