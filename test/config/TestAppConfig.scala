@@ -50,11 +50,6 @@ object TestAppConfig {
     Configuration(items*)
   }
 
-  private val testConfigurationEncryptionOff = {
-    val items: Seq[(String, Any)] = configItems ++ Seq("mongodb.encryption" -> false)
-    Configuration(items*)
-  }
-
   private val servicesConfig = new ServicesConfig(
     Configuration(
       "microservice.services.overseas-pension-transfer-backend.host" -> "http://localhost",
@@ -68,7 +63,5 @@ object TestAppConfig {
     )
   )
 
-  def appConfigEncryptionOn(): FrontendAppConfig  = new FrontendAppConfig(testConfigurationEncryptionOn, servicesConfig)
-  def appConfigEncryptionOff(): FrontendAppConfig =
-    new FrontendAppConfig(testConfigurationEncryptionOff, servicesConfig)
+  def appConfigEncryptionOn(): FrontendAppConfig = new FrontendAppConfig(testConfigurationEncryptionOn, servicesConfig)
 }
