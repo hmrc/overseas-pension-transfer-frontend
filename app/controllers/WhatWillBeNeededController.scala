@@ -16,9 +16,9 @@
 
 package controllers
 
-import services.AuditService
-import services.UserAnswersService
-import models.audit.ReportStartedAuditModel
+import config.FrontendAppConfig
+import services.{LockService, UserAnswersService}
+import models.authentication.{PsaUser, PspUser}
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
@@ -29,13 +29,13 @@ import controllers.actions.SchemeDataAction
 import repositories.SessionRepository
 import play.api.Logging
 import play.api.libs.json.Json
-import models._
+import models.*
 import models.audit.JourneyStartedType.StartNewTransfer
+import models.requests.SchemeRequest
 import play.api.i18n.I18nSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
-
 import java.time.Clock
 import java.time.Instant
 import java.util.UUID
@@ -50,12 +50,19 @@ class WhatWillBeNeededController @Inject() (
   view: WhatWillBeNeededView,
   sessionRepository: SessionRepository,
   userAnswersService: UserAnswersService,
-  auditService: AuditService,
+  lockService: LockService,
   clock: Clock
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
+
+  private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
+
+  private def owner(implicit request: SchemeRequest[AnyContent]): String = request.authenticatedUser match {
+    case PsaUser(psaId, _, _) => psaId.value
+    case PspUser(pspId, _, _) => pspId.value
+  }
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData) { implicit request =>
     Ok(view())
@@ -75,20 +82,21 @@ class WhatWillBeNeededController @Inject() (
       UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber, Json.obj(), Instant.now(clock))
 
     for {
-      persisted <- sessionRepository.set(sessionData)
-      _         <- userAnswersService.setExternalUserAnswers(newUa, sessionData.schemeInformation.srnNumber)
+      lockAcquired <- lockService.takeLockWithAudit(
+                        sessionData.transferId,
+                        owner,
+                        lockTtlSeconds,
+                        request.authenticatedUser,
+                        request.schemeDetails,
+                        StartNewTransfer,
+                        None
+                      )
+      persisted    <- sessionRepository.set(sessionData)
+      _            <- userAnswersService.setExternalUserAnswers(newUa, sessionData.schemeInformation.srnNumber)
     } yield
-      if (persisted) {
-        auditService.audit(
-          ReportStartedAuditModel(
-            sessionData.transferId,
-            request.authenticatedUser,
-            request.schemeDetails,
-            StartNewTransfer,
-            None,
-            None
-          )
-        )
+      if (!lockAcquired) {
+        Redirect(routes.DashboardController.onPageLoad())
+      } else if (persisted) {
         Redirect(WhatWillBeNeededPage.nextPage(NormalMode, newUa))
       } else {
         logger.warn("SessionRepository.set returned false during SessionData initialisation")
