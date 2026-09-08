@@ -20,7 +20,7 @@ import play.api.mvc.Call
 import models._
 import scala.annotation.unused
 
-/* 
+/*
   Mix this into a Page when you need extra args to help with navigation.
 
   It is used by the following Page instances:-
@@ -29,7 +29,7 @@ import scala.annotation.unused
    MiniJourneyNextPageWith: to pass SessionData into the page.
 
   MiniJourneyNextPageWith is used by various pages in package pages.transferDetails.assetsMiniJourneys
-*/
+ */
 trait NextPageWith[C] { self: Page =>
 
   protected def nextPageWith(answers: UserAnswers, @unused context: C): Call =
