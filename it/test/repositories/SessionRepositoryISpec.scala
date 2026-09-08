@@ -26,7 +26,7 @@ import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.model.Filters
 import org.scalactic.source.Position
 import org.scalatest.OptionValues
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -49,7 +49,8 @@ trait SessionRepositoryISpec(protected val isEncrypted: Boolean)
     with IntegrationPatience
     with OptionValues
     with MockitoSugar
-    with SpecBase {
+    with SpecBase
+    with Eventually {
 
   protected val instant: Instant = now.truncatedTo(ChronoUnit.MILLIS)
 
@@ -82,6 +83,10 @@ trait SessionRepositoryISpec(protected val isEncrypted: Boolean)
 
   override protected def beforeEach(): Unit = {
     deleteAll()
+    eventually {
+      assert(count().futureValue == 0L)
+    }
+
     ()
   }
 
@@ -119,7 +124,6 @@ trait SessionRepositoryISpec(protected val isEncrypted: Boolean)
   }
 
   s".get $encryptedMessage" - {
-
     "when there is a record for this id" - {
 
       "must update the lastUpdated time and get the record" in {
