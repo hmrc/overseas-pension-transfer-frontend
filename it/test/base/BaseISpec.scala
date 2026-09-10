@@ -48,8 +48,6 @@ trait BaseISpec
     "play.filters.csrf.header.bypassHeaders.Csrf-Token"            -> "nocheck",
     "microservice.services.overseas-pension-transfer-backend.host" -> WireMockHelper.wireMockHost,
     "microservice.services.overseas-pension-transfer-backend.port" -> WireMockHelper.wireMockPort.toString,
-    "microservice.services.address-lookup.host"                    -> WireMockHelper.wireMockHost,
-    "microservice.services.address-lookup.port"                    -> WireMockHelper.wireMockPort.toString,
     "microservice.services.pensions-scheme.host"                   -> WireMockHelper.wireMockHost,
     "microservice.services.pensions-scheme.port"                   -> WireMockHelper.wireMockPort.toString,
     "microservice.services.auth.host"                              -> WireMockHelper.wireMockHost,

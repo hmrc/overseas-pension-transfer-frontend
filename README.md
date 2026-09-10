@@ -7,7 +7,6 @@ This is the frontend microservice application that is part of the Managing Pensi
 | Service                           | Link                                                      |
 |-----------------------------------|-----------------------------------------------------------|
 | overseas-pension-transfer-backend | https://github.com/hmrc/overseas-pension-transfer-backend |
-| address-lookup                    | https://github.com/hmrc/address-lookup                    |
 | pensions-scheme                   | https://github.com/hmrc/pensions-scheme                   |
 
 ## Running the service
