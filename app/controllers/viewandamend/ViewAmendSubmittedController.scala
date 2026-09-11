@@ -16,13 +16,10 @@
 
 package controllers.viewandamend
 
-import models.authentication.PsaUser
-import models.authentication.PspUser
 import utils.AppUtils
 import play.api.mvc._
 import com.google.inject.Inject
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import config.FrontendAppConfig
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import controllers.actions.DataRetrievalAction
 import controllers.actions.IdentifierAction
@@ -64,7 +61,6 @@ class ViewAmendSubmittedController @Inject() (
   view: ViewSubmittedView,
   lockService: LockService,
   sessionRepository: SessionRepository,
-  appConfig: FrontendAppConfig,
   clock: Clock
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -107,11 +103,6 @@ class ViewAmendSubmittedController @Inject() (
     versionNumber: String
   ): Action[AnyContent] =
     (identify andThen schemeData).async { implicit request =>
-      val owner = request.authenticatedUser match {
-        case PsaUser(psaId, _, _) => psaId.value
-        case PspUser(pspId, _, _) => pspId.value
-      }
-
       for {
         userAnswersResult <-
           userAnswersService
@@ -119,8 +110,7 @@ class ViewAmendSubmittedController @Inject() (
         allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
         lockAcquired      <- lockService.takeLockWithAudit(
                                qtReference,
-                               owner,
-                               appConfig.dashboardLockTtl,
+                               request.authenticatedUser.owner(),
                                request.authenticatedUser,
                                request.schemeDetails,
                                ContinueAmendmentOfTransfer,

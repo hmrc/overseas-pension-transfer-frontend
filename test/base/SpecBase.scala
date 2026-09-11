@@ -39,7 +39,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
-import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
+import repositories.{DashboardSessionRepository, SessionRepository}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
 import org.scalatest.BeforeAndAfterEach
@@ -138,14 +138,11 @@ trait SpecBase
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
-  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
   protected val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
   protected val mockMongoLockRepository: MongoLockRepository               = mock[MongoLockRepository]
 
-  override protected def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit =
     reset(mockSessionRepository)
-    reset(mockEnhancedLockRepository)
-  }
 
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
@@ -163,7 +160,6 @@ trait SpecBase
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
       bind[SchemeDataAction].to[FakeSchemeDataAction],
       bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
-      bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
       bind[SessionRepository].to(mockSessionRepository)
     ) :+ identifierActionBinding
 

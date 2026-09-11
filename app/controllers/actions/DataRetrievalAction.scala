@@ -18,12 +18,11 @@ package controllers.actions
 
 import services.UserAnswersService
 import utils.AppUtils
-import play.api.mvc.ActionRefiner
-import play.api.mvc.Result
+import play.api.mvc.{ActionRefiner, Result}
 import controllers.routes
 import play.api.Logging
 import play.api.mvc.Results.Redirect
-import repositories.SessionRepository
+import repositories.{ExpiringMongoLockRepository, SessionRepository}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import models.requests.DisplayRequest
@@ -31,12 +30,12 @@ import models.requests.SchemeRequest
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
 import javax.inject.Inject
 
 class DataRetrievalActionImpl @Inject() (
   sessionRepository: SessionRepository,
-  userAnswersService: UserAnswersService
+  userAnswersService: UserAnswersService,
+  lockRepository: ExpiringMongoLockRepository
 )(implicit val executionContext: ExecutionContext)
     extends DataRetrievalAction
     with AppUtils
@@ -47,7 +46,18 @@ class DataRetrievalActionImpl @Inject() (
 
     sessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(value) =>
-        userAnswersService.getExternalUserAnswers(value) map {
+        val lockId = value.transferId.value
+        val owner  = request.authenticatedUser.owner()
+
+        for {
+          isLocked    <- lockRepository.isLocked(lockId, owner)
+          _           <- if (isLocked) {
+                           lockRepository.refreshExpiry(lockId, owner)
+                         } else {
+                           lockRepository.takeLock(value.transferId.value, request.authenticatedUser.owner())
+                         }
+          userAnswers <- userAnswersService.getExternalUserAnswers(value)
+        } yield userAnswers match {
           case Right(answers) =>
             Right(
               DisplayRequest(

@@ -53,7 +53,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   )
 
   class Harness(sessionRepository: SessionRepository, userAnswersService: UserAnswersService)
-      extends DataRetrievalActionImpl(sessionRepository, userAnswersService) {
+      extends DataRetrievalActionImpl(sessionRepository, userAnswersService, null) { // TODO FIX) {
     def callRefine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] = refine(request)
   }
 

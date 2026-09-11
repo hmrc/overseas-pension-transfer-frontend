@@ -16,15 +16,12 @@
 
 package controllers.viewandamend
 
-import models.authentication.PsaUser
-import models.authentication.PspUser
 import services.LockService
 import services.UserAnswersService
 import models.QtStatus.AmendInProgress
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
-import config.FrontendAppConfig
 import controllers.actions._
 import views.html.viewandamend.ViewAmendSelectorView
 import play.api.libs.json.Json
@@ -51,7 +48,6 @@ class ViewAmendSelectorController @Inject() (
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: ViewAmendSelectorView,
-  appConfig: FrontendAppConfig,
   lockService: LockService,
   userAnswersService: UserAnswersService,
   sessionRepository: SessionRepository,
@@ -60,13 +56,7 @@ class ViewAmendSelectorController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
-  private val form                 = ViewAmendSelectorFormProvider.form()
-
-  private def retrieveOwner(implicit request: SchemeRequest[AnyContent]) = request.authenticatedUser match {
-    case PsaUser(psaId, _, _) => psaId.value
-    case PspUser(pspId, _, _) => pspId.value
-  }
+  private val form = ViewAmendSelectorFormProvider.form()
 
   def onPageLoad(
     qtReference: TransferId,
@@ -75,7 +65,8 @@ class ViewAmendSelectorController @Inject() (
     versionNumber: String
   ): Action[AnyContent] =
     (identify andThen schemeData).async { implicit request =>
-      val owner = retrieveOwner
+      val owner = request.authenticatedUser.owner()
+
       for {
         isLocked <- lockService.isLocked(qtReference.value, owner)
         _        <- if (isLocked) lockService.releaseLock(qtReference.value, owner) else Future.unit
@@ -90,8 +81,7 @@ class ViewAmendSelectorController @Inject() (
 
   private def lockAndStartAmend(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)(
     implicit request: SchemeRequest[AnyContent]
-  ) = {
-    val owner = retrieveOwner
+  ) =
     for {
       userAnswersResult <-
         userAnswersService.getExternalUserAnswers(
@@ -105,8 +95,7 @@ class ViewAmendSelectorController @Inject() (
       lockResult        <-
         lockService.takeLockWithAudit(
           qtReference,
-          owner,
-          lockTtlSeconds,
+          request.authenticatedUser.owner(),
           request.authenticatedUser,
           request.schemeDetails,
           StartAmendmentOfTransfer,
@@ -134,7 +123,6 @@ class ViewAmendSelectorController @Inject() (
       case _                      =>
         Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
     }
-  }
 
   def onSubmit(
     qtReference: TransferId,

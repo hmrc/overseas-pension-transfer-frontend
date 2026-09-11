@@ -16,8 +16,6 @@
 
 package controllers.viewandamend
 
-import models.authentication.PsaUser
-import models.authentication.PspUser
 import services.CollectSubmittedVersionsService
 import services.LockService
 import play.api.mvc.Action
@@ -56,10 +54,7 @@ class SubmittedTransferSummaryController @Inject() (
     versionNumber: String
   ): Action[AnyContent] =
     (identify andThen schemeData).async { implicit request =>
-      val owner = request.authenticatedUser match {
-        case PsaUser(psaId, _, _) => psaId.value
-        case PspUser(pspId, _, _) => pspId.value
-      }
+      val owner = request.authenticatedUser.owner()
 
       for {
         isLocked <- lockService.isLocked(qtReference.value, owner)
