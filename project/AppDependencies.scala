@@ -1,4 +1,5 @@
 import sbt.*
+import sbt.librarymanagement.InclExclRule
 
 object AppDependencies {
 
@@ -13,7 +14,12 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"            %% "hmrc-mongo-play-30"         % hmrcMongoVersion,
     "org.typelevel"                %% "cats-core"                  % "2.13.0",
     "com.googlecode.libphonenumber" % "libphonenumber"             % "9.0.35",
-    "io.github.samueleresca"       %% "pekko-quartz-scheduler"     % "1.3.0-pekko-1.1.x" withSources(),
+    ("io.github.samueleresca"       %% "pekko-quartz-scheduler"     % "1.3.0-pekko-1.1.x").withExclusions(
+      Vector(
+        InclExclRule().withOrganization("com.mchange").withName("c3p0"),
+        InclExclRule().withOrganization("com.mchange").withName("mchange-commons-java")
+      )
+    ),
     
     // Explicit pekko dependencies to ensure version alignment
     "org.apache.pekko"             %% "pekko-actor"                % PekkoVersion,
