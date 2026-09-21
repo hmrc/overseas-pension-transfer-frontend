@@ -40,6 +40,7 @@ class MembersLastUKAddressController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: MembersLastUKAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -50,18 +51,19 @@ class MembersLastUKAddressController @Inject() (
     with I18nSupport
     with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val form = formProvider()
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val form = formProvider()
 
-    val preparedForm = request.userAnswers.get(MembersLastUKAddressPage) match {
-      case None          => form
-      case Some(address) => form.fill(address)
-    }
+      val preparedForm = request.userAnswers.get(MembersLastUKAddressPage) match {
+        case None          => form
+        case Some(address) => form.fill(address)
+      }
 
-    Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       val form = formProvider()
 

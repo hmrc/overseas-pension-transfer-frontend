@@ -35,8 +35,10 @@ final case class DashboardData(
   lastUpdated: Instant
 ) {
 
-  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
+    val b = Reads.optionNoError(Reads.at(page.path))
+    b.reads(data).getOrElse(None)
+  }
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[DashboardData] = {
 

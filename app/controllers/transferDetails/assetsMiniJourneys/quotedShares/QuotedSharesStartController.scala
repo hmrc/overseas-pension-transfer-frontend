@@ -30,12 +30,14 @@ class QuotedSharesStartController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   view: QuotedSharesStartView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    Ok(view(QuotedSharesStartPage.nextPage(mode, request.userAnswers).url))
-  }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
+      Ok(view(QuotedSharesStartPage.nextPage(mode, request.userAnswers).url))
+    }
 }

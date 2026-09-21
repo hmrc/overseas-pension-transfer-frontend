@@ -47,6 +47,7 @@ class OtherAssetsAmendContinueController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: OtherAssetsAmendContinueFormProvider,
   sessionRepository: SessionRepository,
@@ -61,7 +62,7 @@ class OtherAssetsAmendContinueController @Inject() (
   val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData).async { implicit request =>
+    (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
       val preparedForm = request.userAnswers.get(OtherAssetsAmendContinueAssetPage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -84,7 +85,7 @@ class OtherAssetsAmendContinueController @Inject() (
       }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       form
         .bindFromRequest()

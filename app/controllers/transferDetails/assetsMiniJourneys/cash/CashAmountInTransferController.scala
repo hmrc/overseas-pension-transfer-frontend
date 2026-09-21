@@ -48,6 +48,7 @@ class CashAmountInTransferController @Inject() (
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: CashAmountInTransferFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -59,16 +60,17 @@ class CashAmountInTransferController @Inject() (
 
   val form: Form[BigDecimal] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.get(CashAmountInTransferPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
-    }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(CashAmountInTransferPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-    Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       form
         .bindFromRequest()
