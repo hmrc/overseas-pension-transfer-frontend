@@ -55,7 +55,7 @@ class TransferSearchSpec extends AnyFreeSpec with SpecBase {
       TransferSearch.filterTransfers(transfers, "QT999999") mustBe Seq(qt2)
     }
 
-    "must handle NINO search with dif cases and with space" in {
+    "must handle NINO search with different cases and with space" in {
       val a = withNino(Some("AA123456A"))
       val b = withNino(Some("BB123456B"))
       val c = withNino(None)

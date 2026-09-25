@@ -52,6 +52,7 @@ class PropertyAddressController @Inject() (
   userAnswersService: UserAnswersService,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: PropertyAddressFormProvider,
   countryService: CountryService,
@@ -63,8 +64,8 @@ class PropertyAddressController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
         case None          => form
@@ -73,7 +74,7 @@ class PropertyAddressController @Inject() (
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
       Ok(view(preparedForm, countrySelectViewModel, mode, index))
-  }
+    }
 
   def renderErrorPage(
     formWithErrors: Form[PropertyAddressFormData],
@@ -84,8 +85,8 @@ class PropertyAddressController @Inject() (
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index)))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
       val form      = formProvider()
       val boundForm = form.bindFromRequest()
 
@@ -125,5 +126,5 @@ class PropertyAddressController @Inject() (
               } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )
-  }
+    }
 }
