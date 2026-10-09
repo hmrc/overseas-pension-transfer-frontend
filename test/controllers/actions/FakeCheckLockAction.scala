@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package controllers.actions
 
-import com.google.inject.AbstractModule
+import models.requests.SchemeRequest
+import play.api.mvc.Result
 
-class ScheduleModule extends AbstractModule {
+import scala.concurrent.{ExecutionContext, Future}
 
-  override def configure(): Unit =
-    bind(classOf[scheduler.jobs.LockCleanupJob]).asEagerSingleton()
+class FakeCheckLockAction extends CheckLockAction {
 
+  override protected def refine[A](request: SchemeRequest[A]): Future[Either[Result, SchemeRequest[A]]] =
+    Future(Right(request))
+
+  implicit override protected val executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
 }

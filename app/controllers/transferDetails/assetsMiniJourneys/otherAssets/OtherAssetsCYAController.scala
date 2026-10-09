@@ -31,6 +31,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAV
 import com.google.inject.Inject
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAPage
 import controllers.actions.DataRetrievalAction
+import controllers.actions.CheckLockAction
 import controllers.actions.IdentifierAction
 import controllers.actions.SchemeDataAction
 import play.api.i18n.I18nSupport
@@ -43,6 +44,7 @@ class OtherAssetsCYAController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   userAnswersService: UserAnswersService,
   val controllerComponents: MessagesControllerComponents,
@@ -52,7 +54,7 @@ class OtherAssetsCYAController @Inject() (
     with I18nSupport
     with AppUtils {
 
-  private val actions = identify andThen schemeData andThen getData
+  private val actions = identify andThen schemeData andThen checkLock andThen getData
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
     val list = SummaryListViewModel(OtherAssetsSummary.rows(mode, request.userAnswers, index))

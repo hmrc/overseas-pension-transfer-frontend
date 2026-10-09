@@ -42,6 +42,7 @@ class MemberNameController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: MemberNameFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -55,7 +56,7 @@ class MemberNameController @Inject() (
   val form: Form[PersonName] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData) { implicit request =>
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
       val preparedForm = request.userAnswers.get(MemberNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -63,7 +64,7 @@ class MemberNameController @Inject() (
       Ok(view(preparedForm, mode))
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       form
         .bindFromRequest()

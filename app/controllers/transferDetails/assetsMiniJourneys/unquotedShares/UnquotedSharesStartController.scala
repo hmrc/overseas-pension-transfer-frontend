@@ -33,13 +33,15 @@ class UnquotedSharesStartController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: UnquotedSharesStartView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    Ok(view(UnquotedSharesStartPage.nextPage(mode, request.userAnswers).url))
-  }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
+      Ok(view(UnquotedSharesStartPage.nextPage(mode, request.userAnswers).url))
+    }
 }

@@ -19,27 +19,22 @@ package controllers
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.mongo.lock.LockRepository
-import config.FrontendAppConfig
 import controllers.actions.DataRetrievalAction
 import controllers.actions.IdentifierAction
 import controllers.actions.SchemeDataAction
-import repositories.SessionRepository
+import repositories.{ExpiringMongoLockRepository, SessionRepository}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.DurationLong
-
 import javax.inject.Inject
 
 class KeepAliveController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  appConfig: FrontendAppConfig,
   identify: IdentifierAction,
   getScheme: SchemeDataAction,
   getData: DataRetrievalAction,
   sessionRepository: SessionRepository,
-  lockRepository: LockRepository
+  lockRepository: ExpiringMongoLockRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController {
 
@@ -47,8 +42,7 @@ class KeepAliveController @Inject() (
     for {
       _         <- lockRepository.refreshExpiry(
                      request.authenticatedUser.internalId,
-                     request.sessionData.transferId.value,
-                     appConfig.dashboardLockTtl.seconds
+                     request.sessionData.transferId.value
                    )
       keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
     } yield keepAlive

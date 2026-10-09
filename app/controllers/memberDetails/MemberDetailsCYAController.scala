@@ -17,7 +17,7 @@
 package controllers.memberDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
+import controllers.actions._
 import controllers.helpers.ErrorHandling
 import models.{CheckMode, NormalMode}
 import pages.memberDetails.MemberDetailsSummaryPage
@@ -32,6 +32,7 @@ class MemberDetailsCYAController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: MemberDetailsCYAView
@@ -39,13 +40,15 @@ class MemberDetailsCYAController @Inject() (
     with I18nSupport
     with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val list = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, request.userAnswers))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val list = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, request.userAnswers))
 
-    Ok(view(list))
+      Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
-  }
+  def onSubmit(): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
+      Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+    }
 }

@@ -45,6 +45,7 @@ class OverseasTransferAllowanceController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: OverseasTransferAllowanceFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -58,7 +59,7 @@ class OverseasTransferAllowanceController @Inject() (
   val form: Form[BigDecimal] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData) { implicit request =>
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
       val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -67,7 +68,7 @@ class OverseasTransferAllowanceController @Inject() (
 
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       form
         .bindFromRequest()

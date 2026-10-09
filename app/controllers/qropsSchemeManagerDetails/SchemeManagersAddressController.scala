@@ -48,6 +48,7 @@ class SchemeManagersAddressController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: SchemeManagersAddressFormProvider,
   countryService: CountryService,
@@ -64,16 +65,17 @@ class SchemeManagersAddressController @Inject() (
 
   private def form: Form[SchemeManagersAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val userAnswers  = request.userAnswers
-    val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
-      case None          => form
-      case Some(address) => form.fill(SchemeManagersAddressFormData.fromDomain(address))
-    }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val userAnswers  = request.userAnswers
+      val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
+        case None          => form
+        case Some(address) => form.fill(SchemeManagersAddressFormData.fromDomain(address))
+      }
 
-    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
-    Ok(view(preparedForm, countrySelectViewModel, mode))
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
   private def returnErrorPage(formWithErrors: Form[SchemeManagersAddressFormData], mode: Mode)(implicit
@@ -83,7 +85,7 @@ class SchemeManagersAddressController @Inject() (
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       val boundForm = form.bindFromRequest()
 

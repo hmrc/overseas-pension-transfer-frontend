@@ -19,6 +19,7 @@ package controllers
 import play.api.mvc._
 import views.html.TaskListView
 import controllers.actions.DataRetrievalAction
+import controllers.actions.CheckLockAction
 import controllers.actions.IdentifierAction
 import controllers.actions.SchemeDataAction
 import play.api.libs.json.Json
@@ -40,6 +41,7 @@ class TaskListController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   sessionRepository: SessionRepository,
   view: TaskListView,
@@ -49,9 +51,10 @@ class TaskListController @Inject() (
     with I18nSupport
     with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(request.userAnswers)))
-  }
+  def onPageLoad(): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
+      Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(request.userAnswers)))
+    }
 
   def fromDashboard(transferId: TransferId): Action[AnyContent] = (identify andThen schemeData).async {
     implicit request =>

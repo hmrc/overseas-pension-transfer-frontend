@@ -41,6 +41,7 @@ class DateOfTransferController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: DateOfTransferFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -100,8 +101,8 @@ class DateOfTransferController @Inject() (
     )
   }
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
       if (isAmend(mode)) {
         dateSubmitted().map { originalDate =>
           val form = amendDateOfTransferFormProvider(originalDate)
@@ -110,9 +111,9 @@ class DateOfTransferController @Inject() (
       } else {
         Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
       }
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       if (isAmend(mode)) {
         dateSubmitted().flatMap { originalDate =>

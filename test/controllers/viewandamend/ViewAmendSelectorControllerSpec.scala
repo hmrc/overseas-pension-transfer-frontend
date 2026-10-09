@@ -112,7 +112,7 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
       "user must be redirected to /amend-submitted-transfer page when lock acquired successfully" in {
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
-        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
+        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(true))
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -131,7 +131,7 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
       "must redirect with lock warning when lock cannot be acquired" in {
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
-        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
+        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(false))
 
         val app     = buildApp
