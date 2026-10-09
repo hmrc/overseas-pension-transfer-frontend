@@ -41,7 +41,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
-trait SessionRepositoryISpec(protected val isEncrypted: Boolean)
+trait SessionRepositorySpec(protected val isEncrypted: Boolean)
     extends AnyFreeSpec
     with Matchers
     with DefaultPlayMongoRepositorySupport[SessionData]
@@ -206,7 +206,7 @@ trait SessionRepositoryISpec(protected val isEncrypted: Boolean)
     }
 }
 
-class SessionRepositoryEncryptionToggledOnISpec extends SessionRepositoryISpec(true) {
+class SessionRepositoryEncryptionToggledOnISpec extends SessionRepositorySpec(true) {
   override protected val repository: SessionRepository =
     new SessionRepository(
       mongoComponent = mongoComponent,
@@ -216,7 +216,7 @@ class SessionRepositoryEncryptionToggledOnISpec extends SessionRepositoryISpec(t
     )
 }
 
-class SessionRepositoryEncryptionToggledOffISpec extends SessionRepositoryISpec(false) {
+class SessionRepositoryEncryptionToggledOffISpec extends SessionRepositorySpec(false) {
   override protected val repository: SessionRepository =
     new SessionRepository(
       mongoComponent = mongoComponent,
