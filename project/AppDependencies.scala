@@ -1,4 +1,5 @@
 import sbt.*
+import sbt.librarymanagement.InclExclRule
 
 object AppDependencies {
 
