@@ -17,10 +17,12 @@
 package controllers
 
 import base.SpecBase
+import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 
@@ -28,11 +30,25 @@ import scala.concurrent.Future
 
 class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
+  private val sessionData = SessionData(
+    "sessionId",
+    userAnswersTransferNumber,
+    PensionSchemeDetails(
+      SrnNumber("12345"),
+      PstrNumber("12345678AB"),
+      "Scheme Name"
+    ),
+    psaUser,
+    Json.obj(),
+    now
+  )
+
   "keepAlive" - {
 
-    "when the user has answered some questions" - {
+    "when the user has session data" - {
 
-      "must keep the answers alive and return OK" in {
+      "must refresh any lock, keep the answers alive and return OK" in {
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
         when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
         when(mockMongoLockRepository.refreshExpiry(any(), any())).thenReturn(Future.successful(true))
         val application =
@@ -47,6 +63,24 @@ class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
           status(result) mustEqual OK
           verify(mockSessionRepository, times(1)).keepAlive(emptyUserAnswers.id.value)
+        }
+      }
+    }
+
+    "when there is no session data in the cache" - {
+      "must redirect to JourneyRecovery" in {
+        when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
+
+        val application =
+          applicationBuilder(emptyUserAnswers)
+            .build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.KeepAliveController.keepAlive().url)
+          val result  = route(application, request).value
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
