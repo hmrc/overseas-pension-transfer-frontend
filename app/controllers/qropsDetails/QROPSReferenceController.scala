@@ -41,6 +41,7 @@ class QROPSReferenceController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: QROPSReferenceFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -53,16 +54,17 @@ class QROPSReferenceController @Inject() (
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.get(QROPSReferencePage) match {
-      case None        => form
-      case Some(value) => form.fill(value.stripPrefix(formProvider.referencePrefix))
-    }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(QROPSReferencePage) match {
+        case None        => form
+        case Some(value) => form.fill(value.stripPrefix(formProvider.referencePrefix))
+      }
 
-    Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       form
         .bindFromRequest()

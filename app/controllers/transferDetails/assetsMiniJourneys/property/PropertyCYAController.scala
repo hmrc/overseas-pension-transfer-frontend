@@ -25,6 +25,7 @@ import com.google.inject.Inject
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertySummary
 import handlers.AssetThresholdHandler
 import controllers.actions.DataRetrievalAction
+import controllers.actions.CheckLockAction
 import controllers.actions.IdentifierAction
 import controllers.actions.SchemeDataAction
 import pages.transferDetails.assetsMiniJourneys.property.PropertyCYAPage
@@ -43,6 +44,7 @@ class PropertyCYAController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   userAnswersService: UserAnswersService,
   val controllerComponents: MessagesControllerComponents,
@@ -52,7 +54,7 @@ class PropertyCYAController @Inject() (
     with I18nSupport
     with AppUtils {
 
-  private val actions = identify andThen schemeData andThen getData
+  private val actions = identify andThen schemeData andThen checkLock andThen getData
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
     val list = SummaryListViewModel(PropertySummary.rows(mode, request.userAnswers, index))

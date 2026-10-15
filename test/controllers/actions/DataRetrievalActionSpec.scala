@@ -22,6 +22,7 @@ import models.responses.UserAnswersErrorResponse
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
+import org.scalatest.Inside
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
@@ -35,7 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar with Inside {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -69,11 +70,11 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val action = new Harness(mockSessionRepository, userAnswersService)
 
-        val futureResult = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
+        val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
-        futureResult.left.map { result =>
-          result.header.status mustBe SEE_OTHER
-          result.header.headers.get("Location") mustBe Some(
+        inside(result) { case Left(r) =>
+          r.header.status mustBe SEE_OTHER
+          r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )
         }
@@ -91,11 +92,11 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val action = new Harness(mockSessionRepository, userAnswersService)
 
-        val futureResult = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
+        val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
-        futureResult.left.map { result =>
-          result.header.status mustBe SEE_OTHER
-          result.header.headers.get("Location") mustBe Some(
+        inside(result) { case Left(r) =>
+          r.header.status mustBe SEE_OTHER
+          r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )
         }
@@ -114,7 +115,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
-        result.map { displayRequest =>
+        inside(result) { case Right(displayRequest) =>
           displayRequest.userAnswers mustBe emptyUserAnswers
         }
       }

@@ -35,6 +35,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: UnquotedSharesConfirmRemovalFormProvider,
   miniJourney: UnquotedSharesMiniJourney.type,
@@ -47,7 +48,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     with I18nSupport {
 
   private val form    = formProvider()
-  private val actions = identify andThen schemeData andThen getData
+  private val actions = identify andThen schemeData andThen checkLock andThen getData
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
     Ok(view(form, index))

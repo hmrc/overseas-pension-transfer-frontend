@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.*
 import models.audit.JourneyStartedType.ContinueTransfer
-import models.authentication.{PsaUser, PspUser}
 import models.requests.SchemeRequest
 import pages.DashboardPage
 import play.api.Logging
@@ -56,8 +55,6 @@ class DashboardController @Inject() (
     extends FrontendBaseController
     with I18nSupport
     with Logging {
-
-  private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
 
   def onPageLoad(page: Int, search: Option[String]): Action[AnyContent] = (identify andThen schemeData).async {
     implicit request =>
@@ -108,8 +105,7 @@ class DashboardController @Inject() (
         allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
         lockAcquired      <- lockService.takeLockWithAudit(
                                transferId,
-                               owner,
-                               lockTtlSeconds,
+                               request.authenticatedUser.owner(),
                                request.authenticatedUser,
                                request.schemeDetails,
                                ContinueTransfer,
@@ -235,11 +231,6 @@ class DashboardController @Inject() (
   private def pageUrl(search: Option[String])(p: Int): String =
     routes.DashboardController.onPageLoad(p, search).url
 
-  private def owner(implicit request: SchemeRequest[AnyContent]): String = request.authenticatedUser match {
-    case PsaUser(psaId, _, _) => psaId.value
-    case PspUser(pspId, _, _) => pspId.value
-  }
-
   private def releaseLocks(
     transfers: Seq[AllTransfersItem]
   )(implicit request: SchemeRequest[AnyContent], ec: ExecutionContext): Future[Unit] =
@@ -249,10 +240,10 @@ class DashboardController @Inject() (
           transfer.transferId match {
             case TransferNumber(transferRef) =>
               logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
-              lockService.releaseLock(transferRef, owner)
+              lockService.releaseLock(transferRef, request.authenticatedUser.owner())
             case QtNumber(qtReference)       =>
               logger.info(s"[DashboardController][onPageLoad] lock released for $qtReference")
-              lockService.releaseLock(qtReference, owner)
+              lockService.releaseLock(qtReference, request.authenticatedUser.owner())
           }
         }
       }

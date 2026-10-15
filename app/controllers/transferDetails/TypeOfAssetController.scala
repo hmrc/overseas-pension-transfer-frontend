@@ -46,6 +46,7 @@ class TypeOfAssetController @Inject() (
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: TypeOfAssetFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -57,19 +58,20 @@ class TypeOfAssetController @Inject() (
 
   val form: Form[Seq[TypeOfAsset]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
-      case None        =>
-        form
-      case Some(value) =>
-        form.fill(value)
-    }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
+        case None        =>
+          form
+        case Some(value) =>
+          form.fill(value)
+      }
 
-    Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData).async { implicit request =>
+    (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
       form
         .bindFromRequest()
         .fold(

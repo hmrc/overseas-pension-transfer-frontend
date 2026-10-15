@@ -47,6 +47,7 @@ class PsaDeclarationController @Inject() (
   userAnswersService: UserAnswersService,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: PsaDeclarationView,
@@ -58,11 +59,12 @@ class PsaDeclarationController @Inject() (
     with I18nSupport
     with Logging {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    Ok(view(mode))
-  }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
+      Ok(view(mode))
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       (for {
         submissionResponse   <-

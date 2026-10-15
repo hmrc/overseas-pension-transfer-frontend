@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
+import controllers.actions._
 import controllers.helpers.ErrorHandling
 import models.{AmendCheckMode, CheckMode}
 import pages.transferDetails.TransferDetailsSummaryPage
@@ -32,6 +32,7 @@ class TransferDetailsCYAController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: TransferDetailsCYAView
@@ -39,15 +40,17 @@ class TransferDetailsCYAController @Inject() (
     with I18nSupport
     with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val list = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, request.userAnswers))
-    Ok(view(list))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val list = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, request.userAnswers))
+      Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val isAmendJourney =
-      (request.sessionData.data \ "versionNumber").isDefined || (request.sessionData.data \ "receiptDate").isDefined
-    val mode           = if (isAmendJourney) AmendCheckMode else CheckMode
-    Redirect(TransferDetailsSummaryPage.nextPage(mode, request.userAnswers))
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val isAmendJourney =
+        (request.sessionData.data \ "versionNumber").isDefined || (request.sessionData.data \ "receiptDate").isDefined
+      val mode           = if (isAmendJourney) AmendCheckMode else CheckMode
+      Redirect(TransferDetailsSummaryPage.nextPage(mode, request.userAnswers))
   }
 }

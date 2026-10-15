@@ -49,6 +49,7 @@ class QROPSAddressController @Inject() (
   identify: IdentifierAction,
   schemeData: SchemeDataAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   formProvider: QROPSAddressFormProvider,
   countryService: CountryService,
   addressService: AddressService,
@@ -64,15 +65,16 @@ class QROPSAddressController @Inject() (
 
   private def form(): Form[QROPSAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
-      case None          => form()
-      case Some(address) => form().fill(QROPSAddressFormData.fromDomain(address))
-    }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
+        case None          => form()
+        case Some(address) => form().fill(QROPSAddressFormData.fromDomain(address))
+      }
 
-    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
-    Ok(view(preparedForm, countrySelectViewModel, mode))
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
   private def renderErrorPage(formWithErrors: Form[QROPSAddressFormData], mode: Mode)(implicit
@@ -82,7 +84,7 @@ class QROPSAddressController @Inject() (
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       val boundForm = form().bindFromRequest()
 

@@ -41,6 +41,7 @@ class QROPSNameController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: QROPSNameFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -54,7 +55,7 @@ class QROPSNameController @Inject() (
   val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData) { implicit request =>
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
       val preparedForm = request.userAnswers.get(QROPSNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -63,7 +64,7 @@ class QROPSNameController @Inject() (
       Ok(view(preparedForm, mode))
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       form
         .bindFromRequest()

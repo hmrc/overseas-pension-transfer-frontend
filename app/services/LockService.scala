@@ -19,9 +19,8 @@ package services
 import models.authentication.AuthenticatedUser
 import models.audit.JourneyStartedType
 import models.audit.ReportStartedAuditModel
-import org.mongodb.scala.result.DeleteResult
 import play.api.Logging
-import repositories.EnhancedLockRepository
+import repositories.ExpiringMongoLockRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import models.AllTransfersItem
 import models.PensionSchemeDetails
@@ -30,14 +29,12 @@ import models.audit.JourneyStartedType.StartJourneyFailed
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.concurrent.duration._
-
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LockService @Inject() (
-  lockRepository: EnhancedLockRepository,
+  lockRepository: ExpiringMongoLockRepository,
   auditService: AuditService
 )(implicit ec: ExecutionContext)
     extends Logging {
@@ -45,14 +42,13 @@ class LockService @Inject() (
   def takeLockWithAudit(
     transferId: TransferId,
     owner: String,
-    ttlSeconds: Long,
     authenticatedUser: AuthenticatedUser,
     schemeDetails: PensionSchemeDetails,
     journeyType: JourneyStartedType,
     allTransfersItem: Option[AllTransfersItem]
   )(implicit hc: HeaderCarrier): Future[Boolean] =
 
-    lockRepository.takeLock(transferId.value, owner, ttlSeconds.seconds).flatMap {
+    lockRepository.takeLock(transferId.value, owner).flatMap {
       case Some(_) =>
         logger.info(s"[LockService] Lock acquired for ${transferId.value} by $owner")
         auditService.audit(
@@ -82,15 +78,9 @@ class LockService @Inject() (
         Future.successful(false)
     }
 
-  def takeLock(lockId: String, owner: String, ttlSeconds: Long): Future[Boolean] =
-    lockRepository.takeLock(lockId, owner, ttlSeconds.seconds).map(_.isDefined)
-
   def releaseLock(lockId: String, owner: String): Future[Unit] =
     lockRepository.releaseLock(lockId, owner)
 
   def isLocked(lockId: String, owner: String): Future[Boolean] =
     lockRepository.isLocked(lockId, owner)
-
-  def removeAllExpiredLocks(): Future[DeleteResult] = lockRepository.removeAllExpiredLocks()
-
 }

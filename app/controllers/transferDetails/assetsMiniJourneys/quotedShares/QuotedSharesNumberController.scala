@@ -40,6 +40,7 @@ class QuotedSharesNumberController @Inject() (
   userAnswersService: UserAnswersService,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   formProvider: QuotedSharesNumberFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -50,18 +51,18 @@ class QuotedSharesNumberController @Inject() (
 
   val form: Form[Int] = formProvider()
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
       val preparedForm = request.userAnswers.get(QuotedSharesNumberPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, index))
-  }
+    }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
       form
         .bindFromRequest()
         .fold(
@@ -74,5 +75,5 @@ class QuotedSharesNumberController @Inject() (
 
             } yield Redirect(QuotedSharesNumberPage(index).nextPage(mode, updatedAnswers))
         )
-  }
+    }
 }

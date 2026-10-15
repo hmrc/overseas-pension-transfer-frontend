@@ -25,6 +25,7 @@ import play.api.mvc.MessagesControllerComponents
 import com.google.inject.Inject
 import handlers.AssetThresholdHandler
 import controllers.actions.DataRetrievalAction
+import controllers.actions.CheckLockAction
 import controllers.actions.IdentifierAction
 import controllers.actions.SchemeDataAction
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesSummary
@@ -44,6 +45,7 @@ class UnquotedSharesCYAController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   userAnswersService: UserAnswersService,
   val controllerComponents: MessagesControllerComponents,
@@ -54,7 +56,7 @@ class UnquotedSharesCYAController @Inject() (
     with AppUtils
     with Logging {
 
-  private val actions = identify andThen schemeData andThen getData
+  private val actions = identify andThen schemeData andThen checkLock andThen getData
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
     val list = SummaryListViewModel(UnquotedSharesSummary.rows(mode, request.userAnswers, index))

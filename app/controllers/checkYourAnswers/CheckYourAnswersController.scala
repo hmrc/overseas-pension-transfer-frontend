@@ -25,6 +25,7 @@ import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import pages.checkYourAnswers.CheckYourAnswersPage
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import controllers.actions.DataRetrievalAction
+import controllers.actions.CheckLockAction
 import controllers.actions.IdentifierAction
 import controllers.actions.SchemeDataAction
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
@@ -40,31 +41,35 @@ class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-    val transferDetailsSummaryList      =
-      SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-    val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-    val schemeManagerDetailsSummaryList =
-      SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData) {
+    implicit request =>
+      val memberDetailsSummaryList        =
+        SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+      val transferDetailsSummaryList      =
+        SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+      val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+      val schemeManagerDetailsSummaryList =
+        SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, request.userAnswers))
 
-    Ok(
-      view(
-        memberDetailsSummaryList,
-        transferDetailsSummaryList,
-        qropsDetailsSummaryList,
-        schemeManagerDetailsSummaryList
+      Ok(
+        view(
+          memberDetailsSummaryList,
+          transferDetailsSummaryList,
+          qropsDetailsSummaryList,
+          schemeManagerDetailsSummaryList
+        )
       )
-    )
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    Redirect(CheckYourAnswersPage.nextPage(NormalMode, request.userAnswers))
-  }
+  def onSubmit(): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
+      Redirect(CheckYourAnswersPage.nextPage(NormalMode, request.userAnswers))
+    }
 }

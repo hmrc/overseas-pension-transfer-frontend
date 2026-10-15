@@ -19,38 +19,40 @@ package controllers
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.mongo.lock.LockRepository
-import config.FrontendAppConfig
 import controllers.actions.DataRetrievalAction
 import controllers.actions.IdentifierAction
 import controllers.actions.SchemeDataAction
-import repositories.SessionRepository
+import play.api.Logging
+import repositories.{ExpiringMongoLockRepository, SessionRepository}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.DurationLong
-
+import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 
 class KeepAliveController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  appConfig: FrontendAppConfig,
   identify: IdentifierAction,
   getScheme: SchemeDataAction,
   getData: DataRetrievalAction,
   sessionRepository: SessionRepository,
-  lockRepository: LockRepository
+  lockRepository: ExpiringMongoLockRepository
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController {
+    extends FrontendBaseController
+    with Logging {
 
   def keepAlive(): Action[AnyContent] = (identify andThen getScheme andThen getData).async { implicit request =>
-    for {
-      _         <- lockRepository.refreshExpiry(
-                     request.authenticatedUser.internalId,
-                     request.sessionData.transferId.value,
-                     appConfig.dashboardLockTtl.seconds
-                   )
-      keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
-    } yield keepAlive
+    sessionRepository.get(request.authenticatedUser.internalId) flatMap {
+      case Some(value) =>
+        val lockId = value.transferId.value
+        val owner  = request.authenticatedUser.owner()
+
+        for {
+          _         <- lockRepository.refreshExpiry(lockId, owner)
+          keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
+        } yield keepAlive
+      case None        =>
+        logger.error("No Session Data found")
+        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+    }
   }
 }

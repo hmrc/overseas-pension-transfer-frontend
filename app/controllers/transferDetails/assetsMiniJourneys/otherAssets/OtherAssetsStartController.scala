@@ -30,12 +30,14 @@ class OtherAssetsStartController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
+  checkLock: CheckLockAction,
   schemeData: SchemeDataAction,
   view: OtherAssetsStartView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
-    Ok(view(OtherAssetsStartPage.nextPage(mode, request.userAnswers).url))
-  }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
+      Ok(view(OtherAssetsStartPage.nextPage(mode, request.userAnswers).url))
+    }
 }

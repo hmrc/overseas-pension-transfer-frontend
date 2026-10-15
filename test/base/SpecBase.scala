@@ -39,13 +39,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
-import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
+import repositories.{DashboardSessionRepository, ExpiringMongoLockRepository, SessionRepository}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
 import uk.gov.hmrc.mongo.play.PlayMongoModule
-import uk.gov.hmrc.mongo.lock.MongoLockRepository
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
@@ -138,14 +137,11 @@ trait SpecBase
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
-  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
   protected val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
-  protected val mockMongoLockRepository: MongoLockRepository               = mock[MongoLockRepository]
+  protected val mockMongoLockRepository: ExpiringMongoLockRepository       = mock[ExpiringMongoLockRepository]
 
-  override protected def beforeEach(): Unit = {
+  override protected def beforeEach(): Unit =
     reset(mockSessionRepository)
-    reset(mockEnhancedLockRepository)
-  }
 
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
@@ -159,11 +155,11 @@ trait SpecBase
     }
 
     val bindings = Seq(
-      bind[MongoLockRepository].toInstance(mockMongoLockRepository),
+      bind[ExpiringMongoLockRepository].toInstance(mockMongoLockRepository),
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
+      bind[CheckLockAction].toInstance(new FakeCheckLockAction),
       bind[SchemeDataAction].to[FakeSchemeDataAction],
       bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
-      bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
       bind[SessionRepository].to(mockSessionRepository)
     ) :+ identifierActionBinding
 
