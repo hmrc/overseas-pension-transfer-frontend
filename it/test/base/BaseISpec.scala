@@ -83,29 +83,29 @@ trait BaseISpec
 
   val appRouteContext: String = "/report-transfer-qualifying-recognised-overseas-pension-scheme"
 
-  val testInternalId = "internal-test-id"
-  val testPsaId      = PsaId("A2100005")
-  val testPsaUser    = PsaUser(testPsaId, testInternalId, AffinityGroup.Individual)
-  val testNino       = "AA123456A"
+  protected val testInternalId = "internal-test-id"
+  protected val testPsaId      = PsaId("A2100005")
+  protected val testPsaUser    = PsaUser(testPsaId, testInternalId, AffinityGroup.Individual)
+  protected val testNino       = "AA123456A"
 
-  val srnNumber         = SrnNumber("222222222")
-  val schemeName        = "Smith Harper Pension Scheme"
-  val pstrNumber        = PstrNumber("24000001IN")
-  val testSchemeDetails = PensionSchemeDetails(srnNumber, pstrNumber, schemeName)
+  protected val srnNumber         = SrnNumber("222222222")
+  protected val schemeName        = "Smith Harper Pension Scheme"
+  protected val pstrNumber        = PstrNumber("24000001IN")
+  protected val testSchemeDetails = PensionSchemeDetails(srnNumber, pstrNumber, schemeName)
 
-  val testTransferId = TransferNumber(UUID.randomUUID().toString)
-  val testQtNumber   = QtNumber("QT564321")
-  val testMemberName = PersonName("Margaret", "Thompson")
+  protected val testTransferId = TransferNumber(UUID.randomUUID().toString)
+  protected val testQtNumber   = QtNumber("QT564321")
+  protected val testMemberName = PersonName("Margaret", "Thompson")
 
-  val testUserAnswers: UserAnswers =
+  protected val testUserAnswers: UserAnswers =
     UserAnswers(testTransferId, pstrNumber, Json.obj(), now).set(MemberNamePage, testMemberName).success.value
 
-  val testUserAnswerData: JsObject = testUserAnswers.data
+  protected val testUserAnswerData: JsObject = testUserAnswers.data
 
-  val testDashboardData: DashboardData =
+  protected val testDashboardData: DashboardData =
     DashboardData(testInternalId, Json.obj(), now).set(PensionSchemeDetailsQuery, testSchemeDetails).success.value
 
-  val testSessionData = SessionData(
+  protected val testSessionData = SessionData(
     testInternalId,
     testTransferId,
     testSchemeDetails,
@@ -114,12 +114,12 @@ trait BaseISpec
     now
   )
 
-  val dashBoardSessionRepository: DashboardSessionRepository = app.injector.instanceOf[DashboardSessionRepository]
-  val sessionRepository: SessionRepository                   = app.injector.instanceOf[SessionRepository]
+  protected val dashBoardSessionRepository: DashboardSessionRepository = app.injector.instanceOf[DashboardSessionRepository]
+  protected val sessionRepository: SessionRepository                   = app.injector.instanceOf[SessionRepository]
 
-  val authSession: (String, String) = "authToken" -> "Bearer-token-test"
+  protected val authSession: (String, String) = "authToken" -> "Bearer-token-test"
 
-  val minimalDetails: MinimalDetails =
+  protected  val minimalDetails: MinimalDetails =
     MinimalDetails(
       email = "test.user@example.com",
       isPsaSuspended = false,
@@ -135,7 +135,7 @@ trait BaseISpec
       deceasedFlag = false
     )
 
-  val emailRequest: EmailToSendRequest =
+  protected val emailRequest: EmailToSendRequest =
     EmailToSendRequest(
       to = List("test.user@example.com"),
       templateId = "submitted-confirmation-template",
