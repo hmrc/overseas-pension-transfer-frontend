@@ -18,35 +18,18 @@ package connectors
 
 import base.BaseISpec
 import models.authentication.{PsaId, PspId}
-import models.{IndividualDetails, MinimalDetails}
+import models.MinimalDetails
 import play.api.libs.json.Json
-import play.api.test.Injecting
 import stubs.MinimalDetailsStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MinimalDetailsConnectorISpec extends BaseISpec with Injecting {
+class MinimalDetailsConnectorISpec extends BaseISpec {
 
-  val connector: MinimalDetailsConnector = inject[MinimalDetailsConnector]
+  val connector: MinimalDetailsConnector = app.injector.instanceOf[MinimalDetailsConnector]
 
   private val psaId = PsaId("A2100005")
   private val pspId = PspId("21000005")
-
-  val minimalDetails: MinimalDetails =
-    MinimalDetails(
-      email = "test.user@example.com",
-      isPsaSuspended = false,
-      organisationName = None,
-      individualDetails = Some(
-        IndividualDetails(
-          firstName = "Test",
-          middleName = Some("Middle"),
-          lastName = "User"
-        )
-      ),
-      rlsFlag = false,
-      deceasedFlag = false
-    )
 
   "MinimalDetailsConnector.fetch" when {
     "fetching minimal details" must {

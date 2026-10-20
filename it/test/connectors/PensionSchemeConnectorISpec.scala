@@ -22,13 +22,12 @@ import models.responses.{PensionSchemeErrorResponse, PensionSchemeNotAssociated}
 import models.{PensionSchemeResponse, PstrNumber}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.Json
-import play.api.test.Injecting
 import stubs.PensionSchemeStub
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
-class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
+class PensionSchemeConnectorISpec extends BaseISpec {
 
-  val connector: PensionSchemeConnector = inject[PensionSchemeConnector]
+  val connector: PensionSchemeConnector = app.injector.instanceOf[PensionSchemeConnector]
 
   val srn: String      = "S2400000040"
   val pstr: String     = "24000040IN"
