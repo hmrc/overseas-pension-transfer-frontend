@@ -26,14 +26,13 @@ import models.{PstrNumber, QtNumber, SrnNumber, TransferNumber}
 import org.apache.pekko.Done
 import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsString, Json}
-import play.api.test.Injecting
 import stubs.TransferBackendStub
 
 import java.time.Instant
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UserAnswersConnectorISpec extends BaseISpec with Injecting {
+class UserAnswersConnectorISpec extends BaseISpec {
 
   private val transferId     = TransferNumber(UUID.randomUUID().toString)
   private val pstr           = PstrNumber("12345678AB")
@@ -42,7 +41,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     UserAnswersDTO(QtNumber("QT975310"), pstr, JsObject(Map("field" -> JsString("value"))), now)
   private val submissionDTO  = PspSubmissionDTO(transferId, Psp, PspId("X1234567"), PsaId("a1234567"), now)
 
-  val connector: UserAnswersConnector = inject[UserAnswersConnector]
+  val connector: UserAnswersConnector = app.injector.instanceOf[UserAnswersConnector]
 
   "getAnswers" should {
     "return UserAnswersSuccessResponse when 200 returned with UserAnswers payload" in {

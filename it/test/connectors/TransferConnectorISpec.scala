@@ -22,15 +22,14 @@ import models.QtStatus.Submitted
 import models.responses.*
 import models.{PstrNumber, QtNumber, SrnNumber}
 import org.scalatest.OptionValues
-import play.api.test.Injecting
 import stubs.TransferBackendStub
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues {
+class TransferConnectorISpec extends BaseISpec with OptionValues {
 
-  private val connector: TransferConnector = inject[TransferConnector]
+  private val connector: TransferConnector = app.injector.instanceOf[TransferConnector]
 
   private val pstr = PstrNumber("12345678AB")
   private val srn  = SrnNumber("1234567890")

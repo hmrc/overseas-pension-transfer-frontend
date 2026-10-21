@@ -16,16 +16,26 @@
 
 package base
 
+import models.authentication.{PsaId, PsaUser}
+import models.email.{EmailToSendRequest, SubmissionConfirmation}
+import models.{DashboardData, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import pages.memberDetails.MemberNamePage
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsObject, Json}
 import play.api.{Application, Environment, Mode}
+import queries.PensionSchemeDetailsQuery
+import repositories.{DashboardSessionRepository, SessionRepository}
+import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
 import java.time.{Clock, Instant, ZoneId}
+import java.util.UUID
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable}
 import scala.util.Random
@@ -72,6 +82,71 @@ trait BaseISpec
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val appRouteContext: String = "/report-transfer-qualifying-recognised-overseas-pension-scheme"
+
+  protected val testInternalId = "internal-test-id"
+  protected val testPsaId      = PsaId("A2100005")
+  protected val testPsaUser    = PsaUser(testPsaId, testInternalId, AffinityGroup.Individual)
+  protected val testNino       = "AA123456A"
+
+  protected val srnNumber         = SrnNumber("222222222")
+  protected val schemeName        = "Smith Harper Pension Scheme"
+  protected val pstrNumber        = PstrNumber("24000001IN")
+  protected val testSchemeDetails = PensionSchemeDetails(srnNumber, pstrNumber, schemeName)
+
+  protected val testTransferId = TransferNumber(UUID.randomUUID().toString)
+  protected val testQtNumber   = QtNumber("QT564321")
+  protected val testMemberName = PersonName("Margaret", "Thompson")
+
+  protected val testUserAnswers: UserAnswers =
+    UserAnswers(testTransferId, pstrNumber, Json.obj(), now).set(MemberNamePage, testMemberName).success.value
+
+  protected val testUserAnswerData: JsObject = testUserAnswers.data
+
+  protected val testDashboardData: DashboardData =
+    DashboardData(testInternalId, Json.obj(), now).set(PensionSchemeDetailsQuery, testSchemeDetails).success.value
+
+  protected val testSessionData = SessionData(
+    testInternalId,
+    testTransferId,
+    testSchemeDetails,
+    testPsaUser,
+    Json.obj(),
+    now
+  )
+
+  protected val dashBoardSessionRepository: DashboardSessionRepository = app.injector.instanceOf[DashboardSessionRepository]
+  protected val sessionRepository: SessionRepository                   = app.injector.instanceOf[SessionRepository]
+
+  protected val authSession: (String, String) = "authToken" -> "Bearer-token-test"
+
+  protected  val minimalDetails: MinimalDetails =
+    MinimalDetails(
+      email = "test.user@example.com",
+      isPsaSuspended = false,
+      organisationName = None,
+      individualDetails = Some(
+        IndividualDetails(
+          firstName = "Test",
+          middleName = Some("Middle"),
+          lastName = "User"
+        )
+      ),
+      rlsFlag = false,
+      deceasedFlag = false
+    )
+
+  protected val emailRequest: EmailToSendRequest =
+    EmailToSendRequest(
+      to = List("test.user@example.com"),
+      templateId = "submitted-confirmation-template",
+      parameters = SubmissionConfirmation(
+        qtReference = "QT123456",
+        memberName = "Foo Bar",
+        submitter = "David Frost",
+        submissionDate = "3 October 2025 at 3:00pm",
+        pensionSchemeName = "Smith Harper Pension Scheme"
+      )
+    )
 
   override def beforeAll(): Unit = {
     super.beforeAll()

@@ -20,27 +20,13 @@ import base.BaseISpec
 import models.email.*
 import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, UNAUTHORIZED}
 import play.api.libs.json.Json
-import play.api.test.Injecting
 import stubs.EmailStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EmailConnectorISpec extends BaseISpec with Injecting {
+class EmailConnectorISpec extends BaseISpec {
 
-  val connector: EmailConnector = inject[EmailConnector]
-
-  private val emailRequest: EmailToSendRequest =
-    EmailToSendRequest(
-      to = List("test.user@example.com"),
-      templateId = "submitted-confirmation-template",
-      parameters = SubmissionConfirmation(
-        qtReference = "QT123456",
-        memberName = "Foo Bar",
-        submitter = "David Frost",
-        submissionDate = "3 October 2025 at 3:00pm",
-        pensionSchemeName = "Smith Harper Pension Scheme"
-      )
-    )
+  val connector: EmailConnector = app.injector.instanceOf[EmailConnector]
 
   "EmailConnector.send" when {
 
