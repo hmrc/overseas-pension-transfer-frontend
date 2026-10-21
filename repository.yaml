@@ -5,3 +5,4 @@ tags: []
 test-repositories:
   - overseas-pension-transfer-ui-tests
   - overseas-pension-transfer-performance-tests
+serviceNowMapping: SNSVC0021040
