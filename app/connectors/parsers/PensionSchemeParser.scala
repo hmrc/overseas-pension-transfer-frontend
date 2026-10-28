@@ -16,18 +16,14 @@
 
 package connectors.parsers
 
-import models.authentication.PsaId
-import models.responses.PensionSchemeError
-import models.responses.PensionSchemeErrorResponse
-import models.responses.PensionSchemeNotAssociated
-import utils.DownstreamLogging
 import models.PensionSchemeResponse
+import models.authentication.PsaId
+import models.responses.{PensionSchemeError, PensionSchemeErrorResponse, PensionSchemeNotAssociated}
 import play.api.Logging
-import play.api.libs.json._
-import play.api.http.Status.NOT_FOUND
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.HttpReads
-import uk.gov.hmrc.http.HttpResponse
+import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.libs.json.*
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import utils.DownstreamLogging
 
 object PensionSchemeParser {
   type PensionSchemeDetailsType = Either[PensionSchemeError, PensionSchemeResponse]
@@ -96,13 +92,25 @@ object PensionSchemeParser {
               logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[PensionSchemeConnector][getAuthorisingPsaId]", response)
+              val formatted  = formatJsonErrors(errors)
+              val errMessage = getErrorMessage(response)
+              logger.error(s"Downstream failure: $errMessage body=${response.body}")
               logger.warn(
                 s"Unable to parse Json as PensionSchemeErrorResponse: $formatted"
-              )
-              Left(PensionSchemeErrorResponse(err.message, Some(err.body)))
+              ) // TODO: Do we need this warning?
+              Left(PensionSchemeErrorResponse(errMessage, Some(response.body)))
           }
       }
+  }
+
+  private def getErrorMessage(response: HttpResponse): String = {
+    def correlationFromResponse(response: HttpResponse): Option[String] =
+      response
+        .header("X-Request-ID")
+        .orElse(response.header("X-Correlation-ID"))
+    val correlationId                                                   = correlationFromResponse(response).getOrElse("-")
+    val reason                                                          = response.header("Status").getOrElse("Unknown")
+    val status                                                          = response.status
+    s"$status $reason (correlationId=$correlationId)"
   }
 }
