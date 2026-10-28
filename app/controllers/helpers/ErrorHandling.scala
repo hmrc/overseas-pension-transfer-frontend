@@ -30,7 +30,7 @@ trait ErrorHandling extends Logging {
       .map(hd => (hd.controller, hd.method))
       .getOrElse(("UnknownController", "UnknownMethod"))
 
-    logger.warn(s"[$controller.$method] downstream persistence error: $err")
+    logger.warn(s"downstream persistence error: $err")
     Results.Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
   }
 }

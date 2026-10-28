@@ -41,7 +41,7 @@ object TransferParser {
               val (valid, notValid) = dto.transfers.partition(_.isValid)
               if (notValid.nonEmpty) {
                 logger.warn(
-                  s"[TransferConnector][getAllTransfers] Dropping ${notValid.size} " +
+                  s"Dropping ${notValid.size} " +
                     s"invalid transfer items (must have exactly one of submissionDate or lastUpdated)."
                 )
               }
@@ -49,18 +49,18 @@ object TransferParser {
             case JsError(errors)   =>
               val formatted = formatJsonErrors(errors)
               logger.warn(
-                s"[TransferConnector][getAllTransfers] Unable to parse Json as GetAllTransfersDTO: $formatted"
+                s"Unable to parse Json as GetAllTransfersDTO: $formatted"
               )
               Left(AllTransfersUnexpectedError("Unable to parse Json as GetAllTransfersDTO", Some(formatted)))
           }
         case NOT_FOUND             =>
-          logger.warn("[TransferConnector][getAllTransfers] No record was found")
+          logger.warn("No record was found")
           Left(NoTransfersFound)
         case INTERNAL_SERVER_ERROR =>
-          logger.warn("[TransferConnector][getAllTransfers] Something went wrong, see backend logs")
+          logger.warn("Something went wrong, see backend logs")
           Left(InternalServerError)
         case statusCode            =>
-          logger.warn(s"[TransferConnector][getAllTransfers] Unexpected status code return: $statusCode")
+          logger.warn(s"Unexpected status code return: $statusCode")
           Left(AllTransfersUnexpectedError(s"Unexpected status code returned from backend: $statusCode", None))
       }
   }

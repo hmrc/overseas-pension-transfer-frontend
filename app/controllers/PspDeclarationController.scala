@@ -93,7 +93,7 @@ class PspDeclarationController @Inject() (
                     val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
                     BadRequest(view(formWithError, mode))
                   case e                                      =>
-                    logger.warn(s"[PspDeclarationController][onSubmit] Failed to submit declaration: $e")
+                    logger.warn(s"Failed to submit declaration: $e")
                     Redirect(PspDeclarationPage.nextPageRecovery())
                 }
               updateWithQTNumberSD    <-
@@ -110,7 +110,7 @@ class PspDeclarationController @Inject() (
               pspId                    = request.authenticatedUser.asInstanceOf[PspUser].pspId
               minimalDetails          <- EitherT(minimalDetailsConnector.fetch(pspId)).leftMap { e =>
                                            logger.warn(
-                                             s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for pspId=${pspId.value}: $e"
+                                             s"Failed to fetch minimal details for pspId=${pspId.value}: $e"
                                            )
                                            Redirect(PspDeclarationPage.nextPageRecovery())
                                          }

@@ -48,26 +48,26 @@ object UserAnswersParser {
                 case JsSuccess(value, _) => Right(value)
                 case JsError(errors)     =>
                   val formatted = formatJsonErrors(errors)
-                  logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: $formatted")
+                  logger.warn(s"Unable to parse Json as UserAnswersDTO: $formatted")
                   Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some(formatted)))
               }
             case None       =>
-              logger.warn("[UserAnswersConnector][getAnswers] Empty response body")
+              logger.warn("Empty response body")
               Left(UserAnswersErrorResponse("Empty response body", None))
           }
         case NOT_FOUND  =>
-          logger.warn("[UserAnswersConnector][getAnswers] No record was found in save for later}")
+          logger.warn("No record was found in save for later}")
           Left(UserAnswersNotFoundResponse)
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[UserAnswersConnector][getAnswers] Downstream error $statusCode: ${value.error}")
+              logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               val err       = logBackendError("[UserAnswersConnector][getAnswers]", response)
               logger.warn(
-                s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted"
+                s"Unable to parse Json as UserAnswersErrorResponse: $formatted"
               )
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
@@ -82,13 +82,13 @@ object UserAnswersParser {
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[UserAnswersConnector][putAnswers] Downstream error $statusCode: ${value.error}")
+              logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               val err       = logBackendError("[UserAnswersConnector][putAnswers]", response)
               logger.warn(
-                s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted"
+                s"Unable to parse Json as UserAnswersErrorResponse: $formatted"
               )
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
@@ -105,20 +105,20 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               logger.warn(
-                s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: $formatted"
+                s"Unable to parse Json as SubmissionResponse: $formatted"
               )
               Left(SubmissionErrorResponse("Unable to parse Json as SubmissionResponse", Some(formatted)))
           }
         case statusCode =>
           response.json.validate[SubmissionErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[SubmissionConnector][postSubmission] Downstream error $statusCode: ${value.error}")
+              logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               val err       = logBackendError("[SubmissionConnector][postSubmission]", response)
               logger.warn(
-                s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionErrorResponse: $formatted"
+                s"Unable to parse Json as SubmissionErrorResponse: $formatted"
               )
               Left(SubmissionErrorResponse(err.message, Some(err.body)))
           }
@@ -138,12 +138,12 @@ object UserAnswersParser {
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
               logger.warn(
-                s"[UserAnswersConnector][deleteAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}"
+                s"Error returned: downstreamStatus: $statusCode, error: ${value.error}"
               )
               Left(value)
             case JsError(errors)     =>
               logger.warn(
-                s"[UserAnswersConnector][deleteAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}"
+                s"Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}"
               )
               Left(
                 UserAnswersErrorResponse(
