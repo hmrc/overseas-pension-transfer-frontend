@@ -34,7 +34,6 @@ package utils
 
 import controllers.helpers.ErrorHandling
 import controllers.routes
-import models.BackendError
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.typedmap.TypedMap
@@ -60,9 +59,9 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "DownstreamLogging" should {
+  "getDownstreamErrorMessage" should {
 
-    "build BackendError with correlation ID from response" in {
+    "build error message with correlation ID from response" in {
       val response = HttpResponse(
         status = INTERNAL_SERVER_ERROR,
         body = "boom",
@@ -72,11 +71,8 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
         )
       )
 
-      val err = TestLogging.logBackendError("TestOrigin", response)
-
-      err mustBe BackendError("corr-123", INTERNAL_SERVER_ERROR, "InternalServerError", "TestOrigin", "boom")
-      err.message must include("TestOrigin")
-      err.message must include("corr-123")
+      val err = DownstreamLogging.getDownstreamErrorMessage(response)
+      err mustBe "500 InternalServerError (correlationId=corr-123)"
     }
 
     "fallback to '-' correlation ID if none found" in {
@@ -86,11 +82,9 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
         headers = Map.empty
       )
 
-      val err = TestLogging.logBackendError("AnotherOrigin", response)
+      val err = DownstreamLogging.getDownstreamErrorMessage(response)
 
-      err.correlationId mustBe "-"
-      err.status mustBe BAD_REQUEST
-      err.reason mustBe "Unknown"
+      err mustBe "400 Unknown (correlationId=-)"
     }
 
     "logNonHttpError returns message with correlation ID from HeaderCarrier" in {

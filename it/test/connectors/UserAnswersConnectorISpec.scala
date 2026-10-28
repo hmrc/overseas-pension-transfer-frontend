@@ -114,7 +114,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         getAnswers shouldBe Left(
           UserAnswersErrorResponse(
-            "[[UserAnswersConnector][getAnswers]] 500 Unknown (correlationId=-)",
+            "500 Unknown (correlationId=-)",
             Some("""{"field": "value"}""")
           )
         )

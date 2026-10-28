@@ -16,6 +16,7 @@
 
 package connectors.parsers
 
+import connectors.parsers.PensionSchemeParser.GetAuthorisingPsaIdHttpReads.logger
 import models.PensionSchemeResponse
 import models.authentication.PsaId
 import models.responses.{PensionSchemeError, PensionSchemeErrorResponse, PensionSchemeNotAssociated}
@@ -24,6 +25,7 @@ import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.*
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.DownstreamLogging
+import utils.DownstreamLogging.*
 
 object PensionSchemeParser {
   type PensionSchemeDetailsType = Either[PensionSchemeError, PensionSchemeResponse]
@@ -53,12 +55,13 @@ object PensionSchemeParser {
               logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[PensionSchemeConnector][getSchemeDetails]", response)
+              val formatted  = formatJsonErrors(errors)
+              val errMessage = getDownstreamErrorMessage(response)
+              logger.error(s"Downstream failure: $errMessage body=${response.body}")
               logger.warn(
                 s"Unable to parse Json as PensionSchemeErrorResponse: $formatted"
               )
-              Left(PensionSchemeErrorResponse(err.message, Some(err.body)))
+              Left(PensionSchemeErrorResponse(errMessage, Some(response.body)))
           }
       }
   }
@@ -93,24 +96,11 @@ object PensionSchemeParser {
               Left(value)
             case JsError(errors)     =>
               val formatted  = formatJsonErrors(errors)
-              val errMessage = getErrorMessage(response)
+              val errMessage = getDownstreamErrorMessage(response)
               logger.error(s"Downstream failure: $errMessage body=${response.body}")
-              logger.warn(
-                s"Unable to parse Json as PensionSchemeErrorResponse: $formatted"
-              ) // TODO: Do we need this warning?
+              logger.warn(s"Unable to parse Json as PensionSchemeErrorResponse: $formatted")
               Left(PensionSchemeErrorResponse(errMessage, Some(response.body)))
           }
       }
-  }
-
-  private def getErrorMessage(response: HttpResponse): String = {
-    def correlationFromResponse(response: HttpResponse): Option[String] =
-      response
-        .header("X-Request-ID")
-        .orElse(response.header("X-Correlation-ID"))
-    val correlationId                                                   = correlationFromResponse(response).getOrElse("-")
-    val reason                                                          = response.header("Status").getOrElse("Unknown")
-    val status                                                          = response.status
-    s"$status $reason (correlationId=$correlationId)"
   }
 }

@@ -16,18 +16,16 @@
 
 package connectors.parsers
 
-import models.responses._
-import utils.DownstreamLogging
+import connectors.parsers.UserAnswersParser.GetUserAnswersHttpReads.logger
 import models.dtos.UserAnswersDTO
+import models.responses.*
 import org.apache.pekko.Done
 import play.api.Logging
-import play.api.libs.json.JsError
-import play.api.libs.json.JsSuccess
-import play.api.http.Status.NOT_FOUND
-import play.api.http.Status.NO_CONTENT
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.HttpReads
-import uk.gov.hmrc.http.HttpResponse
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
+import play.api.libs.json.{JsError, JsSuccess}
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import utils.DownstreamLogging
+import utils.DownstreamLogging.getDownstreamErrorMessage
 
 import scala.util.Try
 
@@ -64,12 +62,13 @@ object UserAnswersParser {
               logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[UserAnswersConnector][getAnswers]", response)
+              val formatted  = formatJsonErrors(errors)
+              val errMessage = getDownstreamErrorMessage(response)
+              logger.error(s"Downstream failure: $errMessage body=${response.body}")
               logger.warn(
                 s"Unable to parse Json as UserAnswersErrorResponse: $formatted"
               )
-              Left(UserAnswersErrorResponse(err.message, Some(err.body)))
+              Left(UserAnswersErrorResponse(errMessage, Some(response.body)))
           }
       }
   }
@@ -85,12 +84,13 @@ object UserAnswersParser {
               logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[UserAnswersConnector][putAnswers]", response)
+              val formatted  = formatJsonErrors(errors)
+              val errMessage = getDownstreamErrorMessage(response)
+              logger.error(s"Downstream failure: $errMessage body=${response.body}")
               logger.warn(
                 s"Unable to parse Json as UserAnswersErrorResponse: $formatted"
               )
-              Left(UserAnswersErrorResponse(err.message, Some(err.body)))
+              Left(UserAnswersErrorResponse(errMessage, Some(response.body)))
           }
       }
   }
@@ -115,12 +115,13 @@ object UserAnswersParser {
               logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[SubmissionConnector][postSubmission]", response)
+              val formatted  = formatJsonErrors(errors)
+              val errMessage = getDownstreamErrorMessage(response)
+              logger.error(s"Downstream failure: $errMessage body=${response.body}")
               logger.warn(
                 s"Unable to parse Json as SubmissionErrorResponse: $formatted"
               )
-              Left(SubmissionErrorResponse(err.message, Some(err.body)))
+              Left(SubmissionErrorResponse(errMessage, Some(response.body)))
           }
       }
   }
