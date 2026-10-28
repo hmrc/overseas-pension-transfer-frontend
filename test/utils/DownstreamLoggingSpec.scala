@@ -47,8 +47,6 @@ import scala.concurrent.Future
 
 class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
 
-  object TestLogging extends DownstreamLogging
-
   object TestController extends BaseController with ErrorHandling {
 
     override protected def controllerComponents: ControllerComponents =
@@ -60,7 +58,6 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
   }
 
   "getDownstreamErrorMessage" should {
-
     "build error message with correlation ID from response" in {
       val response = HttpResponse(
         status = INTERNAL_SERVER_ERROR,
@@ -86,25 +83,23 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
 
       err mustBe "400 Unknown (correlationId=-)"
     }
+  }
+  "getNonHttpErrorMessage"    should {
 
-    "logNonHttpError returns message with correlation ID from HeaderCarrier" in {
+    "return message with correlation ID from HeaderCarrier" in {
       implicit val hc: HeaderCarrier = HeaderCarrier(requestId = Some(RequestId("req-999")))
       val ex                         = new RuntimeException("db down")
 
-      val message = TestLogging.logNonHttpError("DBService", hc, ex)
-
-      message must include("DBService")
+      val message = DownstreamLogging.getNonHttpErrorMessage(hc, ex)
       message must include("req-999")
       message must include("db down")
     }
 
-    "logNonHttpError falls back to '-' if no correlation ID" in {
+    "fall back to '-' if no correlation ID" in {
       implicit val hc: HeaderCarrier = HeaderCarrier()
       val ex                         = new IllegalStateException("oops")
 
-      val message = TestLogging.logNonHttpError("NoCorrService", hc, ex)
-
-      message must include("NoCorrService")
+      val message = DownstreamLogging.getNonHttpErrorMessage(hc, ex)
       message must include("correlationId=-")
       message must include("oops")
     }

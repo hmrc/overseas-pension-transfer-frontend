@@ -16,22 +16,18 @@
 
 package connectors.parsers
 
-import models.responses._
-import utils.DownstreamLogging
 import models.dtos.GetAllTransfersDTO
+import models.responses.*
 import play.api.Logging
-import play.api.libs.json.JsError
-import play.api.libs.json.JsSuccess
-import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.http.Status.NOT_FOUND
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.HttpReads
-import uk.gov.hmrc.http.HttpResponse
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
+import play.api.libs.json.{JsError, JsSuccess}
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import utils.DownstreamLogging.formatJsonErrors
 
 object TransferParser {
   type GetAllTransfersType = Either[TransferError, GetAllTransfersDTO]
 
-  implicit object GetAllTransfersHttpReads extends HttpReads[GetAllTransfersType] with Logging with DownstreamLogging {
+  implicit object GetAllTransfersHttpReads extends HttpReads[GetAllTransfersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): GetAllTransfersType =
       response.status match {

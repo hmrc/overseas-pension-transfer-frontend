@@ -16,34 +16,27 @@
 
 package connectors
 
-import models.responses.SubmissionErrorResponse
-import models.responses.UserAnswersErrorResponse
-import utils.DownstreamLogging
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import config.FrontendAppConfig
-import models.dtos.SubmissionDTO
-import models.dtos.UserAnswersDTO
-import models._
-import uk.gov.hmrc.http.client.HttpClientV2
+import connectors.parsers.UserAnswersParser.*
+import models.*
+import models.dtos.{SubmissionDTO, UserAnswersDTO}
+import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
 import play.api.Logging
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.api.libs.json.Json
-import connectors.parsers.UserAnswersParser._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.http.StringContextOps
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import utils.DownstreamLogging.getNonHttpErrorMessage
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-
-import javax.inject.Inject
 import java.net.URL
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersConnector @Inject() (
   appConfig: FrontendAppConfig,
   http: HttpClientV2
-) extends Logging
-    with DownstreamLogging {
+) extends Logging {
 
   private def submissionUrl(id: String): URL =
     url"${appConfig.backendService}/submit-declaration/$id"
@@ -58,7 +51,8 @@ class UserAnswersConnector @Inject() (
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetUserAnswersType]
       .recover { case e: Exception =>
-        val errMsg = logNonHttpError("[UserAnswersConnector][getAnswers]", hc, e)
+        val errMsg = getNonHttpErrorMessage(hc, e)
+        logger.error(errMsg, e)
         Left(UserAnswersErrorResponse(errMsg, None))
       }
 
@@ -82,7 +76,8 @@ class UserAnswersConnector @Inject() (
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetUserAnswersType]
       .recover { case e: Exception =>
-        val errMsg = logNonHttpError("[TransferConnector][getSpecificTransfer]", hc, e)
+        val errMsg = getNonHttpErrorMessage(hc, e)
+        logger.error(errMsg, e)
         Left(UserAnswersErrorResponse(errMsg, None))
       }
   }
@@ -97,7 +92,8 @@ class UserAnswersConnector @Inject() (
       .withBody(Json.toJson(userAnswersDTO))
       .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
       .recover { case e: Exception =>
-        val errMsg = logNonHttpError("[UserAnswersConnector][putAnswers]", hc, e)
+        val errMsg = getNonHttpErrorMessage(hc, e)
+        logger.error(errMsg, e)
         Left(UserAnswersErrorResponse(errMsg, None))
       }
 
@@ -111,7 +107,8 @@ class UserAnswersConnector @Inject() (
       .withBody(Json.toJson(submissionDTO))
       .execute[SubmissionType]
       .recover { case e: Exception =>
-        val errMsg = logNonHttpError("[UserAnswersConnector][postSubmission]", hc, e)
+        val errMsg = getNonHttpErrorMessage(hc, e)
+        logger.error(errMsg, e)
         Left(SubmissionErrorResponse(errMsg, None))
       }
 

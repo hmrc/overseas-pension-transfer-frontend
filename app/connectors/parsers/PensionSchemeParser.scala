@@ -24,17 +24,13 @@ import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.*
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import utils.DownstreamLogging
 import utils.DownstreamLogging.*
 
 object PensionSchemeParser {
   type PensionSchemeDetailsType = Either[PensionSchemeError, PensionSchemeResponse]
   type AuthorisingPsaIdType     = Either[PensionSchemeError, PsaId]
 
-  implicit object GetPensionSchemeDetailsHttpReads
-      extends HttpReads[PensionSchemeDetailsType]
-      with Logging
-      with DownstreamLogging {
+  implicit object GetPensionSchemeDetailsHttpReads extends HttpReads[PensionSchemeDetailsType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): PensionSchemeDetailsType =
       response.status match {
@@ -66,10 +62,7 @@ object PensionSchemeParser {
       }
   }
 
-  implicit object GetAuthorisingPsaIdHttpReads
-      extends HttpReads[AuthorisingPsaIdType]
-      with Logging
-      with DownstreamLogging {
+  implicit object GetAuthorisingPsaIdHttpReads extends HttpReads[AuthorisingPsaIdType] with Logging {
 
     private val authorisingPsaIdFromApiReads: Reads[PsaId] =
       (__ \ "pspDetails" \ "authorisingPSAID").read[String].map(PsaId.apply)

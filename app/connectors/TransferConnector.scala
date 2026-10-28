@@ -23,7 +23,7 @@ import models.{PstrNumber, SrnNumber}
 import play.api.Logging
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
-import utils.DownstreamLogging
+import utils.DownstreamLogging.getNonHttpErrorMessage
 
 import java.net.URL
 import javax.inject.Inject
@@ -32,8 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransferConnector @Inject() (
   appConfig: FrontendAppConfig,
   http: HttpClientV2
-) extends Logging
-    with DownstreamLogging {
+) extends Logging {
 
   def getAllTransfers(srnNumber: SrnNumber, pstrNumber: PstrNumber)(implicit
     hc: HeaderCarrier,
@@ -47,7 +46,8 @@ class TransferConnector @Inject() (
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetAllTransfersType]
       .recover { case e: Exception =>
-        val errMsg = logNonHttpError("[TransferConnector][getAllTransfers]", hc, e)
+        val errMsg = getNonHttpErrorMessage(hc, e)
+        logger.error(errMsg, e)
         Left(AllTransfersUnexpectedError(errMsg, None))
       }
   }

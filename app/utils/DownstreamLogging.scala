@@ -16,32 +16,15 @@
 
 package utils
 
-import play.api.Logging
 import play.api.libs.json.{JsPath, JsonValidationError}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-trait DownstreamLogging extends Logging {
-
+object DownstreamLogging {
   val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
     errors =>
       errors.map(_._1.toString()).mkString(" | ")
   }
-
-  private def correlationFromHeaderCarrier(hc: HeaderCarrier): Option[String] =
-    hc.requestId.map(_.value)
-
-  /** Log an exception (network / mongo / timeouts etc) and produce a simple message */
-  def logNonHttpError(origin: String, hc: HeaderCarrier, ex: Throwable): String = {
-    val correlationId = correlationFromHeaderCarrier(hc).getOrElse("-")
-    val message       = s"[$origin] non-http-exception (correlationId=$correlationId): ${ex.getMessage}"
-    logger.error(message, ex)
-    message
-  }
-
-}
-
-object DownstreamLogging {
-  def getDownstreamErrorMessage(response: HttpResponse): String = {
+  def getDownstreamErrorMessage(response: HttpResponse): String                                             = {
     def correlationFromResponse(response: HttpResponse): Option[String] =
       response
         .header("X-Request-ID")
@@ -50,5 +33,13 @@ object DownstreamLogging {
     val reason                                                          = response.header("Status").getOrElse("Unknown")
     val status                                                          = response.status
     s"$status $reason (correlationId=$correlationId)"
+  }
+
+  private def correlationFromHeaderCarrier(hc: HeaderCarrier): Option[String] =
+    hc.requestId.map(_.value)
+
+  def getNonHttpErrorMessage(hc: HeaderCarrier, ex: Throwable): String = {
+    val correlationId = correlationFromHeaderCarrier(hc).getOrElse("-")
+    s"non-http-exception (correlationId=$correlationId): ${ex.getMessage}"
   }
 }

@@ -24,8 +24,7 @@ import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import utils.DownstreamLogging
-import utils.DownstreamLogging.getDownstreamErrorMessage
+import utils.DownstreamLogging.{formatJsonErrors, getDownstreamErrorMessage}
 
 import scala.util.Try
 
@@ -35,7 +34,7 @@ object UserAnswersParser {
   type SubmissionType        = Either[SubmissionErrorResponse, SubmissionResponse]
   type DeleteUserAnswersType = Either[UserAnswersError, Done]
 
-  implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging with DownstreamLogging {
+  implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
@@ -73,7 +72,7 @@ object UserAnswersParser {
       }
   }
 
-  implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging with DownstreamLogging {
+  implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType =
       response.status match {
@@ -95,7 +94,7 @@ object UserAnswersParser {
       }
   }
 
-  implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging with DownstreamLogging {
+  implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): SubmissionType =
       response.status match {
@@ -126,10 +125,7 @@ object UserAnswersParser {
       }
   }
 
-  implicit object DeleteUserAnswersHttpReads
-      extends HttpReads[DeleteUserAnswersType]
-      with Logging
-      with DownstreamLogging {
+  implicit object DeleteUserAnswersHttpReads extends HttpReads[DeleteUserAnswersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): DeleteUserAnswersType =
       response.status match {
