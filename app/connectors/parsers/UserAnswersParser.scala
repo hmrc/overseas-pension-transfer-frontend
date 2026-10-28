@@ -63,10 +63,7 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted  = formatJsonErrors(errors)
               val errMessage = getDownstreamErrorMessage(response)
-              logger.error(s"Downstream failure: $errMessage body=${response.body}")
-              logger.warn(
-                s"Unable to parse Json as UserAnswersErrorResponse: $formatted"
-              )
+              logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
               Left(UserAnswersErrorResponse(errMessage, Some(response.body)))
           }
       }
@@ -85,10 +82,7 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted  = formatJsonErrors(errors)
               val errMessage = getDownstreamErrorMessage(response)
-              logger.error(s"Downstream failure: $errMessage body=${response.body}")
-              logger.warn(
-                s"Unable to parse Json as UserAnswersErrorResponse: $formatted"
-              )
+              logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
               Left(UserAnswersErrorResponse(errMessage, Some(response.body)))
           }
       }
@@ -116,10 +110,7 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted  = formatJsonErrors(errors)
               val errMessage = getDownstreamErrorMessage(response)
-              logger.error(s"Downstream failure: $errMessage body=${response.body}")
-              logger.warn(
-                s"Unable to parse Json as SubmissionErrorResponse: $formatted"
-              )
+              logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
               Left(SubmissionErrorResponse(errMessage, Some(response.body)))
           }
       }
