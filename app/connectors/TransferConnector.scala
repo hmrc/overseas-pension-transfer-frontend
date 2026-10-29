@@ -23,7 +23,7 @@ import models.{PstrNumber, SrnNumber}
 import play.api.Logging
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
-import utils.DownstreamLogging.getNonHttpErrorMessage
+import utils.DownstreamLogging.withNonHttpErrorMessage
 
 import java.net.URL
 import javax.inject.Inject
@@ -46,9 +46,10 @@ class TransferConnector @Inject() (
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetAllTransfersType]
       .recover { case e: Exception =>
-        val errMsg = getNonHttpErrorMessage(hc, e)
-        logger.error(errMsg, e)
-        Left(AllTransfersUnexpectedError(errMsg, None))
+        withNonHttpErrorMessage(hc, e) { errMsg =>
+          logger.error(errMsg, e)
+          Left(AllTransfersUnexpectedError(errMsg, None))
+        }
       }
   }
 }

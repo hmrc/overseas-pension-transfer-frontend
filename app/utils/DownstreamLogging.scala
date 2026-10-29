@@ -24,16 +24,17 @@ object DownstreamLogging {
     errors =>
       errors.map(_._1.toString()).mkString(" | ")
   }
-  def getDownstreamErrorMessage(response: HttpResponse): String                                             = {
+
+  def withDownstreamErrorMessage[A](response: HttpResponse)(block: String => A): A = {
     val correlationId = correlationFromResponse(response).getOrElse("-")
     val reason        = response.header("Status").getOrElse("Unknown")
     val status        = response.status
-    s"$status $reason (correlationId=$correlationId)"
+    block(s"$status $reason (correlationId=$correlationId)")
   }
 
-  def getNonHttpErrorMessage(hc: HeaderCarrier, ex: Throwable): String = {
+  def withNonHttpErrorMessage[A](hc: HeaderCarrier, ex: Throwable)(block: String => A): A = {
     val correlationId = correlationFromHeaderCarrier(hc).getOrElse("-")
-    s"Non-http-exception (correlationId=$correlationId): ${ex.getMessage}"
+    block(s"Non-http-exception (correlationId=$correlationId): ${ex.getMessage}")
   }
 
   private def correlationFromResponse(response: HttpResponse): Option[String] =

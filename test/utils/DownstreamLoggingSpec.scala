@@ -57,7 +57,7 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "getDownstreamErrorMessage" should {
+  "withDownstreamErrorMessage" should {
     "build error message with correlation ID from response" in {
       val response = HttpResponse(
         status = INTERNAL_SERVER_ERROR,
@@ -68,7 +68,7 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
         )
       )
 
-      val err = DownstreamLogging.getDownstreamErrorMessage(response)
+      val err = DownstreamLogging.withDownstreamErrorMessage(response)(identity)
       err mustBe "500 InternalServerError (correlationId=corr-123)"
     }
 
@@ -79,18 +79,18 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
         headers = Map.empty
       )
 
-      val err = DownstreamLogging.getDownstreamErrorMessage(response)
+      val err = DownstreamLogging.withDownstreamErrorMessage(response)(identity)
 
       err mustBe "400 Unknown (correlationId=-)"
     }
   }
-  "getNonHttpErrorMessage"    should {
+  "getNonHttpErrorMessage"     should {
 
     "return message with correlation ID from HeaderCarrier" in {
       implicit val hc: HeaderCarrier = HeaderCarrier(requestId = Some(RequestId("req-999")))
       val ex                         = new RuntimeException("db down")
 
-      val message = DownstreamLogging.getNonHttpErrorMessage(hc, ex)
+      val message = DownstreamLogging.withNonHttpErrorMessage(hc, ex)(identity)
       message must include("req-999")
       message must include("db down")
     }
@@ -99,7 +99,7 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
       implicit val hc: HeaderCarrier = HeaderCarrier()
       val ex                         = new IllegalStateException("oops")
 
-      val message = DownstreamLogging.getNonHttpErrorMessage(hc, ex)
+      val message = DownstreamLogging.withNonHttpErrorMessage(hc, ex)(identity)
       message must include("correlationId=-")
       message must include("oops")
     }

@@ -25,7 +25,7 @@ import play.api.Logging
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
-import utils.DownstreamLogging.getNonHttpErrorMessage
+import utils.DownstreamLogging.withNonHttpErrorMessage
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -61,9 +61,10 @@ class PensionSchemeConnector @Inject() (
       )
       .execute[AuthorisingPsaIdType]
       .recover { case e: Exception =>
-        val errMsg = getNonHttpErrorMessage(hc, e)
-        logger.error(errMsg, e)
-        Left(PensionSchemeErrorResponse(errMsg, None))
+        withNonHttpErrorMessage(hc, e) { errMsg =>
+          logger.error(errMsg, e)
+          Left(PensionSchemeErrorResponse(errMsg, None))
+        }
       }
   }
 
@@ -83,9 +84,10 @@ class PensionSchemeConnector @Inject() (
       )
       .execute[PensionSchemeDetailsType]
       .recover { case e: Exception =>
-        val errMsg = getNonHttpErrorMessage(hc, e)
-        logger.error(errMsg, e)
-        Left(PensionSchemeErrorResponse(errMsg, None))
+        withNonHttpErrorMessage(hc, e) { errMsg =>
+          logger.error(errMsg, e)
+          Left(PensionSchemeErrorResponse(errMsg, None))
+        }
       }
   }
 }

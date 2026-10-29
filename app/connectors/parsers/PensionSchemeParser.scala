@@ -51,10 +51,11 @@ object PensionSchemeParser {
               logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted  = formatJsonErrors(errors)
-              val errMessage = getDownstreamErrorMessage(response)
-              logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
-              Left(PensionSchemeErrorResponse(errMessage, Some(response.body)))
+              withDownstreamErrorMessage(response) { errMessage =>
+                val formatted = formatJsonErrors(errors)
+                logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
+                Left(PensionSchemeErrorResponse(errMessage, Some(response.body)))
+              }
           }
       }
   }
@@ -85,10 +86,11 @@ object PensionSchemeParser {
               logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted  = formatJsonErrors(errors)
-              val errMessage = getDownstreamErrorMessage(response)
-              logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
-              Left(PensionSchemeErrorResponse(errMessage, Some(response.body)))
+              withDownstreamErrorMessage(response) { errMessage =>
+                val formatted = formatJsonErrors(errors)
+                logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
+                Left(PensionSchemeErrorResponse(errMessage, Some(response.body)))
+              }
           }
       }
   }
