@@ -17,14 +17,12 @@
 package controllers.memberDetails
 
 import base.SpecBase
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.govuk.SummaryListFluency
 import views.html.memberDetails.MemberDetailsCYAView
 
-class MemberDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
+class MemberDetailsCYAControllerSpec extends SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 

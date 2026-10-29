@@ -23,8 +23,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,7 +32,7 @@ import views.html.qropsDetails.QROPSOtherCountryView
 
 import scala.concurrent.Future
 
-class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSOtherCountryControllerSpec extends SpecBase {
 
   private val formProvider = new QROPSOtherCountryFormProvider()
   private val form         = formProvider()

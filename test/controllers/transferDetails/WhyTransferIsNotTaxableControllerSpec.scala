@@ -24,8 +24,6 @@ import models.{AmendCheckMode, NormalMode, WhyTransferIsNotTaxable}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.WhyTransferIsNotTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.transferDetails.WhyTransferIsNotTaxableView
 
 import scala.concurrent.Future
 
-class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class WhyTransferIsNotTaxableControllerSpec extends SpecBase {
 
   private lazy val whyTransferIsNotTaxableRoute = routes.WhyTransferIsNotTaxableController.onPageLoad(NormalMode).url
 

@@ -24,8 +24,6 @@ import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.AmountOfTransferPage
 import play.api.data.Form
 import play.api.inject.bind
@@ -36,7 +34,7 @@ import views.html.transferDetails.AmountOfTransferView
 
 import scala.concurrent.Future
 
-class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class AmountOfTransferControllerSpec extends SpecBase {
 
   val formProvider           = new AmountOfTransferFormProvider()
   val form: Form[BigDecimal] = formProvider()

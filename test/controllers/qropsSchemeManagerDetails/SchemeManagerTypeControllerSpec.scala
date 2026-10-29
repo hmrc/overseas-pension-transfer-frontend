@@ -25,8 +25,6 @@ import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersNamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +35,7 @@ import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
 import scala.concurrent.Future
 
-class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagerTypeControllerSpec extends SpecBase {
 
   private lazy val schemeManagerTypeRoute = routes.SchemeManagerTypeController.onPageLoad(NormalMode).url
 

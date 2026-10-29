@@ -19,9 +19,8 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.{AmendCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
 
-class SubmitToHMRCPageSpec extends AnyFreeSpec with SpecBase {
+class SubmitToHMRCPageSpec extends SpecBase {
 
   ".nextPage" - {
 

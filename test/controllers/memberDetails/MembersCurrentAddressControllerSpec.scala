@@ -27,8 +27,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -40,7 +38,7 @@ import views.html.memberDetails.MembersCurrentAddressView
 
 import scala.concurrent.Future
 
-class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
+class MembersCurrentAddressControllerSpec extends AddressBase {
 
   private val formProvider = new MembersCurrentAddressFormProvider()
   private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)

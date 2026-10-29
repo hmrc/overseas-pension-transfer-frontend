@@ -21,8 +21,6 @@ import models.PstrNumber
 import models.QtStatus.Submitted
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -33,7 +31,7 @@ import views.html.viewandamend.SubmittedTransferSummaryView
 
 import scala.concurrent.Future
 
-class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
+class SubmittedTransferSummaryControllerSpec extends SpecBase {
 
   private val mockCollectVersionsService = mock[CollectSubmittedVersionsService]
   private val mockLockService            = mock[LockService]

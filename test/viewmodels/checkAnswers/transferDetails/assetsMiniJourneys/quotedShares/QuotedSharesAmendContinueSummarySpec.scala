@@ -20,14 +20,13 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import models.assets.QuotedSharesEntry
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import queries.assets.QuotedSharesQuery
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class QuotedSharesAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
+class QuotedSharesAmendContinueSummarySpec extends SpecBase {
 
   "QuotedSharesAmendContinueSummary" - {
     implicit val messages: Messages = stubMessages()

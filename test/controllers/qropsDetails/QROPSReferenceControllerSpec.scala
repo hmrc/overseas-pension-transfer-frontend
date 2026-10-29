@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSReferencePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.qropsDetails.QROPSReferenceView
 
 import scala.concurrent.Future
 
-class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSReferenceControllerSpec extends SpecBase {
 
   private val formProvider = new QROPSReferenceFormProvider()
   private val form         = formProvider()

@@ -21,8 +21,6 @@ import forms.transferDetails.ApplicableTaxExclusionsFormProvider
 import models.{AmendCheckMode, ApplicableTaxExclusions, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -30,7 +28,7 @@ import views.html.transferDetails.ApplicableTaxExclusionsView
 
 import scala.concurrent.Future
 
-class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class ApplicableTaxExclusionsControllerSpec extends SpecBase {
 
   private lazy val applicableTaxExclusionsRoute = routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode).url
 

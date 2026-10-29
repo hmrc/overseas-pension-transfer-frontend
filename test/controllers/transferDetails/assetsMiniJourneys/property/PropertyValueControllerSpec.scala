@@ -22,8 +22,6 @@ import forms.transferDetails.assetsMiniJourneys.property.PropertyValueFormProvid
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyValueView
 
 import scala.concurrent.Future
 
-class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PropertyValueControllerSpec extends SpecBase {
 
   val formProvider  = new PropertyValueFormProvider()
   val form          = formProvider()

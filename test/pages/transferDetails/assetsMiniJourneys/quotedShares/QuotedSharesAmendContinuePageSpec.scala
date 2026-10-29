@@ -24,7 +24,7 @@ import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
-class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
+class QuotedSharesAmendContinuePageSpec extends SpecBase {
 
   ".nextPage" - {
 

@@ -22,8 +22,6 @@ import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCY
 
 import scala.concurrent.Future
 
-class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedSharesCYAControllerSpec extends SpecBase {
 
   private lazy val quotedSharesCyaRoute =
     controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController

@@ -18,12 +18,10 @@ package controllers
 
 import base.SpecBase
 import connectors.PensionSchemeConnector
-import models.{DashboardData, PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
+import models.{DashboardData, PensionSchemeDetails}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,15 +29,12 @@ import queries.PensionSchemeDetailsQuery
 
 import scala.concurrent.Future
 
-class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MpsOnRampControllerSpec extends SpecBase {
 
   "MpsOnRampController onRamp" - {
 
     "must store PensionSchemeDetails in dashboard cache and redirect to next page" in {
       val mockConnector = mock[PensionSchemeConnector]
-
-      val srn = "S1234567"
-      val psd = PensionSchemeDetails(SrnNumber(srn), PstrNumber("12345678AB"), "SchemeName")
 
       when(mockDashboardSessionRepository.set(any[DashboardData]))
         .thenReturn(Future.successful(true))
@@ -61,7 +56,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         verify(mockDashboardSessionRepository, times(1)).set(captor.capture())
         val saved: DashboardData = captor.getValue
 
-        saved.get(PensionSchemeDetailsQuery) mustBe Some(psd)
+        saved.get(PensionSchemeDetailsQuery) mustBe Some(schemeDetails)
 
         redirectLocation(result).value mustBe pages.MpsOnRampPage.nextPage().url
       }
@@ -70,10 +65,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must redirect to Journey Recovery when the repo fails to set data" in {
       val mockConnector = mock[PensionSchemeConnector]
 
-      val srn = "S2400000040"
-      val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
-
-      when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
+      when(mockConnector.getSchemeDetails(eqTo(srn.value), any())(any()))
         .thenReturn(Future.successful(Right(psr)))
 
       when(mockDashboardSessionRepository.set(any[DashboardData]))
@@ -98,10 +90,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must redirect to Journey Recovery when persisting to the repo throws an exception" in {
       val mockConnector = mock[PensionSchemeConnector]
 
-      val srn = "S2400000040"
-      val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
-
-      when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
+      when(mockConnector.getSchemeDetails(eqTo(srn.value), any())(any()))
         .thenReturn(Future.successful(Right(psr)))
 
       when(mockDashboardSessionRepository.set(any[DashboardData]))

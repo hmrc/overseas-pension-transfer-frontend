@@ -23,22 +23,19 @@ import models.requests.{IdentifierRequest, SchemeRequest}
 import models.responses.PensionSchemeErrorResponse
 import models.{DashboardData, PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.Inside
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.http.Status.SEE_OTHER
-import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import org.mockito.ArgumentMatchers.any
+import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SchemeDataActionSpec extends AnyFreeSpec with SpecBase with Inside {
+class SchemeDataActionSpec extends SpecBase {
 
   private val mockPensionSchemeConnector: PensionSchemeConnector = mock[PensionSchemeConnector]
 

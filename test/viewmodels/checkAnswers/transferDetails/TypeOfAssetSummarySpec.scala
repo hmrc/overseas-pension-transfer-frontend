@@ -19,14 +19,13 @@ package viewmodels.checkAnswers.transferDetails
 import base.SpecBase
 import models.CheckMode
 import models.assets.TypeOfAsset.{Cash, Property}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class TypeOfAssetSummarySpec extends AnyFreeSpec with SpecBase {
+class TypeOfAssetSummarySpec extends SpecBase {
 
   "TypeOfAssetSummary" - {
     implicit val messages: Messages = stubMessages()

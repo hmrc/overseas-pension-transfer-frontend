@@ -22,8 +22,6 @@ import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.AmountOfTaxDeductedView
 
 import scala.concurrent.Future
 
-class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class AmountOfTaxDeductedControllerSpec extends SpecBase {
 
   val formProvider = new AmountOfTaxDeductedFormProvider()
   val form         = formProvider()

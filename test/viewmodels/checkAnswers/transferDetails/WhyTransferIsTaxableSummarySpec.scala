@@ -19,14 +19,13 @@ package viewmodels.checkAnswers.transferDetails
 import base.SpecBase
 import models.CheckMode
 import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class WhyTransferIsTaxableSummarySpec extends AnyFreeSpec with SpecBase {
+class WhyTransferIsTaxableSummarySpec extends SpecBase {
 
   "WhyTransferIsTaxableSummary" - {
     implicit val messages: Messages = stubMessages()

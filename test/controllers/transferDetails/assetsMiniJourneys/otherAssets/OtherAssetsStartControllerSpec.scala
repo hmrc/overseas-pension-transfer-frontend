@@ -19,13 +19,11 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.NormalMode
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
 
-class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsStartControllerSpec extends SpecBase {
 
   "AddOtherAssets Controller" - {
 

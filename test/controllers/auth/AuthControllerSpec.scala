@@ -20,9 +20,6 @@ import base.SpecBase
 import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +28,7 @@ import org.mockito.Mockito.reset
 import java.net.URLEncoder
 import scala.concurrent.Future
 
-class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with BeforeAndAfterEach {
+class AuthControllerSpec extends SpecBase {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockSessionRepository)
@@ -61,7 +58,7 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar wit
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
-        verify(mockSessionRepository, times(1)).clear(eqTo("id"))
+        verify(mockSessionRepository, times(1)).clear(eqTo(testInternalId))
       }
     }
 
@@ -86,9 +83,9 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar wit
 
         status(result) mustEqual SEE_OTHER
         verify(mockUserAnswersService, times(1))
-          .clearEmptyUserAnswers(eqTo("id"))(any())
+          .clearEmptyUserAnswers(eqTo(testInternalId))(any())
         verify(mockSessionRepository, times(1))
-          .clear(eqTo("id"))
+          .clear(eqTo(testInternalId))
       }
     }
   }

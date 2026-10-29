@@ -24,8 +24,6 @@ import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset.UnquotedShares
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.TypeOfAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -33,7 +31,7 @@ import views.html.transferDetails.TypeOfAssetView
 
 import scala.concurrent.Future
 
-class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class TypeOfAssetControllerSpec extends SpecBase {
 
   private lazy val typeOfAssetRoute = routes.TypeOfAssetController.onPageLoad(NormalMode).url
 

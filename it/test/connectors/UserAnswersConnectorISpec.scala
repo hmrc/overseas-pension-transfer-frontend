@@ -16,34 +16,29 @@
 
 package connectors
 
-import base.BaseISpec
+import base.ISpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.QtStatus.{InProgress, Submitted}
-import models.authentication.{PsaId, Psp, PspId}
+import models.authentication.Psp
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
-import models.{PstrNumber, QtNumber, SrnNumber, TransferNumber}
+import models.QtNumber
 import org.apache.pekko.Done
-import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.test.Helpers.*
 import stubs.TransferBackendStub
 
 import java.time.Instant
-import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UserAnswersConnectorISpec extends BaseISpec {
-
-  private val transferId     = TransferNumber(UUID.randomUUID().toString)
-  private val pstr           = PstrNumber("12345678AB")
-  private val srn            = SrnNumber("1234567890")
+class UserAnswersConnectorISpec extends ISpecBase {
   private val userAnswersDTO =
-    UserAnswersDTO(QtNumber("QT975310"), pstr, JsObject(Map("field" -> JsString("value"))), now)
-  private val submissionDTO  = PspSubmissionDTO(transferId, Psp, PspId("X1234567"), PsaId("a1234567"), now)
+    UserAnswersDTO(testQtNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+  private val submissionDTO  = PspSubmissionDTO(testTransferNumber, Psp, pspId, psaId, now)
 
   val connector: UserAnswersConnector = app.injector.instanceOf[UserAnswersConnector]
 
-  "getAnswers" should {
+  "getAnswers" must {
     "return UserAnswersSuccessResponse when 200 returned with UserAnswers payload" in {
       stubGet(
         "/overseas-pension-transfer-backend/save-for-later/testId",
@@ -52,7 +47,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
       val getAnswers = await(connector.getAnswers("testId", srn))
 
-      getAnswers shouldBe Right(userAnswersDTO)
+      getAnswers mustBe Right(userAnswersDTO)
     }
 
     "return UserAnswersNotFoundResponse when 404 is returned" in {
@@ -68,7 +63,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
       val getAnswers = await(connector.getAnswers("testId", srn))
 
-      getAnswers shouldBe Left(UserAnswersNotFoundResponse)
+      getAnswers mustBe Left(UserAnswersNotFoundResponse)
     }
 
     "return UserAnswersErrorResponse" when {
@@ -81,7 +76,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         val getAnswers = await(connector.getAnswers("testId", srn))
 
-        getAnswers shouldBe Left(
+        getAnswers mustBe Left(
           UserAnswersErrorResponse("InternalServerError", Some("Where the extra details come from"))
         )
       }
@@ -95,7 +90,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         val getAnswers = await(connector.getAnswers("testId", srn))
 
-        getAnswers shouldBe Left(
+        getAnswers mustBe Left(
           UserAnswersErrorResponse(
             "Unable to parse Json as UserAnswersDTO",
             Some("/pstr | /transferId | /data | /lastUpdated")
@@ -112,7 +107,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         val getAnswers = await(connector.getAnswers("testId", srn))
 
-        getAnswers shouldBe Left(
+        getAnswers mustBe Left(
           UserAnswersErrorResponse(
             "[[UserAnswersConnector][getAnswers]] 500 Unknown (correlationId=-)",
             Some("""{"field": "value"}""")
@@ -150,10 +145,10 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         result match {
           case Right(dto) =>
-            dto.referenceId shouldBe referenceId
-            dto.pstr.value  shouldBe pstr.value
-            dto.data.toString should include("foo")
-            dto.lastUpdated shouldBe now
+            dto.referenceId    mustBe referenceId
+            dto.pstr.value     mustBe pstr.value
+            dto.data.toString  must include ("foo")
+            dto.lastUpdated    mustBe now
           case Left(err)  =>
             fail(s"Expected Right(UserAnswersDTO) but got $err")
         }
@@ -181,8 +176,8 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         result match {
           case Right(dto) =>
-            dto.referenceId shouldBe referenceId
-            dto.data.toString should include("hasVersion")
+            dto.referenceId   mustBe referenceId
+            dto.data.toString must include ("hasVersion")
           case Left(err)  =>
             fail(s"Expected Right(UserAnswersDTO) but got $err")
         }
@@ -212,9 +207,9 @@ class UserAnswersConnectorISpec extends BaseISpec {
       }
     }
 
-    "the backend returns 404" must {
+    "the backend returns 404" when {
 
-      "map to Left(UserAnswersNotFoundResponse)" in {
+      "user answers is not found" in {
         TransferBackendStub.stubGetSpecificTransferNotFound(
           referenceId = referenceId.value,
           pstr = pstr.value,
@@ -231,13 +226,13 @@ class UserAnswersConnectorISpec extends BaseISpec {
           )
         )
 
-        result shouldBe Left(UserAnswersNotFoundResponse)
+        result mustBe Left(UserAnswersNotFoundResponse)
       }
     }
 
-    "the backend returns 500" must {
+    "the backend returns 500" when {
 
-      "map to Left(UserAnswersErrorResponse)" in {
+      "an error happens when fetching user answers" in {
         TransferBackendStub.stubGetSpecificTransferServerError(
           referenceId = referenceId.value,
           pstr = pstr.value,
@@ -262,7 +257,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
     }
   }
 
-  "putAnswers" should {
+  "putAnswers" must {
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
       stubFor(
         post("/overseas-pension-transfer-backend/save-for-later")
@@ -274,7 +269,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
       val putAnswers = await(connector.putAnswers(userAnswersDTO, srn))
 
-      putAnswers shouldBe Right(Done)
+      putAnswers mustBe Right(Done)
     }
 
     "return UserAnswersErrorResponse" when {
@@ -287,7 +282,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         val putAnswers = await(connector.putAnswers(userAnswersDTO, srn))
 
-        putAnswers shouldBe Left(UserAnswersErrorResponse("Transformation failed", Some("Payload received is invalid")))
+        putAnswers mustBe Left(UserAnswersErrorResponse("Transformation failed", Some("Payload received is invalid")))
       }
 
       "500 is returned" in {
@@ -299,7 +294,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
         val putAnswers = await(connector.putAnswers(userAnswersDTO, srn))
 
-        putAnswers shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
+        putAnswers mustBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
 
       "there is an error, but the error Json cannot be parsed" in {
@@ -312,18 +307,18 @@ class UserAnswersConnectorISpec extends BaseISpec {
         val putAnswers = await(connector.putAnswers(userAnswersDTO, srn))
 
         putAnswers match {
-          case Left(error: UserAnswersErrorResponse) => error.error should include("500 Unknown (correlationId=-)")
+          case Left(error: UserAnswersErrorResponse) => error.error must include("500 Unknown (correlationId=-)")
           case error @ _                             => fail(s"Expected SubmissionErrorResponse -- $error")
         }
       }
     }
   }
 
-  "postSubmission" should {
+  "postSubmission" must {
 
     "return SubmissionResponse when 200 is returned" in {
       stubFor(
-        post(s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}")
+        post(s"/overseas-pension-transfer-backend/submit-declaration/${testTransferNumber.value}")
           .willReturn(
             aResponse()
               .withStatus(OK)
@@ -334,14 +329,14 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
       val response = await(connector.postSubmission(submissionDTO, srn))
 
-      response shouldBe Right(SubmissionResponse(QtNumber("QT123456"), now))
+      response mustBe Right(SubmissionResponse(QtNumber("QT123456"), now))
     }
 
     "return SubmissionErrorResponse" when {
 
       "the call is successful, but the response cannot be parsed" in {
         stubFor(
-          post(s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}")
+          post(s"/overseas-pension-transfer-backend/submit-declaration/${testTransferNumber.value}")
             .willReturn(
               aResponse()
                 .withStatus(OK)
@@ -359,39 +354,38 @@ class UserAnswersConnectorISpec extends BaseISpec {
         val response = await(connector.postSubmission(submissionDTO, srn))
 
         response match {
-          case Left(error: SubmissionErrorResponse) =>
-            error.error should include("Unable to parse Json as SubmissionResponse")
-          case _                                    => fail("Expected SubmissionErrorResponse")
+          case Left(error: SubmissionErrorResponse) => error.error must include("Unable to parse Json as SubmissionResponse")
+          case _ => fail("Expected SubmissionErrorResponse")
         }
       }
 
       "400 is returned" in {
         stubPost(
-          s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}",
+          s"/overseas-pension-transfer-backend/submit-declaration/${testTransferNumber.value}",
           """{ "error": "Transformation failed", "details": "Payload received is invalid" }""",
           BAD_REQUEST
         )
 
         val response = await(connector.postSubmission(submissionDTO, srn))
 
-        response shouldBe Left(SubmissionErrorResponse("Transformation failed", Some("Payload received is invalid")))
+        response mustBe Left(SubmissionErrorResponse("Transformation failed", Some("Payload received is invalid")))
       }
 
       "500 is returned" in {
         stubPost(
-          s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}",
+          s"/overseas-pension-transfer-backend/submit-declaration/${testTransferNumber.value}",
           """{ "error": "Failed to save answers" }""",
           INTERNAL_SERVER_ERROR
         )
 
         val response = await(connector.postSubmission(submissionDTO, srn))
 
-        response shouldBe Left(SubmissionErrorResponse("Failed to save answers", None))
+        response mustBe Left(SubmissionErrorResponse("Failed to save answers", None))
       }
 
       "an error is returned, but the error cannot be parsed" in {
         stubFor(
-          post(s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}")
+          post(s"/overseas-pension-transfer-backend/submit-declaration/${testTransferNumber.value}")
             .willReturn(
               aResponse()
                 .withStatus(IM_A_TEAPOT)
@@ -409,36 +403,34 @@ class UserAnswersConnectorISpec extends BaseISpec {
         val response = await(connector.postSubmission(submissionDTO, srn))
 
         response match {
-          case Left(error: SubmissionErrorResponse) => error.error should include("418 Unknown (correlationId=-)")
-          case _                                    => fail("Expected SubmissionErrorResponse")
+          case Left(error: SubmissionErrorResponse) => error.error must include("418 Unknown (correlationId=-)")
+          case _ => fail("Expected SubmissionErrorResponse")
         }
       }
     }
   }
 
-  "deleteAnswers" should {
-
+  "deleteAnswers" must {
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
       stubFor(
         delete(s"/overseas-pension-transfer-backend/save-for-later/testId")
-          .withHeader("schemeReferenceNumber", equalTo("1234567890"))
+          .withHeader("schemeReferenceNumber", equalTo(srn.value))
           .willReturn(
             aResponse()
               .withStatus(NO_CONTENT)
           )
       )
 
-      val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
+      val response = await(connector.deleteAnswers("testId", srn))
 
-      response shouldBe Right(Done)
+      response mustBe Right(Done)
     }
 
-    "return UserAnswersErrorResponse" when {
-
+    "return UserAnswersErrorResponse" must {
       "500 is returned" in {
         stubFor(
           delete("/overseas-pension-transfer-backend/save-for-later/testId")
-            .withHeader("schemeReferenceNumber", equalTo("1234567890"))
+            .withHeader("schemeReferenceNumber", equalTo(srn.value))
             .willReturn(
               aResponse()
                 .withStatus(INTERNAL_SERVER_ERROR)
@@ -446,15 +438,15 @@ class UserAnswersConnectorISpec extends BaseISpec {
             )
         )
 
-        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
+        val response = await(connector.deleteAnswers("testId", srn))
 
-        response shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
+        response mustBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
 
       "500 is returned, but the error cannot be parsed" in {
         stubFor(
           delete("/overseas-pension-transfer-backend/save-for-later/testId")
-            .withHeader("schemeReferenceNumber", equalTo("1234567890"))
+            .withHeader("schemeReferenceNumber", equalTo(srn.value))
             .willReturn(
               aResponse()
                 .withStatus(INTERNAL_SERVER_ERROR)
@@ -468,20 +460,17 @@ class UserAnswersConnectorISpec extends BaseISpec {
             )
         )
 
-        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
+        val response = await(connector.deleteAnswers("testId", srn))
 
-        response shouldBe Left(
-          UserAnswersErrorResponse(
-            "Unable to parse Json as UserAnswersErrorResponse",
-            Some("/error")
-          )
-        )
+        response mustBe Left(UserAnswersErrorResponse(
+          "Unable to parse Json as UserAnswersErrorResponse",
+          Some("/error")
+        ))
       }
     }
   }
 
-  "resetDatabase" should {
-
+  "resetDatabase" must {
     "return a HttpResponse with the returned code" in {
       stubFor(
         delete(s"/test-only/reset-test-data")
@@ -493,7 +482,7 @@ class UserAnswersConnectorISpec extends BaseISpec {
 
       val resetResponse = await(connector.resetDatabase)
 
-      resetResponse.status shouldBe NO_CONTENT
+      resetResponse.status mustBe NO_CONTENT
     }
   }
 

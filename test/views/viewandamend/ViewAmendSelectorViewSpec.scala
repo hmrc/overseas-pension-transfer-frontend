@@ -26,7 +26,7 @@ class ViewAmendSelectorViewSpec extends ViewBaseSpec {
 
   private val view = applicationBuilder().injector().instanceOf[ViewAmendSelectorView]
 
-  private val qtReference   = userAnswersTransferNumber
+  private val qtReference   = testTransferNumber
   private val pstrNumber    = PstrNumber("12345678")
   private val qtStatusValue = QtStatus.Submitted
   private val versionNumber = "001"

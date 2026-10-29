@@ -19,13 +19,12 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShare
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class UnquotedSharesValueSummarySpec extends AnyFreeSpec with SpecBase {
+class UnquotedSharesValueSummarySpec extends SpecBase {
 
   "UnquotedSharesValueSummary" - {
     implicit val messages: Messages = stubMessages()

@@ -18,7 +18,6 @@ package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MemberDateOfLeavingUKPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
@@ -26,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 import java.time.LocalDate
 
-class MemberDateOfLeavingUKSummarySpec extends AnyFreeSpec with SpecBase {
+class MemberDateOfLeavingUKSummarySpec extends SpecBase {
 
   "MemberDateOfLeavingUk" - {
     implicit val messages: Messages = stubMessages()

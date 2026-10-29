@@ -18,10 +18,8 @@ package handlers
 
 import base.SpecBase
 import models.assets.TypeOfAsset
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class AssetThresholdHandlerSpec extends AnyFreeSpec with Matchers with SpecBase {
+class AssetThresholdHandlerSpec extends SpecBase {
 
   "AssetThresholdHandler" - {
 

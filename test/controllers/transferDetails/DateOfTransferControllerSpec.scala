@@ -24,8 +24,6 @@ import models.{AmendCheckMode, NormalMode, SessionData}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -38,7 +36,8 @@ import views.html.transferDetails.DateOfTransferView
 
 import java.time.{Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
-class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+
+class DateOfTransferControllerSpec extends SpecBase {
 
   implicit private val messages: Messages = stubMessages()
 
@@ -102,7 +101,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       "must return OK and use the amend form when in AmendCheckMode" in {
         val sessionData: SessionData = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(sessionData)))
 
         val currentUserAnswers = emptyUserAnswers
           .set(DateOfTransferPage, originalDate.minusDays(5))
@@ -157,7 +156,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
         val sessionData: SessionData = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(sessionData)))
 
         val mockUserAnswersService = mock[UserAnswersService]
 
@@ -212,7 +211,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       "must return a Bad Request when amending with a date after the original submission date" in {
         val newDate = originalDate.plusDays(1)
         val sd      = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sd)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(sd)))
 
         val mockUserAnswersService = mock[UserAnswersService]
         when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))

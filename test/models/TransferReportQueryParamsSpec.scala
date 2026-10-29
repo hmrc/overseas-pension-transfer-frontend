@@ -49,11 +49,11 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecB
     }
 
     "must default memberName to '-' and currentPage to 1 when not present" in {
-      val request = FakeRequest("GET", s"/report-transfer?transferId=${userAnswersTransferNumber.value}")
+      val request = FakeRequest("GET", s"/report-transfer?transferId=${testTransferNumber.value}")
 
       val result = TransferReportQueryParams.fromRequest(request)
 
-      result.transferId mustBe Some(userAnswersTransferNumber)
+      result.transferId mustBe Some(testTransferNumber)
       result.qtStatus mustBe None
       result.pstr mustBe None
       result.versionNumber mustBe None

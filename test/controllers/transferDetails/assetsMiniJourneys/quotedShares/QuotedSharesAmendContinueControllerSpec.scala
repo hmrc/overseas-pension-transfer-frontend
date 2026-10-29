@@ -23,8 +23,6 @@ import models.assets.{QuotedSharesEntry, QuotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -33,7 +31,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAm
 
 import scala.concurrent.Future
 
-class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedSharesAmendContinueControllerSpec extends SpecBase {
 
   private val formProvider = new QuotedSharesAmendContinueFormProvider()
   private val form         = formProvider()

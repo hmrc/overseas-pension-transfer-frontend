@@ -22,8 +22,6 @@ import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.IsTransferCashOnlyPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -33,7 +31,7 @@ import views.html.transferDetails.IsTransferCashOnlyView
 
 import scala.concurrent.Future
 
-class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class IsTransferCashOnlyControllerSpec extends SpecBase {
 
   private val formProvider = new IsTransferCashOnlyFormProvider()
   private val form         = formProvider()

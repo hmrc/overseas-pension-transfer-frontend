@@ -18,8 +18,6 @@ package viewmodels
 
 import base.SpecBase
 import models.{NormalMode, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.Helpers.*
@@ -27,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.TaskListItem
 
 import java.time.LocalDate
 
-class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
+class TaskListViewModelSpec extends SpecBase {
 
   implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
 

@@ -19,11 +19,9 @@ package services
 import base.SpecBase
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
 import models.{CheckMode, NormalMode, SessionData, TaskCategory, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import queries.TaskStatusQuery
 
-class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
+class TaskServiceSpec extends SpecBase {
 
   private val service = TaskService
 

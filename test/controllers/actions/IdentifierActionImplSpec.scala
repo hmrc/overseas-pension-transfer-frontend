@@ -19,10 +19,8 @@ package controllers.actions
 import base.SpecBase
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import org.mockito.ArgumentMatchers.*
-import org.mockito.Mockito.*
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.mvc.*
 import play.api.mvc.Results.*
 import play.api.test.FakeRequest
@@ -34,7 +32,7 @@ import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class IdentifierActionImplSpec extends SpecBase {
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   private val application = applicationBuilder().build()

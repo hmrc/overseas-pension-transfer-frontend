@@ -16,12 +16,11 @@
 
 package viewmodels
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import base.SpecBase
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessagesApi
 
-class DisplayItemsSpec extends AnyWordSpec with Matchers {
+class DisplayItemsSpec extends SpecBase {
 
   implicit val messages: Messages =
     stubMessagesApi(
@@ -34,18 +33,18 @@ class DisplayItemsSpec extends AnyWordSpec with Matchers {
       )
     ).preferred(Seq.empty)
 
-  "describeItems" should {
+  "describeItems" - {
     "return correct message when zero items" in {
       val result = DisplayItems.describeItems(Nil, "base")
-      result shouldBe "No items"
+      result mustBe "No items"
     }
     "return correct message when one item" in {
       val result = DisplayItems.describeItems(Seq(""), "base")
-      result shouldBe "One item"
+      result mustBe "One item"
     }
     "return correct message when >1 items" in {
       val result = DisplayItems.describeItems(Seq("", ""), "base")
-      result shouldBe "Multiple items"
+      result mustBe "Multiple items"
     }
   }
 }

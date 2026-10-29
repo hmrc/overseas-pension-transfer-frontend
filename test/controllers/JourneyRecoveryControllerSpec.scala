@@ -17,14 +17,13 @@
 package controllers
 
 import base.SpecBase
-import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.JourneyRecoveryContinueView
 import views.html.errors.JourneyRecoveryView
 
-class JourneyRecoveryControllerSpec extends AnyFreeSpec with SpecBase {
+class JourneyRecoveryControllerSpec extends SpecBase {
 
   "JourneyRecovery Controller" - {
 

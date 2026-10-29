@@ -25,8 +25,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSCountryPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +35,7 @@ import views.html.qropsDetails.QROPSCountryView
 
 import scala.concurrent.Future
 
-class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
+class QROPSCountryControllerSpec extends AddressBase {
 
   private val formProvider = new QROPSCountryFormProvider()
   private val form         = formProvider()

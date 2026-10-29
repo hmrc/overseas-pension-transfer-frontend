@@ -22,7 +22,6 @@ import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
 import models.address.{Country, PropertyAddress}
 import models.assets.*
 import models.{ApplicableTaxExclusions, CheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.*
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
@@ -34,7 +33,7 @@ import play.api.test.Helpers.stubMessages
 import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary.rows
 
-class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
+class TransferDetailsSummarySpec extends SpecBase {
 
   implicit val messages: Messages = stubMessages()
 

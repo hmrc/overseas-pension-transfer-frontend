@@ -18,8 +18,6 @@ package controllers.qropsDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -27,7 +25,7 @@ import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.qropsDetails.QROPSDetailsCYAView
 
-class QROPSDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSDetailsCYAControllerSpec extends SpecBase {
 
   private lazy val onPageLoadRoute = controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad().url
   private lazy val onSubmitRoute   = controllers.qropsDetails.routes.QROPSDetailsCYAController.onSubmit().url

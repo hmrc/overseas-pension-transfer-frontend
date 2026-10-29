@@ -19,10 +19,8 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.{AmendCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class PspDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class PspDeclarationPageSpec extends SpecBase {
 
   ".nextPage" - {
 

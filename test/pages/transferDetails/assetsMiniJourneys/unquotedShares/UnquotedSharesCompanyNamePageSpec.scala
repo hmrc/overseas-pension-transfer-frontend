@@ -20,10 +20,8 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.TypeOfAsset
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class UnquotedSharesCompanyNamePageSpec extends SpecBase {
   private val index = 0
 
   ".nextPage" - {

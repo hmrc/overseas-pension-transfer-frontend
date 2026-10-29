@@ -21,8 +21,6 @@ import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclaration
 import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclar
 
 import scala.concurrent.Future
 
-class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MorePropertyDeclarationControllerSpec extends SpecBase {
 
   private val formProvider = new MorePropertyDeclarationFormProvider()
   private val form         = formProvider()

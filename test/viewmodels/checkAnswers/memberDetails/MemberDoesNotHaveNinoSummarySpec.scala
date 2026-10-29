@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class MemberDoesNotHaveNinoSummarySpec extends AnyFreeSpec with SpecBase {
+class MemberDoesNotHaveNinoSummarySpec extends SpecBase {
 
   "MemberDoesNotHaveNino" - {
     implicit val messages: Messages = stubMessages()

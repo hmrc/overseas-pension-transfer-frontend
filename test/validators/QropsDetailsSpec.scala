@@ -21,13 +21,10 @@ import cats.data.Validated.{Invalid, Valid}
 import models.*
 import models.address.Country
 import models.transferJourneys.QropsDetails
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import pages.qropsDetails.*
 import uaOps.UAOps.QropsAnswersOps
 
-final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues with AddressBase {
+final class QropsDetailsSpec extends AddressBase {
 
   private val country: Country =
     Country(

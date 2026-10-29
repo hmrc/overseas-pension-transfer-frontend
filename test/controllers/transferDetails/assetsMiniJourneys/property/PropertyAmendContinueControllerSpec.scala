@@ -23,8 +23,6 @@ import models.assets.{PropertyEntry, PropertyMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -33,7 +31,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendConti
 
 import scala.concurrent.Future
 
-class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
+class PropertyAmendContinueControllerSpec extends AddressBase {
 
   private val formProvider = new PropertyAmendContinueFormProvider()
   private val form         = formProvider()

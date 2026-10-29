@@ -20,7 +20,6 @@ import base.SpecBase
 import org.apache.pekko.stream.Materializer
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
@@ -30,7 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
-trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
+trait ViewBaseSpec extends SpecBase {
 
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 

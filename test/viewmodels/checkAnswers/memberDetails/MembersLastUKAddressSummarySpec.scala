@@ -19,14 +19,13 @@ package viewmodels.checkAnswers.memberDetails
 import base.SpecBase
 import models.CheckMode
 import models.address.MembersLastUKAddress
-import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MembersLastUKAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
+class MembersLastUKAddressSummarySpec extends SpecBase {
 
   "MembersLastUkAddress Summary" - {
     implicit val messages: Messages = stubMessages()

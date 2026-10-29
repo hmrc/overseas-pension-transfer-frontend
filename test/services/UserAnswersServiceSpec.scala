@@ -21,13 +21,11 @@ import connectors.UserAnswersConnector
 import models.*
 import models.authentication.{PsaId, PsaUser}
 import models.dtos.UserAnswersDTO
-import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse, UserAnswersErrorResponse}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{never, reset, verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,7 +34,7 @@ import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class UserAnswersServiceSpec extends SpecBase {
 
   private val mockUserAnswersConnector = mock[UserAnswersConnector]
   private val mockAuthService          = mock[AuthorisingPsaService]
@@ -47,15 +45,15 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val userAnswersDTO: UserAnswersDTO =
-    UserAnswersDTO(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+    UserAnswersDTO(testTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
   private val userAnswers: UserAnswers       =
-    UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+    UserAnswers(testTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
 
   "getUserAnswers" - {
-    "return prepopulated Right(UserAnswers) when Left(GetUserAnswersSuccessResponse) is returned" in {
+    "return prepopulated Right(UserAnswers) when the connector returns the answers" in {
 
       when(
-        mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any())
+        mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(testTransferNumber.value), any())(any(), any())
       )
         .thenReturn(Future.successful(Right(userAnswersDTO)))
 
@@ -64,23 +62,9 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       await(getUserAnswers) mustBe Right(userAnswers)
     }
 
-    "return Right(UserAnswers) with default userId when Left(GetUserAnswersNotFoundResponse) is returned" in {
+    "return Left and the error when the connector returns an error" in {
       when(
-        mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any())
-      )
-        .thenReturn(Future.successful(Left(UserAnswersNotFoundResponse)))
-
-      val getUserAnswers = await(service.getExternalUserAnswers(emptySessionData))
-
-      getUserAnswers map { ua =>
-        ua.id mustBe userAnswersTransferNumber
-        ua.data mustBe JsObject.empty
-      }
-    }
-
-    "return Left(GetUserAnswersErrorResponse) when Left(GetUserErrorResponse) is returned from connector" in {
-      when(
-        mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any())
+        mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(testTransferNumber.value), any())(any(), any())
       )
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error message", None))))
 
@@ -114,11 +98,11 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
     "return a Right(Done) status when Right(Done) is received from the connector" in {
       when(
         mockUserAnswersConnector
-          .deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any())
+          .deleteAnswers(ArgumentMatchers.eq(testTransferNumber.value), any())(any(), any())
       )
         .thenReturn(Future.successful(Right(Done)))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")))
+      val setUserAnswers = await(service.clearUserAnswers(testTransferNumber.value, SrnNumber("1234567890")))
 
       setUserAnswers mustBe Right(Done)
     }
@@ -126,11 +110,11 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
     "Return Left(error) when Left(error) is received from the connector" in {
       when(
         mockUserAnswersConnector
-          .deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any())
+          .deleteAnswers(ArgumentMatchers.eq(testTransferNumber.value), any())(any(), any())
       )
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error Message", None))))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")))
+      val setUserAnswers = await(service.clearUserAnswers(testTransferNumber.value, SrnNumber("1234567890")))
 
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }
@@ -192,10 +176,10 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
         )
       )
 
-      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, now)
+      val ua     = UserAnswers(testTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
-      result.transferId mustBe userAnswersTransferNumber
+      result.transferId mustBe testTransferNumber
       result.qtStatus mustBe Some(QtStatus.Submitted)
       result.memberFirstName mustBe Some("John")
       result.memberSurname mustBe Some("Doe")
@@ -213,7 +197,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
         )
       )
 
-      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, now)
+      val ua     = UserAnswers(testTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
       result.qtStatus mustBe Some(QtStatus.InProgress)
@@ -229,7 +213,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
         "memberDetails" -> Json.obj("nino" -> "AA000000A")
       )
 
-      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, now)
+      val ua     = UserAnswers(testTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
       result.qtStatus mustBe Some(QtStatus.InProgress)

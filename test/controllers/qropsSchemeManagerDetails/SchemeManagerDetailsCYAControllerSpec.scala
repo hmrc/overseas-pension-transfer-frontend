@@ -18,8 +18,6 @@ package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -27,7 +25,7 @@ import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSum
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagerDetailsCYAView
 
-class SchemeManagerDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagerDetailsCYAControllerSpec extends SpecBase {
 
   private lazy val onPageLoadRoute =
     controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad().url

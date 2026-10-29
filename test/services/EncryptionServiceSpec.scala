@@ -16,13 +16,12 @@
 
 package services
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import base.SpecBase
 
 import java.security.SecureRandom
 import java.util.Base64
 
-class EncryptionServiceSpec extends AnyFreeSpec with Matchers {
+class EncryptionServiceSpec extends SpecBase {
 
   private val masterKey = "test-master-key-1234567890"
 

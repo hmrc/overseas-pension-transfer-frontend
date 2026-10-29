@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.qropsSchemeManagerDetails.SchemeManagersContactView
 
 import scala.concurrent.Future
 
-class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagersContactControllerSpec extends SpecBase {
 
   private val formProvider = new SchemeManagersContactFormProvider()
   private val form         = formProvider()

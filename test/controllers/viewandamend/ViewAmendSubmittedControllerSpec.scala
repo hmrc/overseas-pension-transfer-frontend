@@ -21,8 +21,6 @@ import models.responses.UserAnswersErrorResponse
 import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, SrnNumber, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -40,7 +38,7 @@ import views.html.viewandamend.ViewSubmittedView
 import java.time.Clock
 import scala.concurrent.Future
 
-class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with SummaryListFluency {
+class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency {
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]

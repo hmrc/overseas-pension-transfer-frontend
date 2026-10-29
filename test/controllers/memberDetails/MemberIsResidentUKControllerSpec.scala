@@ -26,8 +26,6 @@ import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.{MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -38,7 +36,7 @@ import views.html.memberDetails.MemberIsResidentUKView
 
 import scala.concurrent.Future
 
-class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberIsResidentUKControllerSpec extends SpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

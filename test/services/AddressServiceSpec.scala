@@ -23,12 +23,10 @@ import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import models.address.*
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
-class AddressServiceSpec extends AnyFreeSpec with AddressBase with MockitoSugar with ScalaFutures {
+class AddressServiceSpec extends AddressBase {
 
   HeaderCarrier()
 
