@@ -143,7 +143,7 @@ class DashboardController @Inject() (
       .flatMap {
         _.fold(
           err => {
-            logger.warn(s"getAllTransfersData failed: $err")
+            logger.warn(err)
             Future.successful(Redirect(DashboardPage.nextPageRecovery()))
           },
           updatedData => {
