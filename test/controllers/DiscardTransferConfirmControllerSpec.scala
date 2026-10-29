@@ -24,9 +24,6 @@ import models.{AmendCheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.DiscardTransferConfirmPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsString}
@@ -37,7 +34,7 @@ import views.html.DiscardTransferConfirmView
 
 import scala.concurrent.Future
 
-class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with BeforeAndAfterEach {
+class DiscardTransferConfirmControllerSpec extends SpecBase {
 
   private val formProvider = new DiscardTransferConfirmFormProvider()
   private val form         = formProvider()

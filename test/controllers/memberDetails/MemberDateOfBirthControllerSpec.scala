@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberDateOfBirthPage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -37,7 +35,7 @@ import views.html.memberDetails.MemberDateOfBirthView
 
 import scala.concurrent.Future
 
-class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberDateOfBirthControllerSpec extends SpecBase {
 
   implicit private val messages: Messages = stubMessages()
 

@@ -24,8 +24,6 @@ import models.assets.OtherAssetsEntry
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -35,7 +33,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConf
 
 import scala.concurrent.Future
 
-class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsConfirmRemovalControllerSpec extends SpecBase {
 
   private val formProvider = new OtherAssetsConfirmRemovalFormProvider()
   private val form         = formProvider()

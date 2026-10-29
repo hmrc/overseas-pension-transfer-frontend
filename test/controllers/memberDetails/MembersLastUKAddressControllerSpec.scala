@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MembersLastUKAddressPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,7 +32,7 @@ import services.UserAnswersService
 
 import scala.concurrent.Future
 
-class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MembersLastUKAddressControllerSpec extends SpecBase {
 
   private lazy val membersLastUKAddressRoute = memberRoutes.MembersLastUKAddressController.onPageLoad(NormalMode).url
 

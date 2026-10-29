@@ -59,7 +59,7 @@ class DashboardViewSpec extends ViewBaseSpec {
           None
         ),
         AllTransfersItem(
-          userAnswersTransferNumber,
+          testTransferNumber,
           None,
           Some(InProgress),
           None,
@@ -100,7 +100,7 @@ class DashboardViewSpec extends ViewBaseSpec {
     PaginatedAllTransfersViewModel.build(
       Seq(
         AllTransfersItem(
-          userAnswersTransferNumber,
+          testTransferNumber,
           None,
           Some(InProgress),
           None,
@@ -178,7 +178,7 @@ class DashboardViewSpec extends ViewBaseSpec {
       ),
       (
         "Firstname2 Surname2",
-        s"/dashboard/transfer-report?transferId=${userAnswersTransferNumber.value}&qtStatus=InProgress&memberName=Firstname2+Surname2&currentPage=1"
+        s"/dashboard/transfer-report?transferId=${testTransferNumber.value}&qtStatus=InProgress&memberName=Firstname2+Surname2&currentPage=1"
       ),
       (
         "Firstname3 Surname3",

@@ -24,8 +24,6 @@ import models.{IndividualDetails, MinimalDetails, PersonName}
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,7 +33,7 @@ import java.time.{Instant, LocalDateTime, ZoneId}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with MockitoSugar {
+class EmailServiceSpec extends SpecBase {
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 

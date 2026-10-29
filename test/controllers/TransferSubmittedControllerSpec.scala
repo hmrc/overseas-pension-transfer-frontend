@@ -22,8 +22,6 @@ import connectors.MinimalDetailsConnector
 import models.authentication.PsaId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -36,7 +34,7 @@ import views.html.TransferSubmittedView
 import java.time.ZoneId
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
+class TransferSubmittedControllerSpec extends SpecBase {
 
   private val mockUserAnswersService = mock[UserAnswersService]
 

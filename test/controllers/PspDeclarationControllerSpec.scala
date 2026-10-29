@@ -26,8 +26,6 @@ import models.{MinimalDetails, NormalMode, PersonName, QtNumber, SessionData, Us
 import org.apache.commons.text.StringEscapeUtils
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.PspDeclarationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -40,7 +38,7 @@ import views.html.PspDeclarationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PspDeclarationControllerSpec extends SpecBase {
 
   private val formProvider = new PspDeclarationFormProvider()
   private val form         = formProvider()

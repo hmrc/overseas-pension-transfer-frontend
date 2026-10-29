@@ -19,10 +19,8 @@ package queries
 import base.SpecBase
 import models.taskList.TaskStatus
 import models.TaskCategory
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class TaskStatusQuerySpec extends AnyFreeSpec with Matchers with SpecBase {
+class TaskStatusQuerySpec extends SpecBase {
 
   "TaskStatusQuery" - {
     "should write and read at category.status" in {

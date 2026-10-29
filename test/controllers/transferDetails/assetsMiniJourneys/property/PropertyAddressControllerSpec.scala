@@ -24,8 +24,6 @@ import models.requests.DisplayRequest
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -37,7 +35,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressVie
 
 import scala.concurrent.Future
 
-class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
+class PropertyAddressControllerSpec extends AddressBase {
   private val index = 0
 
   private val formProvider = new PropertyAddressFormProvider()

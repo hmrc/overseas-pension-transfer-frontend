@@ -20,10 +20,7 @@ import base.SpecBase
 import models.requests.SchemeRequest
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.*
-import org.scalatest.Inside
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.Json
 import play.api.mvc.Result
@@ -35,11 +32,11 @@ import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckLockActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar with Inside {
+class CheckLockActionSpec extends SpecBase {
 
   private val sessionData = SessionData(
     "sessionId",
-    userAnswersTransferNumber,
+    testTransferNumber,
     PensionSchemeDetails(
       SrnNumber("12345"),
       PstrNumber("12345678AB"),
@@ -50,7 +47,7 @@ class CheckLockActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar wi
     now
   )
 
-  private val lock = Lock(userAnswersTransferNumber.value, psaId.value, Instant.now(), Instant.now().plusSeconds(900))
+  private val lock = Lock(testTransferNumber.value, psaId.value, Instant.now(), Instant.now().plusSeconds(900))
 
   private val request = SchemeRequest(FakeRequest(), psaUser, schemeDetails)
 
@@ -82,9 +79,9 @@ class CheckLockActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar wi
     "when there is session data in the cache" - {
       "and the lock could be refreshed" - {
         "then the request will be returned so the next action can run" in {
-          when(mockSessionRepository.get("id")) thenReturn Future(Some(sessionData))
+          when(mockSessionRepository.get(testInternalId)) thenReturn Future(Some(sessionData))
 
-          when(mockMongoLockRepository.refreshExpiry(userAnswersTransferNumber.value, psaId.value))
+          when(mockMongoLockRepository.refreshExpiry(testTransferNumber.value, psaId.value))
             .thenReturn(Future.successful(true))
 
           val action = new Harness(mockSessionRepository, mockMongoLockRepository)
@@ -100,12 +97,12 @@ class CheckLockActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar wi
       "and the lock couldn't be refreshed" - {
         "and the lock could be taken" - {
           "then the request will be returned so the next action can run" in {
-            when(mockSessionRepository.get("id")) thenReturn Future(Some(sessionData))
+            when(mockSessionRepository.get(testInternalId)) thenReturn Future(Some(sessionData))
 
-            when(mockMongoLockRepository.refreshExpiry(userAnswersTransferNumber.value, psaId.value))
+            when(mockMongoLockRepository.refreshExpiry(testTransferNumber.value, psaId.value))
               .thenReturn(Future.successful(false))
 
-            when(mockMongoLockRepository.takeLock(userAnswersTransferNumber.value, psaId.value))
+            when(mockMongoLockRepository.takeLock(testTransferNumber.value, psaId.value))
               .thenReturn(Future.successful(Some(lock)))
 
             val action = new Harness(mockSessionRepository, mockMongoLockRepository)
@@ -120,12 +117,12 @@ class CheckLockActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar wi
 
         "and the lock couldn't be taken" - {
           "must redirect to JourneyRecovery" in {
-            when(mockSessionRepository.get("id")) thenReturn Future(Some(sessionData))
+            when(mockSessionRepository.get(testInternalId)) thenReturn Future(Some(sessionData))
 
-            when(mockMongoLockRepository.refreshExpiry(userAnswersTransferNumber.value, psaId.value))
+            when(mockMongoLockRepository.refreshExpiry(testTransferNumber.value, psaId.value))
               .thenReturn(Future.successful(false))
 
-            when(mockMongoLockRepository.takeLock(userAnswersTransferNumber.value, psaId.value))
+            when(mockMongoLockRepository.takeLock(testTransferNumber.value, psaId.value))
               .thenReturn(Future.successful(None))
 
             val action = new Harness(mockSessionRepository, mockMongoLockRepository)

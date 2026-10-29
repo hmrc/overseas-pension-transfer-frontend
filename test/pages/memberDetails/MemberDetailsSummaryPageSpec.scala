@@ -19,10 +19,8 @@ package pages.memberDetails
 import base.SpecBase
 import controllers.routes
 import models.NormalMode
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class MemberDetailsSummaryPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class MemberDetailsSummaryPageSpec extends SpecBase {
 
   ".nextPage" - {
 

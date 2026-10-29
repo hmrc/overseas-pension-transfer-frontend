@@ -23,8 +23,6 @@ import models.NormalMode
 import models.assets.QuotedSharesEntry
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.assets.QuotedSharesQuery
@@ -32,7 +30,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCo
 
 import scala.concurrent.Future
 
-class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedSharesConfirmRemovalControllerSpec extends SpecBase {
 
   private val formProvider = new QuotedSharesConfirmRemovalFormProvider()
   private val form         = formProvider()

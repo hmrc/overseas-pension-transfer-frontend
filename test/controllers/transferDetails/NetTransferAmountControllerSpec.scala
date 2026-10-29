@@ -21,8 +21,6 @@ import forms.transferDetails.NetTransferAmountFormProvider
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.NetTransferAmountPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -30,7 +28,7 @@ import views.html.transferDetails.NetTransferAmountView
 
 import scala.concurrent.Future
 
-class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class NetTransferAmountControllerSpec extends SpecBase {
 
   val formProvider = new NetTransferAmountFormProvider()
   val form         = formProvider()

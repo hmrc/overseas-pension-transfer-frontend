@@ -19,9 +19,8 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.DashboardData
-import org.scalatest.freespec.AnyFreeSpec
 
-class MpsOnRampPageSpec extends AnyFreeSpec with SpecBase {
+class MpsOnRampPageSpec extends SpecBase {
 
   ".nextPage" - {
 

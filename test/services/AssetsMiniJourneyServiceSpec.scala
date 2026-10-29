@@ -19,14 +19,13 @@ package services
 import base.SpecBase
 import models.NormalMode
 import models.assets.*
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json.Json
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 import scala.util.{Failure, Success}
 
-class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
+class AssetsMiniJourneyServiceSpec extends SpecBase {
 
   private val service = AssetsMiniJourneyService
 

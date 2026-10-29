@@ -16,16 +16,14 @@
 
 package utils
 
+import base.SpecBase
 import config.FrontendAppConfig
 import models.authentication.{PsaId, PsaUser, PspId, PspUser}
-import org.mockito.Mockito.*
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 
-class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with AuthSupport {
+class AuthSupportSpec extends SpecBase with AuthSupport {
 
   private val psaServiceName = "HMRC-PSA-ORG"
   private val pspServiceName = "HMRC-PSP-ORG"

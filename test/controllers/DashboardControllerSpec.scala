@@ -20,12 +20,9 @@ import base.SpecBase
 import models.*
 import models.audit.JourneyStartedType.ContinueTransfer
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{any, eq as meq}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.*
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.PensionSchemeDetailsQuery
@@ -37,7 +34,8 @@ import views.html.DashboardView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+
+class DashboardControllerSpec extends SpecBase {
 
   implicit class FakeRequestOps[A](req: FakeRequest[A]) {
 
@@ -62,9 +60,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val mockView        = mock[DashboardView]
       val mockLockService = mock[LockService]
 
-      val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
-      val transferItem  = AllTransfersItem(
-        transferId = userAnswersTransferNumber,
+      val transferItem = AllTransfersItem(
+        transferId = testTransferNumber,
         qtVersion = Some("v1"),
         qtStatus = Some(QtStatus.InProgress),
         nino = Some("AA123456A"),
@@ -78,7 +75,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val dd = DashboardData
         .create("id", now)
-        .set(PensionSchemeDetailsQuery, pensionScheme)
+        .set(PensionSchemeDetailsQuery, schemeDetails)
         .success
         .value
         .set(TransfersOverviewQuery, Seq(transferItem))
@@ -91,7 +88,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockDashboardSessionRepository.set(any())).thenReturn(Future.successful(true))
       when(mockDashboardSessionRepository.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
       when(
-        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+        mockService.getAllTransfersData(eqTo(dd), eqTo(schemeDetails.pstrNumber), eqTo(schemeDetails.srnNumber))(
           any[HeaderCarrier]
         )
       )
@@ -118,9 +115,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         contentAsString(result) must include("dashboard view")
 
         verify(mockDashboardSessionRepository).get(any())
-        verify(mockService).getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
-          any[HeaderCarrier]
-        )
+        verify(mockService)
+          .getAllTransfersData(eqTo(dd), eqTo(schemeDetails.pstrNumber), eqTo(schemeDetails.srnNumber))(
+            any[HeaderCarrier]
+          )
         verify(mockDashboardSessionRepository).set(any())
       }
     }
@@ -149,7 +147,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         status(result) mustBe SEE_OTHER
 
-        verify(mockMongoLockRepository, times(1)).takeLock(meq("QT123456"), any())
+        verify(mockMongoLockRepository, times(1)).takeLock(eqTo("QT123456"), any())
       }
     }
 
@@ -182,22 +180,19 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         flash(result).get("lockWarning") mustBe Some("LockedScheme")
 
-        verify(mockMongoLockRepository, times(1)).takeLock(meq("QT123456"), any())
+        verify(mockMongoLockRepository, times(1)).takeLock(eqTo("QT123456"), any())
       }
     }
 
     "must releaseLock for items in TransfersOverviewQuery when dashboard loads" in {
-
       val mockService = mock[TransferService]
 
       val mockView = mock[DashboardView]
 
-      val pensionScheme = PensionSchemeDetails(SrnNumber("S111"), PstrNumber("PSTR111"), "SchemeX")
-
       // two transfers: one with transferReference, one with qtReference, one with neither
       val transfers = Seq(
         AllTransfersItem(
-          transferId = userAnswersTransferNumber,
+          transferId = testTransferNumber,
           qtVersion = None,
           qtStatus = None,
           nino = None,
@@ -205,7 +200,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           memberSurname = None,
           qtDate = None,
           lastUpdated = Some(now),
-          pstrNumber = Some(PstrNumber("PSTR111")),
+          pstrNumber = Some(pstr),
           submissionDate = None
         ),
         AllTransfersItem(
@@ -217,7 +212,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           memberSurname = None,
           qtDate = None,
           lastUpdated = Some(now),
-          pstrNumber = Some(PstrNumber("PSTR111")),
+          pstrNumber = Some(pstr),
           submissionDate = None
         ),
         AllTransfersItem(
@@ -229,14 +224,14 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           memberSurname = None,
           qtDate = None,
           lastUpdated = Some(now),
-          pstrNumber = Some(PstrNumber("PSTR111")),
+          pstrNumber = Some(pstr),
           submissionDate = None
         )
       )
 
       val dd = DashboardData
         .create("id", now)
-        .set(PensionSchemeDetailsQuery, pensionScheme)
+        .set(PensionSchemeDetailsQuery, schemeDetails)
         .success
         .value
         .set(TransfersOverviewQuery, transfers)
@@ -248,7 +243,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockDashboardSessionRepository.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockDashboardSessionRepository.set(any())).thenReturn(Future.successful(true))
       when(
-        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+        mockService.getAllTransfersData(eqTo(dd), eqTo(pstr), eqTo(srn))(
           any[HeaderCarrier]
         )
       )
@@ -274,9 +269,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         contentAsString(result) must include("dashboard")
 
         // verify releaseLock called for the two items that had references
-        verify(mockMongoLockRepository, times(1)).releaseLock(meq(userAnswersTransferNumber.value), meq("A123456"))
-        verify(mockMongoLockRepository, times(1)).releaseLock(meq(testQtNumber.value), meq("A123456"))
-        verify(mockMongoLockRepository, times(1)).releaseLock(meq("QT987654"), meq("A123456"))
+        verify(mockMongoLockRepository, times(1)).releaseLock(eqTo(testTransferNumber.value), eqTo(psaId.value))
+        verify(mockMongoLockRepository, times(1)).releaseLock(eqTo(testQtNumber.value), eqTo(psaId.value))
+        verify(mockMongoLockRepository, times(1)).releaseLock(eqTo("QT987654"), eqTo(psaId.value))
         verify(mockMongoLockRepository, times(3)).releaseLock(any(), any())
       }
     }
@@ -306,7 +301,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result = route(application, request).value
 
         status(result) mustBe SEE_OTHER
-        verify(mockMongoLockRepository, times(1)).takeLock(meq("QT654321"), any())
+        verify(mockMongoLockRepository, times(1)).takeLock(eqTo("QT654321"), any())
       }
     }
 
@@ -316,7 +311,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
-        transferId = userAnswersTransferNumber,
+        transferId = testTransferNumber,
         qtVersion = Some("v1"),
         qtStatus = Some(QtStatus.InProgress),
         nino = Some("AA123456A"),
@@ -342,7 +337,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockDashboardSessionRepository.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockDashboardSessionRepository.set(any())).thenReturn(Future.successful(true))
       when(
-        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+        mockService.getAllTransfersData(eqTo(dd), eqTo(pensionScheme.pstrNumber), eqTo(pensionScheme.srnNumber))(
           any[HeaderCarrier]
         )
       )
@@ -374,7 +369,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val johnTransfer = AllTransfersItem(
-        transferId = userAnswersTransferNumber,
+        transferId = testTransferNumber,
         qtVersion = Some("v1"),
         qtStatus = Some(QtStatus.InProgress),
         nino = Some("AA123456A"),
@@ -413,7 +408,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockDashboardSessionRepository.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockDashboardSessionRepository.set(any())).thenReturn(Future.successful(true))
       when(
-        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+        mockService.getAllTransfersData(eqTo(dd), eqTo(pensionScheme.pstrNumber), eqTo(pensionScheme.srnNumber))(
           any[HeaderCarrier]
         )
       )
@@ -460,7 +455,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val johnTransfer = AllTransfersItem(
-        transferId = userAnswersTransferNumber,
+        transferId = testTransferNumber,
         qtVersion = Some("v1"),
         qtStatus = Some(QtStatus.InProgress),
         nino = Some("AA123456A"),
@@ -499,7 +494,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockDashboardSessionRepository.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockDashboardSessionRepository.set(any())).thenReturn(Future.successful(true))
       when(
-        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+        mockService.getAllTransfersData(eqTo(dd), eqTo(pensionScheme.pstrNumber), eqTo(pensionScheme.srnNumber))(
           any[HeaderCarrier]
         )
       )
@@ -538,16 +533,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val mockUserAnswersSvc = mock[UserAnswersService]
       val mockAuditService   = mock[AuditService]
 
-      val transferId = TransferId("QT654321")
-      val owner      = "A123456"
-
-      val emptyUserAnswers = UserAnswers(
-        id = transferId,
-        pstr = PstrNumber("PSTR000"),
-        lastUpdated = now,
-        data = Json.obj()
-      )
-
       when(mockUserAnswersSvc.getExternalUserAnswers(any(), any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(emptyUserAnswers)))
 
@@ -575,7 +560,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val request = FakeRequest(
           GET,
           routes.DashboardController.onTransferClick().url +
-            "?transferId=QT654321&qtStatus=InProgress&name=SchemeX&currentPage=1&pstr=PSTR123456"
+            s"?transferId=${testTransferNumber.value}&qtStatus=InProgress&name=$schemeName&currentPage=1&pstr=${pstr.value}"
         )
 
         val result = route(application, request).value
@@ -583,11 +568,11 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         status(result) mustBe SEE_OTHER
 
         verify(mockLockService, times(1)).takeLockWithAudit(
-          meq(transferId),
-          meq(owner),
+          eqTo(testTransferNumber),
+          eqTo(psaId.value),
           any(),
           any(),
-          meq(ContinueTransfer),
+          eqTo(ContinueTransfer),
           any()
         )(any())
       }
@@ -610,8 +595,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe "/some-url"
 
-        verify(mockDashboardSessionRepository, times(1)).clear(meq("id"))
-        verify(mockSessionRepository, times(1)).clear(meq("id"))
+        verify(mockDashboardSessionRepository, times(1)).clear(eqTo(testInternalId))
+        verify(mockSessionRepository, times(1)).clear(eqTo(testInternalId))
       }
     }
   }

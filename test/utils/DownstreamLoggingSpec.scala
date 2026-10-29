@@ -32,11 +32,10 @@
 
 package utils
 
+import base.SpecBase
 import controllers.helpers.ErrorHandling
 import controllers.routes
 import models.BackendError
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.typedmap.TypedMap
 import play.api.mvc.*
 import play.api.routing.{HandlerDef, Router}
@@ -46,7 +45,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, RequestId}
 
 import scala.concurrent.Future
 
-class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
+class DownstreamLoggingSpec extends SpecBase {
 
   object TestLogging extends DownstreamLogging
 
@@ -60,7 +59,7 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "DownstreamLogging" should {
+  "DownstreamLogging" - {
 
     "build BackendError with correlation ID from response" in {
       val response = HttpResponse(
@@ -116,7 +115,7 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "ErrorHandling" should {
+  "ErrorHandling" - {
 
     "redirect to JourneyRecoveryController when failing" in {
       val request = FakeRequest(GET, "/test-url")

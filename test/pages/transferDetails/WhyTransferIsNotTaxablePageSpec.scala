@@ -19,10 +19,8 @@ package pages.transferDetails
 import base.SpecBase
 import controllers.transferDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class WhyTransferIsNotTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class WhyTransferIsNotTaxablePageSpec extends SpecBase {
 
   ".nextPage" - {
 

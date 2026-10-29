@@ -19,14 +19,13 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 import base.SpecBase
 import models.CheckMode
 import models.address.{Country, SchemeManagersAddress}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
+class SchemeManagersAddressSummarySpec extends SpecBase {
 
   "Scheme manager's address Summary" - {
     implicit val messages: Messages = stubMessages()

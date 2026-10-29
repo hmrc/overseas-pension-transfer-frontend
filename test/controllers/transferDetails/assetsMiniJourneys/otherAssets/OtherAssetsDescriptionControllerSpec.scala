@@ -22,8 +22,6 @@ import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescripti
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDesc
 
 import scala.concurrent.Future
 
-class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsDescriptionControllerSpec extends SpecBase {
   private val index = 0
 
   private val formProvider = new OtherAssetsDescriptionFormProvider()

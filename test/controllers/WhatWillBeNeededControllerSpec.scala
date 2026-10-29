@@ -24,8 +24,6 @@ import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -34,7 +32,7 @@ import views.html.WhatWillBeNeededView
 
 import scala.concurrent.Future
 
-class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class WhatWillBeNeededControllerSpec extends SpecBase {
 
   "onPageLoad" - {
     "must render the view with the correct form action" in {

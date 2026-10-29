@@ -20,13 +20,11 @@ import base.SpecBase
 import controllers.routes
 import models.QtStatus.{InProgress, Submitted}
 import models.{DashboardData, PensionSchemeDetails, QtNumber, SrnNumber, TransferReportQueryParams}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
 import annotation.nowarn
 
-class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class DashboardPageSpec extends SpecBase {
 
   private val scheme   = PensionSchemeDetails(SrnNumber("S1234567"), pstr, "Scheme Name")
   private val internal = "internal-id"
@@ -39,7 +37,7 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   private def inProgressParams(): TransferReportQueryParams =
     TransferReportQueryParams(
-      transferId = Some(userAnswersTransferNumber),
+      transferId = Some(testTransferNumber),
       qtStatus = Some(InProgress),
       pstr = None,
       versionNumber = None,
@@ -74,7 +72,7 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
       val call: Call =
         DashboardPage.nextPage(ddEmpty, Some(InProgress), Some(inProgressParams()))
 
-      call mustEqual controllers.routes.TaskListController.fromDashboard(userAnswersTransferNumber)
+      call mustEqual controllers.routes.TaskListController.fromDashboard(testTransferNumber)
     }
 
     "must go to JourneyRecovery when status is InProgress but transferReference is missing" in {

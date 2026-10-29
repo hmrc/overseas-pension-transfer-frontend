@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.qropsSchemeManagerDetails.SchemeManagerOrganisationNameView
 
 import scala.concurrent.Future
 
-class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagerOrganisationNameControllerSpec extends SpecBase {
 
   private val formProvider = new SchemeManagerOrganisationNameFormProvider()
   private val form         = formProvider()

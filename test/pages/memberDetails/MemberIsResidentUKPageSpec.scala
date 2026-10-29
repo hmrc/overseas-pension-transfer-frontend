@@ -20,12 +20,10 @@ import base.SpecBase
 import controllers.memberDetails.routes
 import models.address.MembersLastUKAddress
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
 import java.time.LocalDate
 
-class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers {
+class MemberIsResidentUKPageSpec extends SpecBase {
 
   ".nextPage" - {
 

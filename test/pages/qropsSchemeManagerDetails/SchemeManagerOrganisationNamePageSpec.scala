@@ -19,10 +19,8 @@ package pages.qropsSchemeManagerDetails
 import base.SpecBase
 import controllers.qropsSchemeManagerDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PersonName}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class SchemeManagerOrganisationNamePageSpec extends SpecBase {
 
   ".nextPage" - {
 

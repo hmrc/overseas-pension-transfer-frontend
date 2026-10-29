@@ -16,45 +16,42 @@
 
 package connectors
 
-import base.BaseISpec
-import models.authentication.{PsaId, PspId}
+import base.ISpecBase
 import models.MinimalDetails
 import play.api.libs.json.Json
+import play.api.test.Helpers.*
 import stubs.MinimalDetailsStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MinimalDetailsConnectorISpec extends BaseISpec {
+class MinimalDetailsConnectorISpec extends ISpecBase {
 
   val connector: MinimalDetailsConnector = app.injector.instanceOf[MinimalDetailsConnector]
-
-  private val psaId = PsaId("A2100005")
-  private val pspId = PspId("21000005")
 
   "MinimalDetailsConnector.fetch" when {
     "fetching minimal details" must {
       "return Right(MinimalDetails) for PSA route" in {
-        MinimalDetailsStub.psaSuccess(psaId.value, Json.stringify(Json.toJson(minimalDetails)))
+        MinimalDetailsStub.psaSuccess(psaId.value, Json.stringify(Json.toJson(minimalDetailsIndividual)))
 
-        await(connector.fetch(psaId)) shouldBe Right(minimalDetails)
+        await(connector.fetch(psaId)) mustBe Right(minimalDetailsIndividual)
       }
 
       "return Right(MinimalDetails) for PSP route" in {
-        MinimalDetailsStub.pspSuccess(pspId.value, Json.stringify(Json.toJson(minimalDetails)))
+        MinimalDetailsStub.pspSuccess(pspId.value, Json.stringify(Json.toJson(minimalDetailsIndividual)))
 
-        await(connector.fetch(pspId)) shouldBe Right(minimalDetails)
+        await(connector.fetch(pspId)) mustBe Right(minimalDetailsIndividual)
       }
 
       "return Left(DetailsNotFound) when 404 returned containing 'no match found'" in {
         MinimalDetailsStub.psaNotFoundWithNoMatch(psaId.value)
 
-        await(connector.fetch(psaId)) shouldBe Left(DetailsNotFound)
+        await(connector.fetch(psaId)) mustBe Left(DetailsNotFound)
       }
 
       "return Left(UpstreamError) when other upstream errors occur" in {
         MinimalDetailsStub.psaForbiddenDelimited(psaId.value)
 
-        await(connector.fetch(psaId)) shouldBe Left(UpstreamError)
+        await(connector.fetch(psaId)) mustBe Left(UpstreamError)
       }
     }
   }

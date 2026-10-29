@@ -23,8 +23,6 @@ import models.NormalMode
 import models.authentication.{PspId, PspUser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.SubmitToHMRCPage
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
@@ -34,7 +32,7 @@ import views.html.SubmitToHMRCView
 
 import scala.concurrent.Future
 
-class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SubmitToHMRCControllerSpec extends SpecBase {
 
   private val formProvider = new SubmitToHMRCFormProvider()
   private val form         = formProvider()

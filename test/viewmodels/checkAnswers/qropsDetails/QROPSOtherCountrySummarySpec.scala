@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class QROPSOtherCountrySummarySpec extends AnyFreeSpec with SpecBase {
+class QROPSOtherCountrySummarySpec extends SpecBase {
 
   "QROPSOtherCountrySummary" - {
     implicit val messages: Messages = stubMessages()

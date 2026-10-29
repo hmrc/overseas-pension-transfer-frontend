@@ -21,8 +21,6 @@ import forms.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDec
 import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedShar
 
 import scala.concurrent.Future
 
-class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MoreQuotedSharesDeclarationControllerSpec extends SpecBase {
 
   private val formProvider = new MoreQuotedSharesDeclarationFormProvider()
   private val form         = formProvider()

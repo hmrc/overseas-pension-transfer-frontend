@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.transferDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class AmountOfTaxDeductedSummarySpec extends AnyFreeSpec with SpecBase {
+class AmountOfTaxDeductedSummarySpec extends SpecBase {
 
   "AmountOfTaxDeductedSummary" - {
     implicit val messages: Messages = stubMessages()

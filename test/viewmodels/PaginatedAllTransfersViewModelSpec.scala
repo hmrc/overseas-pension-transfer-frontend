@@ -19,8 +19,6 @@ package viewmodels
 import base.SpecBase
 import config.TestAppConfig
 import models.AllTransfersItem
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
@@ -30,14 +28,14 @@ import utils.DateTimeFormats.{display12h, displayDateUuuu}
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import scala.annotation.nowarn
 
-class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
+class PaginatedAllTransfersViewModelSpec extends SpecBase {
 
   implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
   TestAppConfig.appConfigEncryptionOn()
 
   private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(
-      transferId = userAnswersTransferNumber,
+      transferId = testTransferNumber,
       qtVersion = None,
       nino = None,
       memberFirstName = Some(s"Name$idx"),

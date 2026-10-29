@@ -17,8 +17,6 @@
 package controllers
 
 import base.SpecBase
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -28,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import scala.concurrent.Future
 
-class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
+class TaskListControllerSpec extends SpecBase with SummaryListFluency {
 
   "TaskListController" - {
 
@@ -55,7 +53,7 @@ class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListF
             .build()
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
         running(app) {
-          val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard(userAnswersTransferNumber).url)
+          val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard(testTransferNumber).url)
           val res = route(app, req).value
 
           status(res) mustBe SEE_OTHER

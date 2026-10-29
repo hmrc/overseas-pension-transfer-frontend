@@ -21,10 +21,9 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.assets.{OtherAssetsMiniJourney, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
-class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
+class OtherAssetsAmendContinuePageSpec extends SpecBase {
 
   ".nextPage" - {
 

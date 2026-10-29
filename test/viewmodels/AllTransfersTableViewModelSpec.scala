@@ -19,8 +19,6 @@ package viewmodels
 import base.SpecBase
 import config.TestAppConfig
 import models.{AllTransfersItem, QtStatus}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
@@ -28,7 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
-class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
+class AllTransfersTableViewModelSpec extends SpecBase {
 
   implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
   TestAppConfig.appConfigEncryptionOn()
@@ -61,7 +59,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "renders headers, a member link, submitted status label, reference, and formatted submission date" in {
       val submitted = AllTransfersItem(
-        transferId = userAnswersTransferNumber,
+        transferId = testTransferNumber,
         qtVersion = None,
         nino = None,
         memberFirstName = Some("Ada"),
@@ -92,13 +90,13 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       memberHtml must include("""<a href=""")
       memberHtml must include("Ada Lovelace")
 
-      memberHtml must include(s"transferId=${userAnswersTransferNumber.value}")
+      memberHtml must include(s"transferId=${testTransferNumber.value}")
       memberHtml must include("qtStatus=Submitted")
       memberHtml must include("memberName=Ada+Lovelace")
       memberHtml must include("currentPage=1")
 
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"
-      htmlOf(row(2)) mustBe userAnswersTransferNumber.value
+      htmlOf(row(2)) mustBe testTransferNumber.value
 
       val updatedHtml = htmlOf(row(3))
       extractDate(updatedHtml) mustBe "24 September 2025"
@@ -107,7 +105,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "renders in-progress label and uses lastUpdated (date+time)" in {
       val inProgress = AllTransfersItem(
-        transferId = userAnswersTransferNumber,
+        transferId = testTransferNumber,
         qtVersion = None,
         nino = None,
         memberFirstName = Some("  "),
@@ -135,7 +133,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "maps Compiled status to submitted label (same as Submitted)" in {
       val compiled = AllTransfersItem(
-        transferId = userAnswersTransferNumber,
+        transferId = testTransferNumber,
         qtVersion = None,
         nino = None,
         memberFirstName = Some("Jean"),

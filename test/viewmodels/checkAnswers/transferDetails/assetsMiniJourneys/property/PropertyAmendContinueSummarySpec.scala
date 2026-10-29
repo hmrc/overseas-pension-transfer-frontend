@@ -21,14 +21,13 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import models.address.{Country, PropertyAddress}
 import models.assets.PropertyEntry
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import queries.assets.PropertyQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class PropertyAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyAmendContinueSummarySpec extends SpecBase {
 
   "PropertyAmendContinueSummary" - {
     implicit val messages: Messages = stubMessages()

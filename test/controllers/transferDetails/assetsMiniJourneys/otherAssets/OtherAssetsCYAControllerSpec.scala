@@ -23,8 +23,6 @@ import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,7 +34,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAV
 
 import scala.concurrent.Future
 
-class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsCYAControllerSpec extends SpecBase {
 
   private lazy val otherAssetsCyaRoute =
     controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController

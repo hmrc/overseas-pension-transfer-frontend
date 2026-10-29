@@ -23,8 +23,6 @@ import models.responses.{SubmissionErrorResponse, SubmissionResponse}
 import models.{MinimalDetails, NormalMode, PersonName, QtNumber, SessionData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.PsaDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.PsaDeclarationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PsaDeclarationControllerSpec extends SpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

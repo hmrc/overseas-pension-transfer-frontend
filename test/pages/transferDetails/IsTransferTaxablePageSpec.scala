@@ -20,10 +20,8 @@ import base.SpecBase
 import controllers.transferDetails.routes
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.{AmendCheckMode, ApplicableTaxExclusions, CheckMode, FinalCheckMode, NormalMode, UserAnswers, WhyTransferIsNotTaxable}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class IsTransferTaxablePageSpec extends SpecBase {
 
   ".nextPage" - {
 

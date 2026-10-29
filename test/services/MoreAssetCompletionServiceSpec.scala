@@ -24,16 +24,13 @@ import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks.*
-import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MoreAssetCompletionServiceSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
+class MoreAssetCompletionServiceSpec extends SpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

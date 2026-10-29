@@ -20,19 +20,17 @@ import base.SpecBase
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 
 import scala.concurrent.Future
 
-class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class KeepAliveControllerSpec extends SpecBase {
 
   private val sessionData = SessionData(
     "sessionId",
-    userAnswersTransferNumber,
+    testTransferNumber,
     PensionSchemeDetails(
       SrnNumber("12345"),
       PstrNumber("12345678AB"),
@@ -48,7 +46,7 @@ class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "when the user has session data" - {
 
       "must refresh any lock, keep the answers alive and return OK" in {
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(sessionData)))
         when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
         when(mockMongoLockRepository.refreshExpiry(any(), any())).thenReturn(Future.successful(true))
         val application =

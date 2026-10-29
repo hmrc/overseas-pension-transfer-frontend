@@ -16,49 +16,48 @@
 
 package viewmodels
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import base.SpecBase
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessagesApi
 
-class FooterLinkSpec extends AnyWordSpec with Matchers {
+class FooterLinkSpec extends SpecBase {
 
   implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
 
-  "FooterLink Build" should {
+  "FooterLink Build" - {
 
     "return only returnDashboardLink when showStartFooter is true" in {
       val result = FooterLink.build(showStartFooter = true)
 
-      result           should have length 1
-      result.head.id shouldBe "returnDashboardLink"
+      result must have length 1
+      result.head.id mustBe "returnDashboardLink"
     }
 
     "return only returnDashboardLink when showCYAFooter is true" in {
       val result = FooterLink.build(showCYAFooter = true)
 
-      result           should have length 1
-      result.head.id shouldBe "returnDashboardLink"
+      result must have length 1
+      result.head.id mustBe "returnDashboardLink"
     }
 
     "return discardReportLink and returnDashboardLink when showTaskListFooter is true" in {
       val result = FooterLink.build(showTaskListFooter = true)
 
-      result           should have length 2
-      result.map(_.id) should contain allOf ("discardReportLink", "returnDashboardLink")
+      result           must have length 2
+      result.map(_.id) must contain allOf ("discardReportLink", "returnDashboardLink")
     }
 
     "return returnTaskListLink when only showPageFooter is true" in {
       val result = FooterLink.build(showPageFooter = true)
 
-      result           should have length 1
-      result.head.id shouldBe "returnTaskListLink"
+      result must have length 1
+      result.head.id mustBe "returnTaskListLink"
     }
 
     "return nothing if all flags are false" in {
       val result = FooterLink.build(showPageFooter = false)
 
-      result shouldBe empty
+      result mustBe empty
     }
   }
 }

@@ -19,14 +19,13 @@ package viewmodels.checkAnswers.transferDetails
 import base.SpecBase
 import models.ApplicableTaxExclusions.{Occupational, PublicService, Resident}
 import models.{ApplicableTaxExclusions, CheckMode}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class ApplicableTaxExclusionsSummarySpec extends AnyFreeSpec with SpecBase {
+class ApplicableTaxExclusionsSummarySpec extends SpecBase {
 
   "ApplicableTaxExclusionsSummary" - {
     implicit val messages: Messages = stubMessages()

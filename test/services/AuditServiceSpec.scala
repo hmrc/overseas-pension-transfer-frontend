@@ -16,6 +16,7 @@
 
 package services
 
+import base.SpecBase
 import config.FrontendAppConfig
 import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.{PsaId, PsaUser}
@@ -23,10 +24,7 @@ import models.{PensionSchemeDetails, PstrNumber, SrnNumber, TransferNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,7 +34,7 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
+class AuditServiceSpec extends SpecBase {
 
   private val mockAuditConnector: AuditConnector    = mock[AuditConnector]
   private val mockAppConfig                         = mock[FrontendAppConfig]

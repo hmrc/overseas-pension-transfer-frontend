@@ -16,7 +16,7 @@
 
 package controllers.qropsSchemeManagerDetails
 
-import base.{AddressBase, SpecBase}
+import base.AddressBase
 import controllers.routes as controllerRoutes
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.NormalMode
@@ -25,8 +25,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +35,7 @@ import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 
 import scala.concurrent.Future
 
-class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with AddressBase {
+class SchemeManagersAddressControllerSpec extends AddressBase {
 
   private val formProvider = new SchemeManagersAddressFormProvider()
   private val form         = formProvider()

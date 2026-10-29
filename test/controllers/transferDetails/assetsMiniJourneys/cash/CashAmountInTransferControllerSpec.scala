@@ -22,8 +22,6 @@ import forms.transferDetails.CashAmountInTransferFormProvider
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.CashAmountInTransferView
 
 import scala.concurrent.Future
 
-class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class CashAmountInTransferControllerSpec extends SpecBase {
 
   val formProvider = new CashAmountInTransferFormProvider()
   val form         = formProvider()

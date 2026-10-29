@@ -18,8 +18,6 @@ package controllers.transferDetails
 
 import base.SpecBase
 import models.{AmendCheckMode, CheckMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -28,7 +26,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.transferDetails.TransferDetailsCYAView
 
-class TransferDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class TransferDetailsCYAControllerSpec extends SpecBase {
 
   private lazy val onPageLoadRoute = controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
 
