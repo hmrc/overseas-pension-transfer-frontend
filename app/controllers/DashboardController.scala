@@ -64,13 +64,13 @@ class DashboardController @Inject() (
         sessionRepository.clear(id) flatMap { _ =>
           repo.get(id).flatMap {
             case None                =>
-              logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for this customer")
+              logger.warn(s"No dashboard data found for this customer")
               Future.successful(Redirect(DashboardPage.nextPageRecovery()))
             case Some(dashboardData) =>
               dashboardData
                 .get(PensionSchemeDetailsQuery)
                 .fold {
-                  logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
+                  logger.warn(s"Missing PensionSchemeDetails for this customer")
                   Future.successful(Redirect(DashboardPage.nextPageRecovery()))
                 } { pensionSchemeDetails =>
                   releaseLocks(dashboardData.get(TransfersOverviewQuery).fold[Seq[AllTransfersItem]](Nil)(identity))
@@ -94,7 +94,7 @@ class DashboardController @Inject() (
     val params     = TransferReportQueryParams.fromRequest(request)
     val transferId = params.transferId.getOrElse(TransferId("-"))
     val pstr       = params.pstr.getOrElse {
-      throw new IllegalStateException("[DashboardController][onTransferClick] Missing PSTR in query params")
+      throw new IllegalStateException("Missing PSTR in query params")
     }
 
     if (params.qtStatus.contains(QtStatus.InProgress)) {
@@ -143,7 +143,7 @@ class DashboardController @Inject() (
       .flatMap {
         _.fold(
           err => {
-            logger.warn(s"[DashboardController] getAllTransfersData failed: $err")
+            logger.warn(err.toString)
             Future.successful(Redirect(DashboardPage.nextPageRecovery()))
           },
           updatedData => {
@@ -239,10 +239,10 @@ class DashboardController @Inject() (
         transfers.map { transfer =>
           transfer.transferId match {
             case TransferNumber(transferRef) =>
-              logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
+              logger.info(s"lock released for $transferRef")
               lockService.releaseLock(transferRef, request.authenticatedUser.owner())
             case QtNumber(qtReference)       =>
-              logger.info(s"[DashboardController][onPageLoad] lock released for $qtReference")
+              logger.info(s"lock released for $qtReference")
               lockService.releaseLock(qtReference, request.authenticatedUser.owner())
           }
         }

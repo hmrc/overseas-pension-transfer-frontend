@@ -16,25 +16,21 @@
 
 package controllers.actions
 
-import utils.AppUtils
-import queries.PensionSchemeDetailsQuery
-import play.api.mvc.ActionRefiner
-import play.api.mvc.Result
 import com.google.inject.Inject
 import connectors.PensionSchemeConnector
 import controllers.routes
+import models.{PensionSchemeDetails, SrnNumber}
+import models.requests.{IdentifierRequest, SchemeRequest}
 import play.api.Logging
-import models.PensionSchemeDetails
-import models.SrnNumber
+import play.api.mvc.{ActionRefiner, Result}
 import play.api.mvc.Results.Redirect
+import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import models.requests.IdentifierRequest
-import models.requests.SchemeRequest
+import utils.AppUtils
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeDataActionImpl @Inject() (
   pensionSchemeConnector: PensionSchemeConnector,
@@ -65,11 +61,11 @@ class SchemeDataActionImpl @Inject() (
                   )
                 )
               case Left(err)                    =>
-                logger.error(s"[SchemeDataAction][refine]: Error has occurred during request of scheme details: $err")
+                logger.error(s"Error has occurred during request of scheme details: $err")
                 Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
             }
           } else {
-            logger.error(s"[SchemeDataAction][refine]: User isn't associated to a scheme")
+            logger.error("User isn't associated to a scheme")
             Future.successful(Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad())))
           }
         }
@@ -92,7 +88,7 @@ class SchemeDataActionImpl @Inject() (
                   }
                 }
               case None                                           =>
-                logger.error(s"[SchemeDataAction][refine]: Dashboard Data requires PensionSchemeDetails")
+                logger.error("Dashboard Data requires PensionSchemeDetails")
                 Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
 
             }

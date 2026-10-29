@@ -50,7 +50,7 @@ class LockService @Inject() (
 
     lockRepository.takeLock(transferId.value, owner).flatMap {
       case Some(_) =>
-        logger.info(s"[LockService] Lock acquired for ${transferId.value} by $owner")
+        logger.info(s"Lock acquired for ${transferId.value} by $owner")
         auditService.audit(
           ReportStartedAuditModel.build(
             transferId,
@@ -64,7 +64,7 @@ class LockService @Inject() (
         Future.successful(true)
 
       case None =>
-        logger.warn(s"[LockService] Lock already taken for ${transferId.value}")
+        logger.warn(s"Lock already taken for ${transferId.value}")
         auditService.audit(
           ReportStartedAuditModel.build(
             transferId,

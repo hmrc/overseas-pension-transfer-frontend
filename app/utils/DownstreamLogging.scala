@@ -16,52 +16,29 @@
 
 package utils
 
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpResponse
-import models.BackendError
-import play.api.Logging
-import play.api.libs.json.JsPath
-import play.api.libs.json.JsonValidationError
+import play.api.libs.json.{JsPath, JsonValidationError}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-trait DownstreamLogging extends Logging {
-
+object DownstreamLogging {
   val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
     errors =>
       errors.map(_._1.toString()).mkString(" | ")
   }
 
-  private def correlationFromResponse(response: HttpResponse): Option[String] =
-    response
-      .header("X-Request-ID")
-      .orElse(response.header("X-Correlation-ID"))
-
-  private def correlationFromHeaderCarrier(hc: HeaderCarrier): Option[String] =
-    hc.requestId.map(_.value)
-
-  /** Log a backend HTTP failure (non-2xx) and return BackendError for wrapping. */
-  def logBackendError(origin: String, response: HttpResponse): BackendError = {
+  def withDownstreamErrorMessage[A](response: HttpResponse)(block: String => A): A = {
     val correlationId = correlationFromResponse(response).getOrElse("-")
     val reason        = response.header("Status").getOrElse("Unknown")
-    val body          = response.body
-
-    val err = BackendError(
-      correlationId = correlationId,
-      status = response.status,
-      reason = reason,
-      origin = origin,
-      body = body
-    )
-
-    logger.error(s"Downstream failure: ${err.message} body=$body")
-    err
+    val status        = response.status
+    block(s"$status $reason (correlationId=$correlationId)")
   }
 
-  /** Log an exception (network / mongo / timeouts etc) and produce a simple message */
-  def logNonHttpError(origin: String, hc: HeaderCarrier, ex: Throwable): String = {
+  def withNonHttpErrorMessage[A](hc: HeaderCarrier, ex: Throwable)(block: String => A): A = {
     val correlationId = correlationFromHeaderCarrier(hc).getOrElse("-")
-    val message       = s"[$origin] non-http-exception (correlationId=$correlationId): ${ex.getMessage}"
-    logger.error(message, ex)
-    message
+    block(s"Non-http-exception (correlationId=$correlationId): ${ex.getMessage}")
   }
 
+  private def correlationFromResponse(response: HttpResponse): Option[String] =
+    response.header("X-Request-ID").orElse(response.header("X-Correlation-ID"))
+
+  private def correlationFromHeaderCarrier(hc: HeaderCarrier): Option[String] = hc.requestId.map(_.value)
 }

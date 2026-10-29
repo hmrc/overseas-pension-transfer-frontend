@@ -34,7 +34,6 @@ package utils
 
 import controllers.helpers.ErrorHandling
 import controllers.routes
-import models.BackendError
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.typedmap.TypedMap
@@ -48,8 +47,6 @@ import scala.concurrent.Future
 
 class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
 
-  object TestLogging extends DownstreamLogging
-
   object TestController extends BaseController with ErrorHandling {
 
     override protected def controllerComponents: ControllerComponents =
@@ -60,9 +57,8 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "DownstreamLogging" should {
-
-    "build BackendError with correlation ID from response" in {
+  "withDownstreamErrorMessage" should {
+    "build error message with correlation ID from response" in {
       val response = HttpResponse(
         status = INTERNAL_SERVER_ERROR,
         body = "boom",
@@ -72,11 +68,8 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
         )
       )
 
-      val err = TestLogging.logBackendError("TestOrigin", response)
-
-      err mustBe BackendError("corr-123", INTERNAL_SERVER_ERROR, "InternalServerError", "TestOrigin", "boom")
-      err.message must include("TestOrigin")
-      err.message must include("corr-123")
+      val err = DownstreamLogging.withDownstreamErrorMessage(response)(identity)
+      err mustBe "500 InternalServerError (correlationId=corr-123)"
     }
 
     "fallback to '-' correlation ID if none found" in {
@@ -86,31 +79,27 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
         headers = Map.empty
       )
 
-      val err = TestLogging.logBackendError("AnotherOrigin", response)
+      val err = DownstreamLogging.withDownstreamErrorMessage(response)(identity)
 
-      err.correlationId mustBe "-"
-      err.status mustBe BAD_REQUEST
-      err.reason mustBe "Unknown"
+      err mustBe "400 Unknown (correlationId=-)"
     }
+  }
+  "getNonHttpErrorMessage"     should {
 
-    "logNonHttpError returns message with correlation ID from HeaderCarrier" in {
+    "return message with correlation ID from HeaderCarrier" in {
       implicit val hc: HeaderCarrier = HeaderCarrier(requestId = Some(RequestId("req-999")))
       val ex                         = new RuntimeException("db down")
 
-      val message = TestLogging.logNonHttpError("DBService", hc, ex)
-
-      message must include("DBService")
+      val message = DownstreamLogging.withNonHttpErrorMessage(hc, ex)(identity)
       message must include("req-999")
       message must include("db down")
     }
 
-    "logNonHttpError falls back to '-' if no correlation ID" in {
+    "fall back to '-' if no correlation ID" in {
       implicit val hc: HeaderCarrier = HeaderCarrier()
       val ex                         = new IllegalStateException("oops")
 
-      val message = TestLogging.logNonHttpError("NoCorrService", hc, ex)
-
-      message must include("NoCorrService")
+      val message = DownstreamLogging.withNonHttpErrorMessage(hc, ex)(identity)
       message must include("correlationId=-")
       message must include("oops")
     }
