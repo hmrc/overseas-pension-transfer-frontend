@@ -129,6 +129,19 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           ).toString
         }
       }
+      "must redirect to journey recover when session data submitted date not present in AmendCheckMode" in {
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(emptySessionData)))
+
+        val currentUserAnswers = emptyUserAnswers
+        val application        = applicationBuilder(userAnswers = currentUserAnswers).build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.DateOfTransferController.onPageLoad(AmendCheckMode).url)
+          val result  = route(application, request).value
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+        }
+      }
     }
 
     "onSubmit (POST)" - {

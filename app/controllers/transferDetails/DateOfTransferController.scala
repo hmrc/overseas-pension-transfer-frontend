@@ -25,7 +25,7 @@ import org.apache.pekko.Done
 import pages.transferDetails.DateOfTransferPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, TransferDetailsRecordVersionQuery}
 import repositories.SessionRepository
 import services.UserAnswersService
@@ -54,8 +54,11 @@ class DateOfTransferController @Inject() (
     with I18nSupport
     with ErrorHandling {
 
-  private def isAmend(mode: Mode): Boolean =
-    mode == models.CheckMode || mode == models.AmendCheckMode
+  private def isAmendAfterSubmit(mode: Mode): Boolean =
+    mode == models.AmendCheckMode
+
+  private def isAmendBeforeSubmit(mode: Mode): Boolean =
+    mode == models.CheckMode
 
   private def prepareForm(form: Form[LocalDate], userAnswers: UserAnswers): Form[LocalDate] =
     userAnswers.get(DateOfTransferPage).fold(form)(form.fill)
@@ -89,25 +92,37 @@ class DateOfTransferController @Inject() (
         }
       )
 
-  private def dateSubmitted()(implicit request: DisplayRequest[AnyContent]): Future[LocalDate] = {
+  private def withDateSubmitted(
+    block: LocalDate => Future[Result]
+  )(implicit request: DisplayRequest[AnyContent]): Future[Result] = {
     val futureOptionDateSubmitted: Future[Option[LocalDate]] =
       sessionRepository.get(request.authenticatedUser.internalId).map {
         case Some(sessionData) =>
           sessionData.get(DateSubmittedQuery).map(LocalDate.ofInstant(_, ZoneId.of("Europe/London")))
-        case _                 => None
+        case _                 =>
+
+          None
       }
-    futureOptionDateSubmitted.map(
-      _.fold[LocalDate](throw new IllegalStateException("Original submission date has not been found"))(identity)
+    futureOptionDateSubmitted.flatMap(
+      _.fold(Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())))(block(_))
     )
   }
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
-      if (isAmend(mode)) {
-        dateSubmitted().map { originalDate =>
+      if (isAmendAfterSubmit(mode)) {
+        withDateSubmitted { originalDate =>
           val form = amendDateOfTransferFormProvider(originalDate)
-          Ok(view(prepareForm(form, request.userAnswers), mode))
+          Future.successful(Ok(view(prepareForm(form, request.userAnswers), mode)))
         }
+      } else if (isAmendBeforeSubmit(mode)) {
+        val preparedForm = request.userAnswers.get(DateOfTransferPage) match {
+          case None        => formProvider()
+          case Some(value) => formProvider().fill(value)
+        }
+
+        Future.successful(Ok(view(prepareForm(preparedForm, request.userAnswers), mode)))
+
       } else {
         Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
       }
@@ -115,8 +130,8 @@ class DateOfTransferController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
-      if (isAmend(mode)) {
-        dateSubmitted().flatMap { originalDate =>
+      if (isAmendAfterSubmit(mode)) {
+        withDateSubmitted { originalDate =>
           val form = amendDateOfTransferFormProvider(originalDate)
           handleSubmission(form, mode, request.userAnswers)
         }
