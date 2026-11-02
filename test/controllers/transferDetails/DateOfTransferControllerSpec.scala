@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, NormalMode, SessionData}
+import models.{AmendCheckMode, CheckMode, NormalMode, SessionData}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -94,6 +94,39 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
+        }
+      }
+
+      "must return OK in CheckMode when the question has previously been answered" in {
+
+        val previouslyEnteredDate = today.minusDays(5)
+
+        val userAnswers = emptyUserAnswers
+          .set(DateOfTransferPage, previouslyEnteredDate)
+          .success
+          .value
+
+        val application = applicationBuilder(userAnswers = userAnswers).build()
+
+        running(application) {
+
+          val checkModeRoute = routes.DateOfTransferController.onPageLoad(CheckMode).url
+
+          val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, checkModeRoute)
+
+          val result = route(application, request).value
+          val view   = application.injector.instanceOf[DateOfTransferView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual view(
+            form.fill(previouslyEnteredDate),
+            CheckMode
+          )(
             fakeDisplayRequest(request),
             messages(application)
           ).toString

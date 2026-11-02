@@ -20,7 +20,7 @@ import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.{AmendDateOfTransferFormProvider, DateOfTransferFormProvider}
 import models.requests.DisplayRequest
-import models.{AmendCheckMode, Mode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, Mode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.DateOfTransferPage
 import play.api.data.Form
@@ -55,10 +55,10 @@ class DateOfTransferController @Inject() (
     with ErrorHandling {
 
   private def isAmendAfterSubmit(mode: Mode): Boolean =
-    mode == models.AmendCheckMode
+    mode == AmendCheckMode
 
   private def isAmendBeforeSubmit(mode: Mode): Boolean =
-    mode == models.CheckMode
+    mode == CheckMode
 
   private def prepareForm(form: Form[LocalDate], userAnswers: UserAnswers): Form[LocalDate] =
     userAnswers.get(DateOfTransferPage).fold(form)(form.fill)
@@ -98,9 +98,10 @@ class DateOfTransferController @Inject() (
     val futureOptionDateSubmitted: Future[Option[LocalDate]] =
       sessionRepository.get(request.authenticatedUser.internalId).map {
         case Some(sessionData) =>
-          sessionData.get(DateSubmittedQuery).map(LocalDate.ofInstant(_, ZoneId.of("Europe/London")))
-        case _                 =>
-
+          sessionData
+            .get(DateSubmittedQuery)
+            .map(LocalDate.ofInstant(_, ZoneId.of("Europe/London")))
+        case None              =>
           None
       }
     futureOptionDateSubmitted.flatMap(
@@ -122,14 +123,13 @@ class DateOfTransferController @Inject() (
         }
 
         Future.successful(Ok(view(prepareForm(preparedForm, request.userAnswers), mode)))
-
       } else {
         Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
       }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
       if (isAmendAfterSubmit(mode)) {
         withDateSubmitted { originalDate =>
           val form = amendDateOfTransferFormProvider(originalDate)
@@ -138,5 +138,5 @@ class DateOfTransferController @Inject() (
       } else {
         handleSubmission(formProvider(), mode, request.userAnswers)
       }
-  }
+    }
 }
