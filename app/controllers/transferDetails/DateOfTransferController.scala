@@ -56,15 +56,15 @@ class DateOfTransferController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
-      withSubmittedDateIfSubmitted(mode) { optOriginalDate =>
-        val form: Form[LocalDate] = (mode, optOriginalDate) match {
-          case (AmendCheckMode, Some(originalDate)) => amendDateOfTransferFormProvider(originalDate)
-          case (CheckMode, _)                       =>
+      withSubmittedDateIfSubmitted(mode) { optDateSubmitted =>
+        val form: Form[LocalDate] = (mode, optDateSubmitted) match {
+          case (AmendCheckMode, Some(dateSubmitted)) => amendDateOfTransferFormProvider(dateSubmitted)
+          case (CheckMode, _)                        =>
             request.userAnswers.get(DateOfTransferPage) match {
               case None        => formProvider()
               case Some(value) => formProvider().fill(value)
             }
-          case _                                    => formProvider()
+          case _                                     => formProvider()
         }
         Future.successful(Ok(view(prepareForm(form, request.userAnswers), mode)))
       }
@@ -72,11 +72,11 @@ class DateOfTransferController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
-      withSubmittedDateIfSubmitted(mode) { optOriginalDate =>
-        (mode, optOriginalDate) match {
-          case (AmendCheckMode, Some(originalDate)) =>
-            handleSubmission(amendDateOfTransferFormProvider(originalDate), mode, request.userAnswers)
-          case _                                    => handleSubmission(formProvider(), mode, request.userAnswers)
+      withSubmittedDateIfSubmitted(mode) { optDateSubmitted =>
+        (mode, optDateSubmitted) match {
+          case (AmendCheckMode, Some(dateSubmitted)) =>
+            handleSubmission(amendDateOfTransferFormProvider(dateSubmitted), mode, request.userAnswers)
+          case _                                     => handleSubmission(formProvider(), mode, request.userAnswers)
         }
       }
     }
@@ -92,8 +92,8 @@ class DateOfTransferController @Inject() (
           case None              => None
         }
         futureOptionDateSubmitted.flatMap {
-          case sld @ Some(_) => block(sld)
-          case None          => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+          case optDateSubmitted @ Some(_) => block(optDateSubmitted)
+          case None                       => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
         }
       case _              => block(None)
     }
@@ -102,10 +102,10 @@ class DateOfTransferController @Inject() (
     userAnswers.get(DateOfTransferPage).fold(form)(form.fill)
 
   private def handleSubmission(
-                                form: Form[LocalDate],
-                                mode: Mode,
-                                userAnswers: UserAnswers
-                              )(implicit request: DisplayRequest[_]) =
+    form: Form[LocalDate],
+    mode: Mode,
+    userAnswers: UserAnswers
+  )(implicit request: DisplayRequest[_]) =
     form
       .bindFromRequest()
       .fold(
@@ -128,5 +128,5 @@ class DateOfTransferController @Inject() (
             case Left(err)   => onFailureRedirect(err)
           }
         }
-      )    
+      )
 }
