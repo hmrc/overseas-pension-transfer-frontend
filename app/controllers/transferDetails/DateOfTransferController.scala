@@ -54,12 +54,6 @@ class DateOfTransferController @Inject() (
     with I18nSupport
     with ErrorHandling {
 
-  private def isAmendAfterSubmit(mode: Mode): Boolean =
-    mode == AmendCheckMode
-
-  private def isAmendBeforeSubmit(mode: Mode): Boolean =
-    mode == CheckMode
-
   private def prepareForm(form: Form[LocalDate], userAnswers: UserAnswers): Form[LocalDate] =
     userAnswers.get(DateOfTransferPage).fold(form)(form.fill)
 
@@ -111,26 +105,27 @@ class DateOfTransferController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
-      if (isAmendAfterSubmit(mode)) {
-        withDateSubmitted { originalDate =>
-          val form = amendDateOfTransferFormProvider(originalDate)
-          Future.successful(Ok(view(prepareForm(form, request.userAnswers), mode)))
-        }
-      } else if (isAmendBeforeSubmit(mode)) {
-        val preparedForm = request.userAnswers.get(DateOfTransferPage) match {
-          case None        => formProvider()
-          case Some(value) => formProvider().fill(value)
-        }
+      mode match {
+        case AmendCheckMode =>
+          withDateSubmitted { originalDate =>
+            val form = amendDateOfTransferFormProvider(originalDate)
+            Future.successful(Ok(view(prepareForm(form, request.userAnswers), mode)))
+          }
+        case CheckMode      =>
+          val preparedForm = request.userAnswers.get(DateOfTransferPage) match {
+            case None        => formProvider()
+            case Some(value) => formProvider().fill(value)
+          }
 
-        Future.successful(Ok(view(prepareForm(preparedForm, request.userAnswers), mode)))
-      } else {
-        Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
+          Future.successful(Ok(view(prepareForm(preparedForm, request.userAnswers), mode)))
+        case _              =>
+          Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
       }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
-      if (isAmendAfterSubmit(mode)) {
+      if (mode == AmendCheckMode) {
         withDateSubmitted { originalDate =>
           val form = amendDateOfTransferFormProvider(originalDate)
           handleSubmission(form, mode, request.userAnswers)
