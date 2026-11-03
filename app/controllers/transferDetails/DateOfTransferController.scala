@@ -86,52 +86,52 @@ class DateOfTransferController @Inject() (
         }
       )
 
-  private def withDateSubmitted(
-    block: LocalDate => Future[Result]
-  )(implicit request: DisplayRequest[AnyContent]): Future[Result] = {
-    val futureOptionDateSubmitted: Future[Option[LocalDate]] =
-      sessionRepository.get(request.authenticatedUser.internalId).map {
-        case Some(sessionData) =>
-          sessionData
-            .get(DateSubmittedQuery)
-            .map(LocalDate.ofInstant(_, ZoneId.of("Europe/London")))
-        case None              =>
-          None
-      }
-    futureOptionDateSubmitted.flatMap(
-      _.fold(Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())))(block(_))
-    )
-  }
-
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
-      mode match {
-        case AmendCheckMode =>
-          withDateSubmitted { originalDate =>
-            val form = amendDateOfTransferFormProvider(originalDate)
-            Future.successful(Ok(view(prepareForm(form, request.userAnswers), mode)))
-          }
-        case CheckMode      =>
-          val preparedForm = request.userAnswers.get(DateOfTransferPage) match {
-            case None        => formProvider()
-            case Some(value) => formProvider().fill(value)
-          }
-
-          Future.successful(Ok(view(prepareForm(preparedForm, request.userAnswers), mode)))
-        case _              =>
-          Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
+      withSubmittedDateIfSubmitted(mode) { optOriginalDate =>
+        val fm = (mode, optOriginalDate) match {
+          case (AmendCheckMode, Some(originalDate)) => amendDateOfTransferFormProvider(originalDate)
+          case (CheckMode, _)                       =>
+            request.userAnswers.get(DateOfTransferPage) match {
+              case None        => formProvider()
+              case Some(value) => formProvider().fill(value)
+            }
+          case _                                    => formProvider()
+        }
+        Future.successful(Ok(view(prepareForm(fm, request.userAnswers), mode)))
       }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
-      if (mode == AmendCheckMode) {
-        withDateSubmitted { originalDate =>
-          val form = amendDateOfTransferFormProvider(originalDate)
-          handleSubmission(form, mode, request.userAnswers)
-        }
-      } else {
-        handleSubmission(formProvider(), mode, request.userAnswers)
+      mode match {
+        case AmendCheckMode =>
+          withSubmittedDateIfSubmitted(mode) {
+            case None               => futureJourneyRecoveryController
+            case Some(originalDate) =>
+              handleSubmission(amendDateOfTransferFormProvider(originalDate), mode, request.userAnswers)
+          }
+        case _              => handleSubmission(formProvider(), mode, request.userAnswers)
       }
     }
+
+  private def withSubmittedDateIfSubmitted(mode: Mode)(
+    block: Option[LocalDate] => Future[Result]
+  )(implicit request: DisplayRequest[AnyContent]): Future[Result] =
+    mode match {
+      case AmendCheckMode =>
+        val futureOptionDateSubmitted = sessionRepository.get(request.authenticatedUser.internalId).map {
+          case Some(sessionData) =>
+            sessionData.get(DateSubmittedQuery).map(LocalDate.ofInstant(_, ZoneId.of("Europe/London")))
+          case None              => None
+        }
+        futureOptionDateSubmitted.flatMap {
+          case sld @ Some(_) => block(sld)
+          case None          => futureJourneyRecoveryController
+        }
+      case _              => block(None)
+    }
+
+  private def futureJourneyRecoveryController: Future[Result] =
+    Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
 }
