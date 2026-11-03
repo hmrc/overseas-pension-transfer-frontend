@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, NormalMode, SessionData}
+import models.{AmendCheckMode, CheckMode, NormalMode, SessionData}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -100,6 +100,39 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         }
       }
 
+      "must return OK in CheckMode when the question has previously been answered" in {
+
+        val previouslyEnteredDate = today.minusDays(5)
+
+        val userAnswers = emptyUserAnswers
+          .set(DateOfTransferPage, previouslyEnteredDate)
+          .success
+          .value
+
+        val application = applicationBuilder(userAnswers = userAnswers).build()
+
+        running(application) {
+
+          val checkModeRoute = routes.DateOfTransferController.onPageLoad(CheckMode).url
+
+          val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, checkModeRoute)
+
+          val result = route(application, request).value
+          val view   = application.injector.instanceOf[DateOfTransferView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual view(
+            form.fill(previouslyEnteredDate),
+            CheckMode
+          )(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
+        }
+      }
+
       "must return OK and use the amend form when in AmendCheckMode" in {
         val sessionData: SessionData = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
         when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
@@ -127,6 +160,19 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
             fakeDisplayRequest(request),
             messages(application)
           ).toString
+        }
+      }
+      "must redirect to journey recover when session data submitted date not present in AmendCheckMode" in {
+        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(emptySessionData)))
+
+        val currentUserAnswers = emptyUserAnswers
+        val application        = applicationBuilder(userAnswers = currentUserAnswers).build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.DateOfTransferController.onPageLoad(AmendCheckMode).url)
+          val result  = route(application, request).value
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
