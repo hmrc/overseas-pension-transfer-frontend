@@ -22,8 +22,6 @@ import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCla
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShar
 
 import scala.concurrent.Future
 
-class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class UnquotedSharesClassControllerSpec extends SpecBase {
 
   private val formProvider = new UnquotedSharesClassFormProvider()
   private val form         = formProvider()
@@ -53,7 +51,7 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val view = application.injector.instanceOf[UnquotedSharesClassView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +72,7 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -97,7 +95,7 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual UnquotedSharesClassPage(index)
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -121,7 +119,7 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual UnquotedSharesClassPage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -143,7 +141,7 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

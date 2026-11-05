@@ -24,21 +24,19 @@ import models.responses.UserAnswersErrorResponse
 import models.{PstrNumber, QtNumber, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.libs.json.{JsObject, JsString}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
+class CollectSubmittedVersionsServiceSpec extends SpecBase {
 
   implicit val hc: HeaderCarrier             = HeaderCarrier()
   private val userAnswersDTO: UserAnswersDTO =
-    UserAnswersDTO(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+    UserAnswersDTO(testTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
   private val userAnswers                    =
-    UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+    UserAnswers(testTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
 
   private val mockUserAnswersConnector = mock[UserAnswersConnector]
 

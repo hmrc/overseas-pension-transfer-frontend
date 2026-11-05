@@ -18,8 +18,6 @@ package controllers.qropsDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -27,7 +25,7 @@ import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.qropsDetails.QROPSDetailsCYAView
 
-class QROPSDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSDetailsCYAControllerSpec extends SpecBase {
 
   private lazy val onPageLoadRoute = controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad().url
   private lazy val onSubmitRoute   = controllers.qropsDetails.routes.QROPSDetailsCYAController.onSubmit().url
@@ -51,7 +49,7 @@ class QROPSDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
             QROPSDetailsSummary.rows(CheckMode, userAnswers)
           )
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual
             view(summaryList)(fakeDisplayRequest(request, userAnswers), msgs).toString
         }
@@ -68,7 +66,7 @@ class QROPSDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
         }
       }

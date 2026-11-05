@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.qropsDetails.QROPSNameView
 
 import scala.concurrent.Future
 
-class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSNameControllerSpec extends SpecBase {
 
   private val formProvider = new QROPSNameFormProvider()
   private val form         = formProvider()
@@ -55,7 +53,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val view = application.injector.instanceOf[QROPSNameView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -76,7 +74,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -105,7 +103,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QROPSNamePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -125,7 +123,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -154,7 +152,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

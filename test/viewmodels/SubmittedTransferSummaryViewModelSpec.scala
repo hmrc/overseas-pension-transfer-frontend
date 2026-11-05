@@ -17,14 +17,13 @@
 package viewmodels
 
 import base.SpecBase
-import org.scalatest.freespec.AnyFreeSpec
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Instant, LocalDateTime, ZoneId}
 
-class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
+class SubmittedTransferSummaryViewModelSpec extends SpecBase {
 
   implicit val messages: Messages = messages(applicationBuilder().build())
   val userAnswers                 = emptyUserAnswers.copy(id = testQtNumber)

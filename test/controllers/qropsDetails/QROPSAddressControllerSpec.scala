@@ -27,8 +27,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSAddressPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -39,7 +37,7 @@ import views.html.qropsDetails.QROPSAddressView
 
 import scala.concurrent.Future
 
-class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
+class QROPSAddressControllerSpec extends AddressBase {
 
   private val formProvider = new QROPSAddressFormProvider()
   private val form         = formProvider()
@@ -77,7 +75,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
@@ -103,7 +101,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
@@ -143,7 +141,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           QROPSAddressPage.nextPage(NormalMode, emptyUserAnswers).url
       }
@@ -169,7 +167,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
           countrySelectViewModel,
@@ -209,7 +207,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }

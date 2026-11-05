@@ -24,8 +24,6 @@ import models.assets.OtherAssetsEntry
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -35,7 +33,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConf
 
 import scala.concurrent.Future
 
-class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsConfirmRemovalControllerSpec extends SpecBase {
 
   private val formProvider = new OtherAssetsConfirmRemovalFormProvider()
   private val form         = formProvider()
@@ -53,7 +51,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
         val view = application.injector.instanceOf[OtherAssetsConfirmRemovalView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -80,7 +78,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController
           .onPageLoad(NormalMode)
           .url
@@ -102,7 +100,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, 1)(
           fakeDisplayRequest(request),
           messages(application)
@@ -131,7 +129,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }

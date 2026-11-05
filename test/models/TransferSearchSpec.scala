@@ -38,7 +38,7 @@ class TransferSearchSpec extends AnyFreeSpec with SpecBase {
         withId(testQtNumber)
       )
 
-      TransferSearch.filterTransfers(transfers, "") mustBe transfers
+      TransferSearch.filterTransfers(transfers, "")    mustBe transfers
       TransferSearch.filterTransfers(transfers, "   ") mustBe transfers
     }
 
@@ -49,10 +49,10 @@ class TransferSearchSpec extends AnyFreeSpec with SpecBase {
 
       val transfers = Seq(qt1, qt2, transferIdRef)
 
-      TransferSearch.filterTransfers(transfers, "QT123456") mustBe Seq(qt1)
-      TransferSearch.filterTransfers(transfers, "qt123456") mustBe Seq(qt1)
+      TransferSearch.filterTransfers(transfers, "QT123456")    mustBe Seq(qt1)
+      TransferSearch.filterTransfers(transfers, "qt123456")    mustBe Seq(qt1)
       TransferSearch.filterTransfers(transfers, "QT 12 34 56") mustBe Seq(qt1)
-      TransferSearch.filterTransfers(transfers, "QT999999") mustBe Seq(qt2)
+      TransferSearch.filterTransfers(transfers, "QT999999")    mustBe Seq(qt2)
     }
 
     "must handle NINO search with different cases and with space" in {
@@ -62,11 +62,11 @@ class TransferSearchSpec extends AnyFreeSpec with SpecBase {
 
       val transfers = Seq(a, b, c)
 
-      TransferSearch.filterTransfers(transfers, "AA123456A") mustBe Seq(a)
-      TransferSearch.filterTransfers(transfers, "aa123456a") mustBe Seq(a)
+      TransferSearch.filterTransfers(transfers, "AA123456A")     mustBe Seq(a)
+      TransferSearch.filterTransfers(transfers, "aa123456a")     mustBe Seq(a)
       TransferSearch.filterTransfers(transfers, "AA 12 34 56 A") mustBe Seq(a)
-      TransferSearch.filterTransfers(transfers, "BB123456B") mustBe Seq(b)
-      TransferSearch.filterTransfers(transfers, "CC123456C") mustBe Seq.empty
+      TransferSearch.filterTransfers(transfers, "BB123456B")     mustBe Seq(b)
+      TransferSearch.filterTransfers(transfers, "CC123456C")     mustBe Seq.empty
     }
 
     "must treat a non QT, non NINO term as a name search with a single token (matching first OR last name, case-insensitive)" in {
@@ -74,11 +74,11 @@ class TransferSearchSpec extends AnyFreeSpec with SpecBase {
       val janeSmith = withName(Some("Jane"), Some("Smith"))
       val transfers = Seq(johnDoe, janeSmith)
 
-      TransferSearch.filterTransfers(transfers, "john") mustBe Seq(johnDoe)
-      TransferSearch.filterTransfers(transfers, "doe") mustBe Seq(johnDoe)
-      TransferSearch.filterTransfers(transfers, "JoHn") mustBe Seq(johnDoe)
+      TransferSearch.filterTransfers(transfers, "john")     mustBe Seq(johnDoe)
+      TransferSearch.filterTransfers(transfers, "doe")      mustBe Seq(johnDoe)
+      TransferSearch.filterTransfers(transfers, "JoHn")     mustBe Seq(johnDoe)
       TransferSearch.filterTransfers(transfers, "  john  ") mustBe Seq(johnDoe)
-      TransferSearch.filterTransfers(transfers, "smith") mustBe Seq(janeSmith)
+      TransferSearch.filterTransfers(transfers, "smith")    mustBe Seq(janeSmith)
     }
 
     "must treat a two-token name search as first and last name, exact match, case-insensitive" in {
@@ -87,8 +87,8 @@ class TransferSearchSpec extends AnyFreeSpec with SpecBase {
       val aliceDoe  = withName(Some("Alice"), Some("Doe"))
       val transfers = Seq(johnDoe, johnSmith, aliceDoe)
 
-      TransferSearch.filterTransfers(transfers, "John Doe") mustBe Seq(johnDoe)
-      TransferSearch.filterTransfers(transfers, "john doe") mustBe Seq(johnDoe)
+      TransferSearch.filterTransfers(transfers, "John Doe")   mustBe Seq(johnDoe)
+      TransferSearch.filterTransfers(transfers, "john doe")   mustBe Seq(johnDoe)
       TransferSearch.filterTransfers(transfers, "John Smith") mustBe Seq(johnSmith)
     }
 

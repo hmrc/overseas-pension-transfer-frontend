@@ -24,8 +24,6 @@ import models.{NormalMode, PersonName}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.memberDetails.MemberNameView
 
 import scala.concurrent.Future
 
-class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberNameControllerSpec extends SpecBase {
 
   private val formProvider = new MemberNameFormProvider()
   private val form         = formProvider()
@@ -58,7 +56,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
@@ -74,7 +72,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(
           request,
           messages(application)
@@ -103,7 +101,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual MemberNamePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -123,7 +121,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
       }
     }
@@ -149,7 +147,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

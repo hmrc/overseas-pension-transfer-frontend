@@ -19,10 +19,8 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class QuotedSharesClassPageSpec extends SpecBase {
   private val index = 0
 
   ".nextPage" - {

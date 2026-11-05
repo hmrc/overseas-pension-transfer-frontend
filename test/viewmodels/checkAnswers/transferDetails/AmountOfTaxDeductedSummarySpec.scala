@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.transferDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class AmountOfTaxDeductedSummarySpec extends AnyFreeSpec with SpecBase {
+class AmountOfTaxDeductedSummarySpec extends SpecBase {
 
   "AmountOfTaxDeductedSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -33,9 +32,9 @@ class AmountOfTaxDeductedSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(AmountOfTaxDeductedPage, BigDecimal(12345.33)).success.value
       val result  = AmountOfTaxDeductedSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("amountOfTaxDeducted.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£12,345.33")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("amountOfTaxDeducted.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£12,345.33")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.AmountOfTaxDeductedController.onPageLoad(CheckMode).url
     }

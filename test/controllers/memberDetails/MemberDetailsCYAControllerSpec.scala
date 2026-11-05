@@ -17,14 +17,12 @@
 package controllers.memberDetails
 
 import base.SpecBase
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.govuk.SummaryListFluency
 import views.html.memberDetails.MemberDetailsCYAView
 
-class MemberDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
+class MemberDetailsCYAControllerSpec extends SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 
@@ -39,7 +37,7 @@ class MemberDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Summ
         val view = application.injector.instanceOf[MemberDetailsCYAView]
         val list = SummaryListViewModel(Seq.empty)
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(list)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -53,7 +51,7 @@ class MemberDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Summ
         val request = FakeRequest(POST, routes.MemberDetailsCYAController.onSubmit().url)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
       }
     }

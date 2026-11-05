@@ -23,8 +23,6 @@ import models.assets.{OtherAssetsEntry, OtherAssetsMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -33,7 +31,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmen
 
 import scala.concurrent.Future
 
-class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsAmendContinueControllerSpec extends SpecBase {
 
   private val formProvider = new OtherAssetsAmendContinueFormProvider()
   private val form         = formProvider()
@@ -63,7 +61,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[OtherAssetsAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -80,7 +78,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[OtherAssetsAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
           fakeDisplayRequest(request, ua),
           messages(application)
@@ -125,7 +123,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val expected  =
           OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -151,7 +149,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val expected  =
           OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -177,7 +175,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val expected  =
           OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -202,7 +200,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
         val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -228,7 +226,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val expected  =
           OtherAssetsAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -246,7 +244,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val view   = application.injector.instanceOf[OtherAssetsAmendContinueView]
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

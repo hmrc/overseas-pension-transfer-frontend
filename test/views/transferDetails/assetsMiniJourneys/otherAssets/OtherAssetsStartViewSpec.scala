@@ -41,7 +41,7 @@ class OtherAssetsStartViewSpec extends ViewBaseSpec {
       val paragraphs = doc(view(nextPage).body)
         .getElementsByClass("govuk-body")
 
-      paragraphs.size() must be > 0
+      paragraphs.size()           must be > 0
       paragraphs.first().text() mustBe messages("otherAssetsStart.text")
     }
 
@@ -49,9 +49,9 @@ class OtherAssetsStartViewSpec extends ViewBaseSpec {
       val button = doc(view(nextPage).body)
         .select("a.govuk-button")
 
-      button.size() mustBe 1
+      button.size()               mustBe 1
       button.first().attr("href") mustBe nextPage
-      button.first().text() must include(messages("site.continue"))
+      button.first().text()         must include(messages("site.continue"))
     }
   }
 }

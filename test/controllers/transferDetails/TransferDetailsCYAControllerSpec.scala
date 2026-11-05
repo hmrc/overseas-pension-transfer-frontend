@@ -18,8 +18,6 @@ package controllers.transferDetails
 
 import base.SpecBase
 import models.{AmendCheckMode, CheckMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -28,7 +26,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.transferDetails.TransferDetailsCYAView
 
-class TransferDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class TransferDetailsCYAControllerSpec extends SpecBase {
 
   private lazy val onPageLoadRoute = controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
 
@@ -53,7 +51,7 @@ class TransferDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mo
             TransferDetailsSummary.rows(CheckMode, userAnswers)
           )
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual
             view(summaryList)(fakeDisplayRequest(request, userAnswers), msgs).toString
         }
@@ -70,7 +68,7 @@ class TransferDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mo
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual
             pages.transferDetails.TransferDetailsSummaryPage
               .nextPage(CheckMode, userAnswers)
@@ -89,7 +87,7 @@ class TransferDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mo
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual
             pages.transferDetails.TransferDetailsSummaryPage
               .nextPage(AmendCheckMode, userAnswers)
@@ -108,7 +106,7 @@ class TransferDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mo
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual
             pages.transferDetails.TransferDetailsSummaryPage
               .nextPage(AmendCheckMode, userAnswers)

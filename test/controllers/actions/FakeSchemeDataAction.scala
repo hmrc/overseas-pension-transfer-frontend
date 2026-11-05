@@ -16,14 +16,14 @@
 
 package controllers.actions
 
-import base.SpecBase
+import data.TestData
 import models.requests.{IdentifierRequest, SchemeRequest}
 import play.api.mvc.Result
 import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeSchemeDataAction extends SchemeDataAction with AppUtils with SpecBase {
+class FakeSchemeDataAction extends SchemeDataAction with AppUtils with TestData {
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

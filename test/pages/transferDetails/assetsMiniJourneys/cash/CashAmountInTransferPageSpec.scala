@@ -20,10 +20,9 @@ import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.{CashMiniJourney, QuotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
-class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
+class CashAmountInTransferPageSpec extends SpecBase {
 
   ".nextPage" - {
 

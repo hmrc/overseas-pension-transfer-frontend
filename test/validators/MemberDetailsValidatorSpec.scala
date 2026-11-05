@@ -22,13 +22,12 @@ import cats.data.Validated.{Invalid, Valid}
 import models.address.{Country, MembersCurrentAddress, MembersLastUKAddress}
 import models.transferJourneys.MemberDetails
 import models.{DataMissingError, GenericError, PersonName}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.*
 import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
+class MemberDetailsValidatorSpec extends SpecBase {
 
   private val memberDetails = MemberDetails(
     PersonName("Firstname", "Lastname"),

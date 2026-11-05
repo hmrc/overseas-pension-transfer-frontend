@@ -75,7 +75,7 @@ class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
       val input  = "   +44 7911 123456   "
       val result = form.bind(Map(fieldName -> input))
 
-      result.errors mustBe empty
+      result.errors      mustBe empty
       result.value.value mustBe "+447911123456"
     }
 
@@ -97,7 +97,7 @@ class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
       val input  = "+447911123456abc"
       val result = form.bind(Map(fieldName -> input))
 
-      result.errors mustBe empty
+      result.errors      mustBe empty
       result.value.value mustBe "+447911123456"
     }
 

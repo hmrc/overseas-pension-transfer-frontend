@@ -24,8 +24,6 @@ import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset.UnquotedShares
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.TypeOfAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -33,7 +31,7 @@ import views.html.transferDetails.TypeOfAssetView
 
 import scala.concurrent.Future
 
-class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class TypeOfAssetControllerSpec extends SpecBase {
 
   private lazy val typeOfAssetRoute = routes.TypeOfAssetController.onPageLoad(NormalMode).url
 
@@ -77,7 +75,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(values), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -103,7 +101,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
@@ -123,7 +121,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

@@ -27,7 +27,6 @@ import models.assets.*
 import models.assets.TypeOfAsset.{Cash, Other}
 import models.transferJourneys.*
 import models.{ApplicableTaxExclusions, DataMissingError, GenericError, WhyTransferIsTaxable}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.*
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{MoreOtherAssetsDeclarationPage, OtherAssetsDescriptionPage, OtherAssetsValuePage}
@@ -37,7 +36,7 @@ import pages.transferDetails.assetsMiniJourneys.unquotedShares.*
 import play.api.libs.json.Json
 import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
 
-class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
+class TransferDetailsValidatorSpec extends SpecBase {
 
   private val testCashAmount         = BigDecimal(500.02)
   private val testUnquotedShareValue = BigDecimal(1000.09)

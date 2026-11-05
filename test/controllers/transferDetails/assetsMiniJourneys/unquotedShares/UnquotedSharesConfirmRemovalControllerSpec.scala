@@ -23,8 +23,6 @@ import models.NormalMode
 import models.assets.UnquotedSharesEntry
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.assets.UnquotedSharesQuery
@@ -32,7 +30,7 @@ import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShar
 
 import scala.concurrent.Future
 
-class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class UnquotedSharesConfirmRemovalControllerSpec extends SpecBase {
 
   private val formProvider = new UnquotedSharesConfirmRemovalFormProvider()
   private val form         = formProvider()
@@ -51,7 +49,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
         val view = application.injector.instanceOf[UnquotedSharesConfirmRemovalView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -72,7 +70,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController
           .onPageLoad(NormalMode)
           .url
@@ -94,7 +92,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, 1)(
           fakeDisplayRequest(request),
           messages(application)

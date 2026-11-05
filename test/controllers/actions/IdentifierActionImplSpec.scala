@@ -19,10 +19,8 @@ package controllers.actions
 import base.SpecBase
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import org.mockito.ArgumentMatchers.*
-import org.mockito.Mockito.*
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.mvc.*
 import play.api.mvc.Results.*
 import play.api.test.FakeRequest
@@ -34,7 +32,7 @@ import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class IdentifierActionImplSpec extends SpecBase {
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   private val application = applicationBuilder().build()
@@ -74,7 +72,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
           Future.successful(Ok(s"OK - ${request.authenticatedUser.internalId} - ${request.authenticatedUser}"))
       )
 
-      status(result) mustBe OK
+      status(result)        mustBe OK
       contentAsString(result) must include(s"OK - $internalIdValue")
     }
 
@@ -89,7 +87,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
         (_: IdentifierRequest[AnyContent]) => Future.successful(Ok(s"OK"))
       )
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
@@ -99,7 +97,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val result             = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
       val redirectedLocation = java.net.URLDecoder.decode(redirectLocation(result).get, "UTF-8")
 
-      status(result) mustBe SEE_OTHER
+      status(result)     mustBe SEE_OTHER
       redirectedLocation mustBe s"${appConfig.loginUrl}?continue=${appConfig.loginContinueUrl}"
     }
 
@@ -108,7 +106,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       val result = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
@@ -118,7 +116,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       val result = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
@@ -133,7 +131,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
         (_: IdentifierRequest[AnyContent]) => fail("Should not reach block")
       )
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
   }

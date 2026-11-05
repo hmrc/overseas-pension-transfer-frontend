@@ -20,12 +20,10 @@ import base.SpecBase
 import controllers.memberDetails.routes
 import models.address.MembersLastUKAddress
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
 import java.time.LocalDate
 
-class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers {
+class MemberIsResidentUKPageSpec extends SpecBase {
 
   ".nextPage" - {
 
@@ -133,8 +131,8 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
       val cleaned = MemberIsResidentUKPage.cleanup(Some(true), uaWithDeps).success.value
 
       cleaned.get(MemberHasEverBeenResidentUKPage) mustBe None
-      cleaned.get(MembersLastUKAddressPage) mustBe None
-      cleaned.get(MemberDateOfLeavingUKPage) mustBe None
+      cleaned.get(MembersLastUKAddressPage)        mustBe None
+      cleaned.get(MemberDateOfLeavingUKPage)       mustBe None
     }
 
     "must not remove dependent pages when isResidentUk is false" in {
@@ -161,9 +159,9 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
 
       val cleaned = MemberIsResidentUKPage.cleanup(Some(false), uaWithDeps).success.value
 
-      cleaned.get(MemberHasEverBeenResidentUKPage) mustBe Some(false)
+      cleaned.get(MemberHasEverBeenResidentUKPage)    mustBe Some(false)
       cleaned.get(MembersLastUKAddressPage).isDefined mustBe true
-      cleaned.get(MemberDateOfLeavingUKPage) mustBe Some(LocalDate.of(2020, 1, 2))
+      cleaned.get(MemberDateOfLeavingUKPage)          mustBe Some(LocalDate.of(2020, 1, 2))
     }
   }
 }

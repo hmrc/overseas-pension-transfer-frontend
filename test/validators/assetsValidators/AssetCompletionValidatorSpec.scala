@@ -19,10 +19,9 @@ package validators.assetsValidators
 import base.SpecBase
 import models.UserAnswers
 import models.assets.TypeOfAsset
-import org.scalatest.freespec.AnyFreeSpec
 import play.api.libs.json.*
 
-class AssetCompletionValidatorSpec extends AnyFreeSpec with SpecBase {
+class AssetCompletionValidatorSpec extends SpecBase {
 
   private def ua(json: JsObject): UserAnswers = emptyUserAnswers.copy(data = json)
 

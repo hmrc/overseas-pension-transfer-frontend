@@ -23,8 +23,6 @@ import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,7 +34,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAV
 
 import scala.concurrent.Future
 
-class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsCYAControllerSpec extends SpecBase {
 
   private lazy val otherAssetsCyaRoute =
     controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController
@@ -65,7 +63,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         val summaryList = OtherAssetsSummary.rows(NormalMode, userAnswers, 0)
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual
           view(SummaryList(rows = summaryList), NormalMode, 0)(fakeDisplayRequest(request, userAnswers), msgs).toString
       }
@@ -83,7 +81,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val request = FakeRequest(POST, otherAssetsCyaRoute)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
             .onPageLoad(NormalMode)
@@ -103,7 +101,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val request = FakeRequest(POST, otherAssetsCyaRoute)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
       }
@@ -120,7 +118,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val request = FakeRequest(POST, otherAssetsCyaRoute)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           pages.transferDetails.assetsMiniJourneys.otherAssets
             .OtherAssetsCYAPage(0)

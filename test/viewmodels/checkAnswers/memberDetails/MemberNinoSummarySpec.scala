@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MemberNinoPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class MemberNinoSummarySpec extends AnyFreeSpec with SpecBase {
+class MemberNinoSummarySpec extends SpecBase {
 
   "MemberNinoSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -33,9 +32,9 @@ class MemberNinoSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(MemberNinoPage, "ZZ111111A").success.value
       val result  = MemberNinoSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("memberNino.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("ZZ111111A")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("memberNino.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("ZZ111111A")
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberNinoController.onPageLoad(CheckMode).url
     }

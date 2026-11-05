@@ -24,8 +24,6 @@ import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.transferDetails.OverseasTransferAllowanceView
 
 import scala.concurrent.Future
 
-class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OverseasTransferAllowanceControllerSpec extends SpecBase {
 
   private val formProvider = new OverseasTransferAllowanceFormProvider()
   private val form         = formProvider()
@@ -58,7 +56,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
         val view = application.injector.instanceOf[OverseasTransferAllowanceView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -79,7 +77,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -108,7 +106,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual OverseasTransferAllowancePage
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -136,7 +134,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual OverseasTransferAllowancePage
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -158,7 +156,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -187,7 +185,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }
