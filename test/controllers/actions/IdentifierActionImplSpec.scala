@@ -72,7 +72,7 @@ class IdentifierActionImplSpec extends SpecBase {
           Future.successful(Ok(s"OK - ${request.authenticatedUser.internalId} - ${request.authenticatedUser}"))
       )
 
-      status(result) mustBe OK
+      status(result)        mustBe OK
       contentAsString(result) must include(s"OK - $internalIdValue")
     }
 
@@ -87,7 +87,7 @@ class IdentifierActionImplSpec extends SpecBase {
         (_: IdentifierRequest[AnyContent]) => Future.successful(Ok(s"OK"))
       )
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
@@ -97,7 +97,7 @@ class IdentifierActionImplSpec extends SpecBase {
       val result             = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
       val redirectedLocation = java.net.URLDecoder.decode(redirectLocation(result).get, "UTF-8")
 
-      status(result) mustBe SEE_OTHER
+      status(result)     mustBe SEE_OTHER
       redirectedLocation mustBe s"${appConfig.loginUrl}?continue=${appConfig.loginContinueUrl}"
     }
 
@@ -106,7 +106,7 @@ class IdentifierActionImplSpec extends SpecBase {
 
       val result = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
@@ -116,7 +116,7 @@ class IdentifierActionImplSpec extends SpecBase {
 
       val result = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
@@ -131,7 +131,7 @@ class IdentifierActionImplSpec extends SpecBase {
         (_: IdentifierRequest[AnyContent]) => fail("Should not reach block")
       )
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
   }

@@ -53,7 +53,7 @@ class SchemeManagersEmailControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[SchemeManagersEmailView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
@@ -71,7 +71,7 @@ class SchemeManagersEmailControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
       }
     }
@@ -97,7 +97,7 @@ class SchemeManagersEmailControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeManagersEmailPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -117,7 +117,7 @@ class SchemeManagersEmailControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
       }
     }
@@ -143,7 +143,7 @@ class SchemeManagersEmailControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

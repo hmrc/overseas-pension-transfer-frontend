@@ -50,7 +50,7 @@ class TestOnlyControllerSpec extends SpecBase {
 
       val result = controller.resetDatabase(request)
 
-      status(result) mustBe OK
+      status(result)          mustBe OK
       contentAsString(result) mustBe "Success"
     }
 
@@ -62,7 +62,7 @@ class TestOnlyControllerSpec extends SpecBase {
 
       val result = controller.resetDatabase(request)
 
-      status(result) mustBe BAD_GATEWAY
+      status(result)          mustBe BAD_GATEWAY
       contentAsString(result) mustBe "Reset failed. Try again"
     }
   }

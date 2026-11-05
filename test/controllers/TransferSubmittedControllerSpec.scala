@@ -83,7 +83,7 @@ class TransferSubmittedControllerSpec extends SpecBase {
             testMessages
           )
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           "QT123456",
           summaryList,
@@ -107,7 +107,7 @@ class TransferSubmittedControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)        mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
       }
     }

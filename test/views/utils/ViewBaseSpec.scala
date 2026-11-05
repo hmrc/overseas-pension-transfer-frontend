@@ -150,8 +150,8 @@ trait ViewBaseSpec extends SpecBase {
       val panelBody  = panel.getElementsByClass("govuk-panel__body").first()
 
       panelTitle.text() mustBe messages(headingText)
-      panelBody.text() must include(messages(bodyText))
-      panelBody.text() must include(referenceNumber)
+      panelBody.text()    must include(messages(bodyText))
+      panelBody.text()    must include(referenceNumber)
     }
 
   def pageWithRadioButtonsAndHints(view: Html, expectedRadios: (String, String)*): Unit =

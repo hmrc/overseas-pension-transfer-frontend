@@ -43,7 +43,7 @@ class WhatWillBeNeededControllerSpec extends SpecBase {
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[WhatWillBeNeededView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
       }
     }
@@ -72,7 +72,7 @@ class WhatWillBeNeededControllerSpec extends SpecBase {
         val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)              mustEqual SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.TaskListController.onPageLoad().url
 
         verify(mockSessionRepository, times(1)).set(any[SessionData])
@@ -80,7 +80,7 @@ class WhatWillBeNeededControllerSpec extends SpecBase {
 
         val auditModel = eventCaptor.getValue.asInstanceOf[ReportStartedAuditModel]
         auditModel.journeyType mustEqual StartNewTransfer
-        auditModel.auditType mustEqual "OverseasPensionTransferReportStarted"
+        auditModel.auditType   mustEqual "OverseasPensionTransferReportStarted"
       }
     }
 
@@ -103,7 +103,7 @@ class WhatWillBeNeededControllerSpec extends SpecBase {
         val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)              mustEqual SEE_OTHER
         redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
       }
     }

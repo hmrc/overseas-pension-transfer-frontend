@@ -56,7 +56,7 @@ class TaskListControllerSpec extends SpecBase with SummaryListFluency {
           val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard(testTransferNumber).url)
           val res = route(app, req).value
 
-          status(res) mustBe SEE_OTHER
+          status(res)           mustBe SEE_OTHER
           redirectLocation(res) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
         }
       }

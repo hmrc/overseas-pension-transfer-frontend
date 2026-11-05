@@ -34,9 +34,9 @@ class TypeOfAssetSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(TypeOfAssetPage, Seq(Cash, Property)).success.value
       val result  = TypeOfAssetSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("typeOfAsset.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages("typeOfAsset.cashAssets<br>typeOfAsset.propertyAsset"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("typeOfAsset.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent(messages("typeOfAsset.cashAssets<br>typeOfAsset.propertyAsset"))
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.TypeOfAssetController.onPageLoad(CheckMode).url
     }

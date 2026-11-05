@@ -42,9 +42,9 @@ class PropertyAddressSummarySpec extends SpecBase {
 
       val result = PropertyAddressSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("propertyAddress.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent("Line1<br>Line2<br>United Kingdom")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("propertyAddress.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent("Line1<br>Line2<br>United Kingdom")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, 0).url
     }

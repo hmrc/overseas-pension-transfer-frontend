@@ -32,9 +32,9 @@ class SchemeManagerOrganisationNameSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(SchemeManagerOrganisationNamePage, "Organisation Sample Name").success.value
       val result  = SchemeManagerOrganisationNameSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("organisationName.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Organisation Sample Name")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("organisationName.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Organisation Sample Name")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode).url
     }

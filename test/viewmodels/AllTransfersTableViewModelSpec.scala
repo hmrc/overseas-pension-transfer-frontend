@@ -121,8 +121,8 @@ class AllTransfersTableViewModelSpec extends SpecBase {
       val row   = table.rows.head
 
       val memberHtml = htmlOf(row.head)
-      memberHtml must include(">-</a>")
-      memberHtml must include("currentPage=2")
+      memberHtml       must include(">-</a>")
+      memberHtml       must include("currentPage=2")
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.inProgress"
       htmlOf(row(2)) mustBe "dashboard.allTransfers.reference.inProgressText"
 

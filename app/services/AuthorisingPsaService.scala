@@ -41,12 +41,12 @@ class AuthorisingPsaService @Inject() (
           returnedPsaId == psaId
 
         case Left(err: PensionSchemeNotAssociated) =>
-          logger.warn(s"[AuthService][checkIsAuthorisingPsa] PSA not associated with scheme for this request - $err")
+          logger.warn(s"PSA not associated with scheme for this request - $err")
           false
 
         case Left(err: PensionSchemeError) =>
           logger.warn(
-            s"[AuthService][checkIsAuthorisingPsa] Error while checking authorising PSA for for this request - $err"
+            s"Error while checking authorising PSA for for this request - $err"
           )
           false
       }

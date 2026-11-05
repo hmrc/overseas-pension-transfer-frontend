@@ -48,7 +48,7 @@ class PropertyConfirmRemovalControllerSpec extends AddressBase {
 
         val view = application.injector.instanceOf[PropertyConfirmRemovalView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -67,7 +67,7 @@ class PropertyConfirmRemovalControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController
           .onPageLoad(NormalMode)
           .url
@@ -89,7 +89,7 @@ class PropertyConfirmRemovalControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, 1)(
           fakeDisplayRequest(request),
           messages(application)

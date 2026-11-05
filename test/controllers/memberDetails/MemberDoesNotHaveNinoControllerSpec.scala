@@ -52,7 +52,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -74,7 +74,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase {
         val view   = application.injector.instanceOf[MemberDoesNotHaveNinoView]
         val result = route(application, req).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
           fakeDisplayRequest(req, userAnswers),
           messages(application)
@@ -103,7 +103,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
       }
     }
@@ -121,7 +121,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase {
         val view      = application.injector.instanceOf[MemberDoesNotHaveNinoView]
         val result    = route(application, req).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -150,7 +150,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

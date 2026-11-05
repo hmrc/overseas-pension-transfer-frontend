@@ -51,7 +51,7 @@ class TransferDetailsCYAControllerSpec extends SpecBase {
             TransferDetailsSummary.rows(CheckMode, userAnswers)
           )
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual
             view(summaryList)(fakeDisplayRequest(request, userAnswers), msgs).toString
         }
@@ -68,7 +68,7 @@ class TransferDetailsCYAControllerSpec extends SpecBase {
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual
             pages.transferDetails.TransferDetailsSummaryPage
               .nextPage(CheckMode, userAnswers)
@@ -87,7 +87,7 @@ class TransferDetailsCYAControllerSpec extends SpecBase {
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual
             pages.transferDetails.TransferDetailsSummaryPage
               .nextPage(AmendCheckMode, userAnswers)
@@ -106,7 +106,7 @@ class TransferDetailsCYAControllerSpec extends SpecBase {
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual
             pages.transferDetails.TransferDetailsSummaryPage
               .nextPage(AmendCheckMode, userAnswers)

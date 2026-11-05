@@ -38,7 +38,7 @@ class UnquotedShareStartControllerSpec extends SpecBase {
         val view     = application.injector.instanceOf[UnquotedSharesStartView]
         val nextPage = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, 0).url
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString
       }
     }

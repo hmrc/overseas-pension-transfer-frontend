@@ -51,7 +51,7 @@ class PsaDeclarationControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[PsaDeclarationView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -95,7 +95,7 @@ class PsaDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PsaDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -116,7 +116,7 @@ class PsaDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
@@ -151,7 +151,7 @@ class PsaDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }

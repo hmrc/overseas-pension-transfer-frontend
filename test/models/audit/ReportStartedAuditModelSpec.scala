@@ -51,7 +51,7 @@ class ReportStartedAuditModelSpec extends SpecBase {
       val result =
         ReportStartedAuditModel.build(testTransferNumber, psaUser, schemeDetails, journey, None)
       result.auditType mustBe "OverseasPensionTransferReportStarted"
-      result.detail mustBe expectedJson
+      result.detail    mustBe expectedJson
     }
 
   "must create correct minimal json for Individual and PSA" in {
@@ -68,7 +68,7 @@ class ReportStartedAuditModelSpec extends SpecBase {
     val result =
       ReportStartedAuditModel.build(testTransferNumber, psaUser, schemeDetails, StartNewTransfer, None)
     result.auditType mustBe "OverseasPensionTransferReportStarted"
-    result.detail mustBe expectedJson
+    result.detail    mustBe expectedJson
   }
 
   "must create correct minimal json for Organisation and PSP" in {
@@ -90,7 +90,7 @@ class ReportStartedAuditModelSpec extends SpecBase {
       None
     )
     result.auditType mustBe "OverseasPensionTransferReportStarted"
-    result.detail mustBe expectedJson
+    result.detail    mustBe expectedJson
   }
 
   "must create full correct json with member details and QTNumber" in {
@@ -117,7 +117,7 @@ class ReportStartedAuditModelSpec extends SpecBase {
     val result = ReportStartedAuditModel.build(QtNumber("QT123456"), user, schemeDetails, StartNewTransfer, Some(item))
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
-    result.detail mustBe expectedJson
+    result.detail    mustBe expectedJson
   }
 
   "must create full correct json with member details without QTNumber" in {
@@ -144,7 +144,7 @@ class ReportStartedAuditModelSpec extends SpecBase {
       ReportStartedAuditModel.build(testTransferNumber, user, schemeDetails, StartNewTransfer, Some(item))
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
-    result.detail mustBe expectedJson
+    result.detail    mustBe expectedJson
   }
 
   "must create correct json with failure reason for startJourneyFailed" in {
@@ -171,6 +171,6 @@ class ReportStartedAuditModelSpec extends SpecBase {
       )
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
-    result.detail mustBe expectedJson
+    result.detail    mustBe expectedJson
   }
 }

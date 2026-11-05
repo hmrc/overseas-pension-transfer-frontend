@@ -53,7 +53,7 @@ class IsTransferTaxableControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[IsTransferTaxableView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +74,7 @@ class IsTransferTaxableControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -105,7 +105,7 @@ class IsTransferTaxableControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual IsTransferTaxablePage.nextPage(NormalMode, ua).url
       }
     }
@@ -125,7 +125,7 @@ class IsTransferTaxableControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual IsTransferTaxablePage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
@@ -141,7 +141,7 @@ class IsTransferTaxableControllerSpec extends SpecBase {
         val view      = application.injector.instanceOf[IsTransferTaxableView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -170,7 +170,7 @@ class IsTransferTaxableControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

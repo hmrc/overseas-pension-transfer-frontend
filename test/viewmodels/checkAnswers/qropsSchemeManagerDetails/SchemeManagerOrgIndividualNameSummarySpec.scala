@@ -34,9 +34,9 @@ class SchemeManagerOrgIndividualNameSummarySpec extends SpecBase {
         emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
       val result  = SchemeManagerOrgIndividualNameSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("orgIndividualName.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent("FirstName LastName")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("orgIndividualName.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent("FirstName LastName")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode).url
     }

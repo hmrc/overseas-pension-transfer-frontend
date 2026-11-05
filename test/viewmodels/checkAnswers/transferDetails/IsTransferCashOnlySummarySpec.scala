@@ -32,9 +32,9 @@ class IsTransferCashOnlySummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(IsTransferCashOnlyPage, false).success.value
       val result  = IsTransferCashOnlySummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("isTransferCashOnly.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text(messages("site.no"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("isTransferCashOnly.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text(messages("site.no"))
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.IsTransferCashOnlyController.onPageLoad(CheckMode).url
     }

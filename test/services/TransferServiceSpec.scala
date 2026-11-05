@@ -68,9 +68,9 @@ class TransferServiceSpec extends SpecBase {
       result.isRight mustBe true
       val updated = result.toOption.get
 
-      updated.get(TransfersOverviewQuery) mustBe Some(Seq.empty)
+      updated.get(TransfersOverviewQuery)           mustBe Some(Seq.empty)
       updated.get(TransfersSyncedAtQuery).isDefined mustBe true
-      updated.get(TransfersDataUpdatedAtQuery) mustBe Some(existingDataUpdatedAt)
+      updated.get(TransfersDataUpdatedAtQuery)      mustBe Some(existingDataUpdatedAt)
     }
 
     "must merge transfers and set both syncedAt (now) and dataUpdatedAt (from DTO) when connector returns Right(dto)" in {
@@ -110,9 +110,9 @@ class TransferServiceSpec extends SpecBase {
       result.isRight mustBe true
       val updated = result.toOption.get
 
-      updated.get(TransfersOverviewQuery) mustBe Some(dtoTransfers)
+      updated.get(TransfersOverviewQuery)           mustBe Some(dtoTransfers)
       updated.get(TransfersSyncedAtQuery).isDefined mustBe true
-      updated.get(TransfersDataUpdatedAtQuery) mustBe Some(dtoLastUpdated)
+      updated.get(TransfersDataUpdatedAtQuery)      mustBe Some(dtoLastUpdated)
     }
 
     "must remove transfers with missing first name or surname" in {

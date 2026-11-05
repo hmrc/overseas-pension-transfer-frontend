@@ -40,7 +40,7 @@ class PropertyStartControllerSpec extends SpecBase {
         val view     = application.injector.instanceOf[PropertyStartView]
         val nextPage = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString
       }
     }

@@ -76,7 +76,7 @@ class WhyTransferIsNotTaxableControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(WhyTransferIsNotTaxable.values.toSet), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -105,7 +105,7 @@ class WhyTransferIsNotTaxableControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -129,7 +129,7 @@ class WhyTransferIsNotTaxableControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual WhyTransferIsNotTaxablePage
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -151,7 +151,7 @@ class WhyTransferIsNotTaxableControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -180,7 +180,7 @@ class WhyTransferIsNotTaxableControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

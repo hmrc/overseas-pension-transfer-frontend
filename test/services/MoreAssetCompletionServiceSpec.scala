@@ -54,7 +54,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase {
     "completeAsset" - {
 
       forAll(supportedAssets) { assetType =>
-        s"should mark $assetType completed, enrich (twice), persist enriched answers, and return updated SessionData" in {
+        s"must mark $assetType completed, enrich (twice), persist enriched answers, and return updated SessionData" in {
 
           val userAnswers: UserAnswers = userAnswersWithAssets(assetsCount = 5)
 
@@ -86,7 +86,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase {
             }
         }
 
-        s"should handle case when userSelection is None for $assetType (enrich twice)" in {
+        s"must handle case when userSelection is None for $assetType (enrich twice)" in {
           val userAnswers          = userAnswersWithAssets()
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
@@ -114,7 +114,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase {
         }
       }
 
-      "should propagate failure when persistence fails" in {
+      "must propagate failure when persistence fails" in {
         val userAnswers = userAnswersWithAssets()
         val asset       = TypeOfAsset.Property
 
@@ -122,7 +122,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase {
           .thenThrow(new RuntimeException("boom"))
         import scala.util.Try
         val result = Try(await(service.completeAsset(userAnswers, emptySessionData, asset, completed = true)))
-        result.isFailure mustBe true
+        result.isFailure                                mustBe true
         result.toEither.swap.toOption.map(_.getMessage) mustBe Some("boom")
       }
 

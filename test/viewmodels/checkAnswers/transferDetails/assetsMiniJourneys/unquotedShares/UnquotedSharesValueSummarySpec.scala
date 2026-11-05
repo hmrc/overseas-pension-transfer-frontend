@@ -33,9 +33,9 @@ class UnquotedSharesValueSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(UnquotedSharesValuePage(0), BigDecimal(19875.99)).success.value
       val result  = UnquotedSharesValueSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("unquotedSharesValue.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£19,875.99")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("unquotedSharesValue.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£19,875.99")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(CheckMode, 0).url
     }

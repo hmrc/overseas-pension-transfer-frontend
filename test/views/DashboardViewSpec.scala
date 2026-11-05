@@ -255,7 +255,7 @@ class DashboardViewSpec extends ViewBaseSpec {
 
   "View with lock warning" - {
     "display lock warning" in {
-      doc(viewWithLockWarning.body).getElementById("govuk-lock-banner-title").text() mustBe messages(
+      doc(viewWithLockWarning.body).getElementById("govuk-lock-banner-title").text()                mustBe messages(
         "dashboard.lock.title"
       )
       doc(viewWithLockWarning.body).getElementsByClass("govuk-notification-banner__content").text() mustBe

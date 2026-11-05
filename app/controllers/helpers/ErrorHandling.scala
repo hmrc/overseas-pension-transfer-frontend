@@ -16,21 +16,13 @@
 
 package controllers.helpers
 
-import play.api.routing.Router
-import play.api.mvc.RequestHeader
-import play.api.mvc.Result
-import play.api.mvc.Results
 import play.api.Logging
+import play.api.mvc.{Result, Results}
 
 trait ErrorHandling extends Logging {
 
-  protected def onFailureRedirect(err: Any)(implicit rh: RequestHeader): Result = {
-    val (controller, method) = rh.attrs
-      .get(Router.Attrs.HandlerDef)
-      .map(hd => (hd.controller, hd.method))
-      .getOrElse(("UnknownController", "UnknownMethod"))
-
-    logger.warn(s"[$controller.$method] downstream persistence error: $err")
+  protected def onFailureRedirect(err: Any): Result = {
+    logger.warn(s"downstream persistence error: $err")
     Results.Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
   }
 }

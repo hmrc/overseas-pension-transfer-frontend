@@ -62,14 +62,14 @@ class AssetsMiniJourneyServiceSpec extends SpecBase {
 
       val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 5)
 
-      result mustBe a[Failure[_]]
+      result            mustBe a[Failure[_]]
       result.failed.get mustBe a[IndexOutOfBoundsException]
     }
 
     "must return Failure if no entries exist at the query path" in {
       val result = service.removeAssetEntry(UnquotedSharesMiniJourney, emptyUserAnswers, 0)
 
-      result mustBe a[Failure[_]]
+      result            mustBe a[Failure[_]]
       result.failed.get mustBe a[NoSuchElementException]
     }
   }
@@ -136,7 +136,7 @@ class AssetsMiniJourneyServiceSpec extends SpecBase {
     "must still succeed (no-op) when there are no selected assets" in {
       val result = service.clearAllAssetCompletionFlags(emptySessionData)
 
-      result mustBe a[Success[_]]
+      result                                                 mustBe a[Success[_]]
       result.success.value.get(SelectedAssetTypesWithStatus) mustBe None
     }
   }
@@ -172,8 +172,8 @@ class AssetsMiniJourneyServiceSpec extends SpecBase {
       val updated = result.get
 
       updated.get(UnquotedSharesMiniJourney.query) mustBe None
-      updated.get(QuotedSharesMiniJourney.query) mustBe None
-      updated.get(OtherAssetsMiniJourney.query) mustBe None
+      updated.get(QuotedSharesMiniJourney.query)   mustBe None
+      updated.get(OtherAssetsMiniJourney.query)    mustBe None
 
       updated.get(CashMiniJourney.query) mustBe Some(CashEntry(999))
 
@@ -196,7 +196,7 @@ class AssetsMiniJourneyServiceSpec extends SpecBase {
       val updated = result.get
 
       updated.get(UnquotedSharesMiniJourney.query) mustBe None
-      updated.get(AnswersSelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
+      updated.get(AnswersSelectedAssetTypes)       mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
 
     "must succeed and set SelectedAssetTypes to cash when there is nothing to remove" in {

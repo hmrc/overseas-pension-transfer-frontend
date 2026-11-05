@@ -91,7 +91,7 @@ final class QropsDetailsSpec extends AddressBase {
 
       res match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must have size 1
+          nec.toNonEmptyList.toList        must have size 1
           nec.toNonEmptyList.toList.head mustBe GenericError(
             "Cannot have valid payload value of QROPS Country is not 'Other'"
           )
@@ -108,9 +108,9 @@ final class QropsDetailsSpec extends AddressBase {
 
       res match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must have size 2
+          nec.toNonEmptyList.toList        must have size 2
           nec.toNonEmptyList.toList.head mustBe DataMissingError(QROPSCountryPage)
-          nec.toNonEmptyList.toList(1) mustBe GenericError(
+          nec.toNonEmptyList.toList(1)   mustBe GenericError(
             "Cannot have a value for other Country where value of QROPS Country is None"
           )
 
@@ -129,7 +129,7 @@ final class QropsDetailsSpec extends AddressBase {
           case Invalid(nec) =>
             nec.toNonEmptyList.toList must contain(DataMissingError(QROPSCountryPage))
             nec.toNonEmptyList.toList must contain(DataMissingError(QROPSOtherCountryPage))
-            nec.length mustBe 2
+            nec.length              mustBe 2
 
           case Valid(v) =>
             fail(s"Expected Invalid due to missing country pair, but got Valid: $v")

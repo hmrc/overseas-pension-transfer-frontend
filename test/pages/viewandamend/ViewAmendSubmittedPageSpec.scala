@@ -30,8 +30,7 @@ class ViewAmendSubmittedPageSpec extends SpecBase {
   val versionNumber: String  = "1"
 
   "nextPage in normal mode" - {
-
-    "should redirect to the view and amend page" in {
+    "must redirect to the view and amend page" in {
       ViewAmendSubmittedPage
         .nextPage(NormalMode, userAnswersMemberName)
         .url mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend().url
@@ -39,8 +38,7 @@ class ViewAmendSubmittedPageSpec extends SpecBase {
   }
 
   ".userAnswersError" - {
-
-    "should redirect the user to SubmittedTransferSummaryController.onPageLoad" in {
+    "must redirect the user to SubmittedTransferSummaryController.onPageLoad" in {
       ViewAmendSubmittedPage
         .userAnswersError(
           transferId,

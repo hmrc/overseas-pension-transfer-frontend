@@ -62,7 +62,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends SpecBase {
 
         val rows = OtherAssetsAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual
           view(form, rows, NormalMode)(
             fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)),
@@ -81,7 +81,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends SpecBase {
         val result = route(application, request).value
         val view   = application.injector.instanceOf[MoreOtherAssetsDeclarationView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -99,7 +99,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
           .onPageLoad()
           .url
@@ -116,7 +116,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
           .onPageLoad()
           .url
@@ -133,7 +133,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController
           .onPageLoad()
           .url
@@ -154,7 +154,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

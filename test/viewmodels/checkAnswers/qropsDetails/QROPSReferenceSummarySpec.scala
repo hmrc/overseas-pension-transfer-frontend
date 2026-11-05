@@ -32,9 +32,9 @@ class QROPSReferenceSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(QROPSReferencePage, "QROPS12345").success.value
       val result  = QROPSReferenceSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsReference.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("QROPS12345")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("qropsReference.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("QROPS12345")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsDetails.routes.QROPSReferenceController.onPageLoad(CheckMode).url
     }

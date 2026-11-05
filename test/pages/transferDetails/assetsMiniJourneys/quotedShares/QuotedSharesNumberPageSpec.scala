@@ -74,13 +74,13 @@ class QuotedSharesNumberPageSpec extends SpecBase {
       }
     }
 
-    "should go to CYA when complete" in {
+    "must go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.QuotedShares))
       QuotedSharesNumberPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.QuotedSharesCYAController
         .onPageLoad(NormalMode, index)
     }
 
-    "should go to Shares Number page when incomplete" in {
+    "must go to Shares Number page when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
       QuotedSharesNumberPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.QuotedSharesClassController
         .onPageLoad(NormalMode, index)

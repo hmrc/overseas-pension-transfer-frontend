@@ -63,7 +63,7 @@ class OtherAssetsCYAControllerSpec extends SpecBase {
 
         val summaryList = OtherAssetsSummary.rows(NormalMode, userAnswers, 0)
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual
           view(SummaryList(rows = summaryList), NormalMode, 0)(fakeDisplayRequest(request, userAnswers), msgs).toString
       }
@@ -81,7 +81,7 @@ class OtherAssetsCYAControllerSpec extends SpecBase {
         val request = FakeRequest(POST, otherAssetsCyaRoute)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
             .onPageLoad(NormalMode)
@@ -101,7 +101,7 @@ class OtherAssetsCYAControllerSpec extends SpecBase {
         val request = FakeRequest(POST, otherAssetsCyaRoute)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
       }
@@ -118,7 +118,7 @@ class OtherAssetsCYAControllerSpec extends SpecBase {
         val request = FakeRequest(POST, otherAssetsCyaRoute)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           pages.transferDetails.assetsMiniJourneys.otherAssets
             .OtherAssetsCYAPage(0)

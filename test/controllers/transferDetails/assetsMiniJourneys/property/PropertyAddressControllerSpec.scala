@@ -75,7 +75,7 @@ class PropertyAddressControllerSpec extends AddressBase {
         val view   = application.injector.instanceOf[PropertyAddressView]
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
@@ -112,7 +112,7 @@ class PropertyAddressControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           PropertyAddressPage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
@@ -140,7 +140,7 @@ class PropertyAddressControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PropertyAddressPage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -169,7 +169,7 @@ class PropertyAddressControllerSpec extends AddressBase {
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
           messages(application)
@@ -218,7 +218,7 @@ class PropertyAddressControllerSpec extends AddressBase {
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
           messages(application)

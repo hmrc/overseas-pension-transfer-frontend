@@ -71,13 +71,13 @@ class PropertyAddressPageSpec extends SpecBase {
       }
     }
 
-    "should go to CYA when complete" in {
+    "must go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Property))
       PropertyAddressPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyCYAController
         .onPageLoad(NormalMode, index)
     }
 
-    "should go to PropertyValue when incomplete" in {
+    "must go to PropertyValue when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
       PropertyAddressPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyValueController
         .onPageLoad(NormalMode, index)

@@ -28,13 +28,13 @@ class MemberConfirmLastUkAddressFormProviderSpec extends FormSpec {
     "must bind true when the field is omitted (default=true)" in {
       val result = form.bind(Map.empty[String, String])
       result.errors mustBe empty
-      result.value mustBe Some(true)
+      result.value  mustBe Some(true)
     }
 
     "must bind true if provided as 'true'" in {
       val result = form.bind(Map("value" -> "true"))
       result.errors mustBe empty
-      result.value mustBe Some(true)
+      result.value  mustBe Some(true)
     }
 
     "must fail if provided a non-boolean" in {

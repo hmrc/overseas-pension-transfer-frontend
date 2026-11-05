@@ -23,16 +23,16 @@ import models.TaskCategory
 class TaskStatusQuerySpec extends SpecBase {
 
   "TaskStatusQuery" - {
-    "should write and read at category.status" in {
+    "must write and read at category.status" in {
       val q = TaskStatusQuery(TaskCategory.MemberDetails)
 
       val ua = emptyUserAnswers.set(q, TaskStatus.InProgress).get
 
       (ua.data \ "memberDetails" \ "status").as[String] mustBe "inProgress"
-      ua.get(q) mustBe Some(TaskStatus.InProgress)
+      ua.get(q)                                         mustBe Some(TaskStatus.InProgress)
     }
 
-    "setting one category should not affect another" in {
+    "setting one category must not affect another" in {
       val mQ = TaskStatusQuery(TaskCategory.MemberDetails)
       val tQ = TaskStatusQuery(TaskCategory.TransferDetails)
 
@@ -42,14 +42,14 @@ class TaskStatusQuerySpec extends SpecBase {
       ua.get(tQ) mustBe None
     }
 
-    "remove should prune the status key and be idempotent" in {
+    "remove must prune the status key and be idempotent" in {
       val q   = TaskStatusQuery(TaskCategory.MemberDetails)
       val ua1 = emptyUserAnswers.set(q, TaskStatus.InProgress).get
       val ua2 = ua1.remove(q).get
       val ua3 = ua2.remove(q).get
 
       (ua2.data \ "memberDetails" \ "status").toOption mustBe None
-      ua3.data mustBe ua2.data
+      ua3.data                                         mustBe ua2.data
     }
   }
 }

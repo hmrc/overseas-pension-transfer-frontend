@@ -60,7 +60,7 @@ class PropertyCYAControllerSpec extends SpecBase {
 
         val list = PropertySummary.rows(NormalMode, ua, 0)
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual
           view(SummaryList(rows = list), NormalMode, 0)(fakeDisplayRequest(request, ua), msgs).toString
       }
@@ -78,7 +78,7 @@ class PropertyCYAControllerSpec extends SpecBase {
         val request = FakeRequest(POST, propertyCyaRoute)
         val result  = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
             .onPageLoad(NormalMode)
@@ -98,7 +98,7 @@ class PropertyCYAControllerSpec extends SpecBase {
         val request = FakeRequest(POST, propertyCyaRoute)
         val result  = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
       }

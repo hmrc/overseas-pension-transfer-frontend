@@ -120,7 +120,7 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
 
         val view = app.injector.instanceOf[ViewSubmittedView]
 
-        status(result) mustBe OK
+        status(result)          mustBe OK
         contentAsString(result) mustBe view(
           AmendCheckMode,
           schemeSummaryList,
@@ -161,7 +161,7 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
           FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
 
         app.stop()
@@ -190,7 +190,7 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
         )
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ViewAmendSubmittedController.amend().url
 
         app.stop()
@@ -216,8 +216,8 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
         )
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SubmittedTransferSummaryController
+        status(result)                   mustBe SEE_OTHER
+        redirectLocation(result).value   mustBe routes.SubmittedTransferSummaryController
           .onPageLoad(testQtNumber, pstr, qtStatus, versionNumber)
           .url
         flash(result).get("lockWarning") mustBe defined
@@ -244,7 +244,7 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
         )
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
 
         app.stop()
@@ -275,7 +275,7 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
         val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
         val result  = route(app, request).value
 
-        status(result) mustBe OK
+        status(result)                    mustBe OK
         contentAsString(result).toLowerCase must include("continue")
 
         app.stop()
@@ -297,7 +297,7 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
         val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
         val result  = route(app, request).value
 
-        status(result) mustBe OK
+        status(result)        mustBe OK
         contentAsString(result) must not include "continue"
 
         app.stop()
@@ -317,7 +317,7 @@ class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency 
         val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
         val result  = route(app, request).value
 
-        status(result) mustBe INTERNAL_SERVER_ERROR
+        status(result)        mustBe INTERNAL_SERVER_ERROR
         contentAsString(result) must include("Unable to fetch external user answers")
 
         app.stop()

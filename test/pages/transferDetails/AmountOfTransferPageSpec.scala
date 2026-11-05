@@ -69,10 +69,10 @@ class AmountOfTransferPageSpec extends SpecBase {
 
           val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
 
-          result.get(IsTransferCashOnlyPage) mustBe Some(true)
-          result.get(CashAmountInTransferPage) mustBe Some(amount)
+          result.get(IsTransferCashOnlyPage)            mustBe Some(true)
+          result.get(CashAmountInTransferPage)          mustBe Some(amount)
           result.get(TransferDetailsRecordVersionQuery) mustBe None
-          result.get(TypeOfAssetsRecordVersionQuery) mustBe None
+          result.get(TypeOfAssetsRecordVersionQuery)    mustBe None
         }
 
         "only remove transfer details version when the transfer is not cash only" in {
@@ -85,10 +85,10 @@ class AmountOfTransferPageSpec extends SpecBase {
 
           val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
 
-          result.get(IsTransferCashOnlyPage) mustBe Some(false)
-          result.get(CashAmountInTransferPage) mustBe None
+          result.get(IsTransferCashOnlyPage)            mustBe Some(false)
+          result.get(CashAmountInTransferPage)          mustBe None
           result.get(TransferDetailsRecordVersionQuery) mustBe None
-          result.get(TypeOfAssetsRecordVersionQuery) mustBe Some("1")
+          result.get(TypeOfAssetsRecordVersionQuery)    mustBe Some("1")
         }
       }
     }

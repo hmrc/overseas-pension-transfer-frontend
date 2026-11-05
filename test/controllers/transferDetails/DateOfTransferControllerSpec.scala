@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, NormalMode, SessionData}
+import models.{AmendCheckMode, CheckMode, NormalMode, SessionData}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -73,7 +73,7 @@ class DateOfTransferControllerSpec extends SpecBase {
           val request = getRequest
           val view    = application.injector.instanceOf[DateOfTransferView]
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual view(form, NormalMode)(
             fakeDisplayRequest(request),
             messages(application)
@@ -91,8 +91,40 @@ class DateOfTransferControllerSpec extends SpecBase {
           val request = getRequest
           val result  = route(application, getRequest).value
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
+        }
+      }
+
+      "must return OK in CheckMode when the question has previously been answered" in {
+        val previouslyEnteredDate = today.minusDays(5)
+
+        val userAnswers = emptyUserAnswers
+          .set(DateOfTransferPage, previouslyEnteredDate)
+          .success
+          .value
+
+        val application = applicationBuilder(userAnswers = userAnswers).build()
+
+        running(application) {
+
+          val checkModeRoute = routes.DateOfTransferController.onPageLoad(CheckMode).url
+
+          val request: FakeRequest[AnyContentAsEmpty.type] =
+            FakeRequest(GET, checkModeRoute)
+
+          val result = route(application, request).value
+          val view   = application.injector.instanceOf[DateOfTransferView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual view(
+            form.fill(previouslyEnteredDate),
+            CheckMode
+          )(
             fakeDisplayRequest(request),
             messages(application)
           ).toString
@@ -118,7 +150,7 @@ class DateOfTransferControllerSpec extends SpecBase {
           val amendFormProvider = application.injector.instanceOf[forms.transferDetails.AmendDateOfTransferFormProvider]
           val amendForm         = amendFormProvider(originalDate)
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual view(
             amendForm.fill(originalDate.minusDays(5)),
             AmendCheckMode
@@ -126,6 +158,19 @@ class DateOfTransferControllerSpec extends SpecBase {
             fakeDisplayRequest(request),
             messages(application)
           ).toString
+        }
+      }
+      "must redirect to journey recover when session data submitted date not present in AmendCheckMode" in {
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(emptySessionData)))
+
+        val currentUserAnswers = emptyUserAnswers
+        val application        = applicationBuilder(userAnswers = currentUserAnswers).build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.DateOfTransferController.onPageLoad(AmendCheckMode).url)
+          val result  = route(application, request).value
+          status(result)                 mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
     }
@@ -149,7 +194,7 @@ class DateOfTransferControllerSpec extends SpecBase {
         running(application) {
           val result = route(application, postRequest()).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
         }
       }
@@ -180,7 +225,7 @@ class DateOfTransferControllerSpec extends SpecBase {
 
           val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers).url
         }
       }
@@ -200,7 +245,7 @@ class DateOfTransferControllerSpec extends SpecBase {
 
           val result = route(application, request).value
 
-          status(result) mustEqual BAD_REQUEST
+          status(result)          mustEqual BAD_REQUEST
           contentAsString(result) mustEqual view(boundForm, NormalMode)(
             fakeDisplayRequest(request),
             messages(application)
@@ -256,7 +301,7 @@ class DateOfTransferControllerSpec extends SpecBase {
         running(application) {
           val result = route(application, postRequest()).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
         }
       }

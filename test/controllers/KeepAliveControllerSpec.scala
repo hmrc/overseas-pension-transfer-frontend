@@ -77,7 +77,7 @@ class KeepAliveControllerSpec extends SpecBase {
           val request = FakeRequest(GET, routes.KeepAliveController.keepAlive().url)
           val result  = route(application, request).value
 
-          status(result) mustBe SEE_OTHER
+          status(result)                 mustBe SEE_OTHER
           redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
         }
       }

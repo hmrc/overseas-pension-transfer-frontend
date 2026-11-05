@@ -73,7 +73,7 @@ class QuotedSharesCompanyNameControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -96,7 +96,7 @@ class QuotedSharesCompanyNameControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -121,7 +121,7 @@ class QuotedSharesCompanyNameControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -143,7 +143,7 @@ class QuotedSharesCompanyNameControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

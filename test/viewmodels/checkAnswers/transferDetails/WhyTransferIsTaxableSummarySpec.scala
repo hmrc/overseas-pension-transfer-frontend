@@ -34,9 +34,9 @@ class WhyTransferIsTaxableSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
       val result  = WhyTransferIsTaxableSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("whyTransferIsTaxable.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent("whyTransferIsTaxable.transferExceedsOTCAllowance")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("whyTransferIsTaxable.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent("whyTransferIsTaxable.transferExceedsOTCAllowance")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.WhyTransferIsTaxableController.onPageLoad(CheckMode).url
     }

@@ -33,9 +33,9 @@ class OtherAssetsDescriptionSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(OtherAssetsDescriptionPage(0), "Other Assets Description").success.value
       val result  = OtherAssetsDescriptionSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("assetValueDescription.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Other Assets Description")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("assetValueDescription.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Other Assets Description")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(CheckMode, 0).url
     }

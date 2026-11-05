@@ -129,7 +129,7 @@ class MemberHasEverBeenResidentUKPageSpec extends SpecBase {
 
       val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(false), uaWithDeps).success.value
 
-      cleaned.get(MembersLastUKAddressPage) mustBe None
+      cleaned.get(MembersLastUKAddressPage)  mustBe None
       cleaned.get(MemberDateOfLeavingUKPage) mustBe None
     }
 
@@ -155,7 +155,7 @@ class MemberHasEverBeenResidentUKPageSpec extends SpecBase {
       val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(true), uaWithDeps).success.value
 
       cleaned.get(MembersLastUKAddressPage).isDefined mustBe true
-      cleaned.get(MemberDateOfLeavingUKPage) mustBe Some(LocalDate.of(2020, 1, 2))
+      cleaned.get(MemberDateOfLeavingUKPage)          mustBe Some(LocalDate.of(2020, 1, 2))
     }
   }
 }

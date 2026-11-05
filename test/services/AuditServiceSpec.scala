@@ -86,8 +86,8 @@ class AuditServiceSpec extends SpecBase {
 
         val event = eventCaptor.getValue
         event.auditSource mustEqual appName
-        event.auditType mustEqual "OverseasPensionTransferReportStarted"
-        event.detail mustEqual expectedJson
+        event.auditType   mustEqual "OverseasPensionTransferReportStarted"
+        event.detail      mustEqual expectedJson
       }
     }
 }

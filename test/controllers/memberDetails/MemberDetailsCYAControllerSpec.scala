@@ -37,7 +37,7 @@ class MemberDetailsCYAControllerSpec extends SpecBase with SummaryListFluency {
         val view = application.injector.instanceOf[MemberDetailsCYAView]
         val list = SummaryListViewModel(Seq.empty)
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(list)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -51,7 +51,7 @@ class MemberDetailsCYAControllerSpec extends SpecBase with SummaryListFluency {
         val request = FakeRequest(POST, routes.MemberDetailsCYAController.onSubmit().url)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
       }
     }

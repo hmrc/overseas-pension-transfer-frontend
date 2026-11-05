@@ -62,7 +62,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[PropertyAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -79,7 +79,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[PropertyAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
           fakeDisplayRequest(request, userAnswers),
           messages(application)
@@ -123,7 +123,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -148,7 +148,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -173,7 +173,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -199,7 +199,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val expected  =
           PropertyAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -223,7 +223,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PropertyAmendContinueAssetPage
           .nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex))
           .url
@@ -243,7 +243,7 @@ class PropertyAmendContinueControllerSpec extends AddressBase {
         val view   = application.injector.instanceOf[PropertyAmendContinueView]
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

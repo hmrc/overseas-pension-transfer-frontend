@@ -32,9 +32,9 @@ class SchemeManagerEmailSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(SchemeManagersEmailPage, "Scheme Manager Sample Email").success.value
       val result  = SchemeManagersEmailSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagersEmail.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Scheme Manager Sample Email")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("schemeManagersEmail.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Scheme Manager Sample Email")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersEmailController.onPageLoad(CheckMode).url
     }

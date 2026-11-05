@@ -32,9 +32,9 @@ class MemberNinoSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(MemberNinoPage, "ZZ111111A").success.value
       val result  = MemberNinoSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("memberNino.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("ZZ111111A")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("memberNino.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("ZZ111111A")
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberNinoController.onPageLoad(CheckMode).url
     }

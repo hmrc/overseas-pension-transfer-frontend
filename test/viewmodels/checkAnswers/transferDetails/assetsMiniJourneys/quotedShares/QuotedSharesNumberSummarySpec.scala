@@ -33,9 +33,9 @@ class QuotedSharesNumberSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(QuotedSharesNumberPage(0), 12).success.value
       val result  = QuotedSharesNumberSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("quotedSharesNumber.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("12")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("quotedSharesNumber.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("12")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(CheckMode, 0).url
     }

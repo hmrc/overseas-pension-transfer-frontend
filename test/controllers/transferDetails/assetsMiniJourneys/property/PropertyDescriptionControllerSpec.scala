@@ -51,7 +51,7 @@ class PropertyDescriptionControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[PropertyDescriptionView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -72,7 +72,7 @@ class PropertyDescriptionControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -95,7 +95,7 @@ class PropertyDescriptionControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PropertyDescriptionPage(index)
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -120,7 +120,7 @@ class PropertyDescriptionControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PropertyDescriptionPage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -142,7 +142,7 @@ class PropertyDescriptionControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

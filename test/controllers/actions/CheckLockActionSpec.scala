@@ -67,7 +67,7 @@ class CheckLockActionSpec extends SpecBase {
         val result = action.callRefine(request).futureValue
 
         inside(result) { case Left(r) =>
-          r.header.status mustBe SEE_OTHER
+          r.header.status                  mustBe SEE_OTHER
           r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )
@@ -130,7 +130,7 @@ class CheckLockActionSpec extends SpecBase {
             val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
             inside(result) { case Left(r) =>
-              r.header.status mustBe SEE_OTHER
+              r.header.status                  mustBe SEE_OTHER
               r.header.headers.get("Location") mustBe Some(
                 controllers.routes.JourneyRecoveryController.onPageLoad().url
               )

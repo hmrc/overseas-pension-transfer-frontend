@@ -82,7 +82,7 @@ class MpsOnRampControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.MpsOnRampController.onRamp().url)
         val result  = route(application, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
       }
     }
@@ -107,7 +107,7 @@ class MpsOnRampControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.MpsOnRampController.onRamp().url)
         val result  = route(application, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
       }
     }

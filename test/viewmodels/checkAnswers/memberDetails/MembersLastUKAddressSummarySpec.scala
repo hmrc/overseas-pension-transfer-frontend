@@ -37,8 +37,8 @@ class MembersLastUKAddressSummarySpec extends SpecBase {
 
       val row = MembersLastUKAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.key.content mustBe Text(messages("membersLastUKAddress.checkYourAnswersLabel"))
+      row                   mustBe defined
+      row.get.key.content   mustBe Text(messages("membersLastUKAddress.checkYourAnswersLabel"))
       row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Line3<br>Line4<br>Postcode")
     }
 
@@ -55,8 +55,8 @@ class MembersLastUKAddressSummarySpec extends SpecBase {
 
       val row = MembersLastUKAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Postcode")
+      row                             mustBe defined
+      row.get.value.content           mustBe HtmlContent("Line1<br>Line2<br>Postcode")
       row.get.value.content.asHtml.body must not include "null"
     }
 
@@ -73,8 +73,8 @@ class MembersLastUKAddressSummarySpec extends SpecBase {
 
       val row = MembersLastUKAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Postcode")
+      row                             mustBe defined
+      row.get.value.content           mustBe HtmlContent("Line1<br>Line2<br>Postcode")
       row.get.value.content.asHtml.body must not include "<br><br>"
     }
 

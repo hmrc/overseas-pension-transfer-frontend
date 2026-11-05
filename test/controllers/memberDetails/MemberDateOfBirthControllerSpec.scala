@@ -67,7 +67,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[MemberDateOfBirthView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request, userAnswersMemberName),
           messages(application)
@@ -85,7 +85,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase {
         val view    = application.injector.instanceOf[MemberDateOfBirthView]
         val result  = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
           fakeDisplayRequest(request, userAnswers),
           messages(application)
@@ -110,7 +110,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase {
       running(application) {
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -126,7 +126,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase {
         val view      = application.injector.instanceOf[MemberDateOfBirthView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request, userAnswersMemberName),
           messages(application)
@@ -151,7 +151,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase {
 
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

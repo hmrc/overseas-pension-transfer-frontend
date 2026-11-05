@@ -76,13 +76,13 @@ class PropertyValuePageSpec extends SpecBase {
       }
     }
 
-    "should go to CYA when complete" in {
+    "must go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Property))
       PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyCYAController
         .onPageLoad(NormalMode, index)
     }
 
-    "should go to PropertyDescription when incomplete" in {
+    "must go to PropertyDescription when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
       PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyDescriptionController
         .onPageLoad(NormalMode, index)

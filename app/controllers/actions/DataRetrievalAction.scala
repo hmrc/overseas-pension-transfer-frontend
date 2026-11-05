@@ -61,11 +61,11 @@ class DataRetrievalActionImpl @Inject() (
               )
             )
           case Left(error)    =>
-            logger.error(s"[DataRetrievalAction][refine] Error receiving the UserAnswers from saveforlater: $error")
+            logger.error(s"Error receiving the UserAnswers from saveforlater: $error")
             Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         }
       case None        =>
-        logger.error("[DataRetrievalAction][refine] No Session Data found")
+        logger.error("No Session Data found")
         Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
     }
 

@@ -32,8 +32,8 @@ class QROPSNameSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(QROPSNamePage, "QROPS Sample Name").success.value
       val result  = QROPSNameSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsName.checkYourAnswersLabel"))
+      result                   mustBe defined
+      result.get.key.content   mustBe Text(messages("qropsName.checkYourAnswersLabel"))
       result.get.value.content mustBe Text("QROPS Sample Name")
     }
   }

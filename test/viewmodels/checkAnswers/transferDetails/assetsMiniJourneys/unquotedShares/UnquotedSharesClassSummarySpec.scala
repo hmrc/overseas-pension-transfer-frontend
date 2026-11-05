@@ -33,9 +33,9 @@ class UnquotedSharesClassSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(UnquotedSharesClassPage(0), "Unquoted Shares Class").success.value
       val result  = UnquotedSharesClassSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("unquotedSharesClass.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Unquoted Shares Class")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("unquotedSharesClass.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Unquoted Shares Class")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(CheckMode, 0).url
     }

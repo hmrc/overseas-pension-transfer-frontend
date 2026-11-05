@@ -52,7 +52,7 @@ class CashAmountInTransferControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[CashAmountInTransferView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -73,7 +73,7 @@ class CashAmountInTransferControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -96,7 +96,7 @@ class CashAmountInTransferControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CashAmountInTransferPage
           .nextPageWith(NormalMode, emptyUserAnswers, emptySessionData)
           .url
@@ -118,7 +118,7 @@ class CashAmountInTransferControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CashAmountInTransferPage
           .nextPageWith(AmendCheckMode, emptyUserAnswers, emptySessionData)
           .url
@@ -140,7 +140,7 @@ class CashAmountInTransferControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

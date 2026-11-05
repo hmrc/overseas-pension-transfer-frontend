@@ -34,9 +34,9 @@ class MemberDateOfLeavingUKSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(MemberDateOfLeavingUKPage, LocalDate.of(1995, 5, 5)).success.value
       val result  = MemberDateOfLeavingUKSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("memberDateOfLeavingUK.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("5 May 1995")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("memberDateOfLeavingUK.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("5 May 1995")
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode).url
     }

@@ -32,9 +32,9 @@ class IsTransferTaxableSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(IsTransferTaxablePage, false).success.value
       val result  = IsTransferTaxableSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("isTransferTaxable.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text(messages("site.no"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("isTransferTaxable.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text(messages("site.no"))
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.IsTransferTaxableController.onPageLoad(CheckMode).url
     }

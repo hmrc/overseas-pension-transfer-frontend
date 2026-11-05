@@ -41,7 +41,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
           val continueView = application.injector.instanceOf[JourneyRecoveryContinueView]
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(
             request,
             messages(application)
@@ -64,7 +64,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
           val recoveryView = application.injector.instanceOf[JourneyRecoveryView]
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual recoveryView()(request, messages(application)).toString
         }
       }
@@ -83,7 +83,7 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
           val recoveryView = application.injector.instanceOf[JourneyRecoveryView]
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual recoveryView()(request, messages(application)).toString
         }
       }

@@ -32,9 +32,9 @@ class OverseasTransferAllowanceSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(OverseasTransferAllowancePage, BigDecimal(12345.33)).success.value
       val result  = OverseasTransferAllowanceSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("overseasTransferAllowance.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£12,345.33")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("overseasTransferAllowance.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£12,345.33")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(CheckMode).url
     }

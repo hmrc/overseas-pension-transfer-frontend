@@ -47,7 +47,7 @@ class CheckYourAnswersControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[CheckYourAnswersView]
 
-        status(result) mustBe OK
+        status(result)          mustBe OK
         contentAsString(result) mustBe view(
           memberDetailsSummaryList,
           transferDetailsSummaryList,
@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends SpecBase {
         val request = FakeRequest(POST, checkYourAnswersRoute)
         val result  = route(application, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)           mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SubmitToHMRCController.onPageLoad(NormalMode).url)
       }
     }

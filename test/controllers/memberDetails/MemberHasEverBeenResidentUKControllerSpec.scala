@@ -55,7 +55,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -72,7 +72,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
         val view   = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
         val result = route(application, req).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -99,7 +99,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
       }
     }
@@ -123,7 +123,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
       }
     }
@@ -148,7 +148,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MembersLastUKAddressController.onPageLoad(CheckMode).url
       }
     }
@@ -183,7 +183,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
@@ -206,7 +206,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
         val view      = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
         val result    = route(application, req).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -233,7 +233,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

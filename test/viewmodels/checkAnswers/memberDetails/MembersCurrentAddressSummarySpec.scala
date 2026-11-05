@@ -45,8 +45,8 @@ class MembersCurrentAddressSummarySpec extends SpecBase {
 
       val row = MembersCurrentAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.key.content mustBe Text(messages("membersCurrentAddress.checkYourAnswersLabel"))
+      row                   mustBe defined
+      row.get.key.content   mustBe Text(messages("membersCurrentAddress.checkYourAnswersLabel"))
       row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Line3<br>Line4<br>Finland<br>Postcode<br>POBox")
     }
 
@@ -65,8 +65,8 @@ class MembersCurrentAddressSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
       val row     = MembersCurrentAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Finland")
+      row                             mustBe defined
+      row.get.value.content           mustBe HtmlContent("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "null"
     }
 
@@ -85,8 +85,8 @@ class MembersCurrentAddressSummarySpec extends SpecBase {
 
       val row = MembersCurrentAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Finland")
+      row                             mustBe defined
+      row.get.value.content           mustBe HtmlContent("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "<br><br>"
     }
 

@@ -32,9 +32,9 @@ class MemberIsResidentUKSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
       val result  = MemberIsResidentUKSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("memberIsResidentUK.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text(messages("site.yes"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("memberIsResidentUK.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text(messages("site.yes"))
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberIsResidentUKController.onPageLoad(CheckMode).url
     }

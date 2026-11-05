@@ -36,10 +36,10 @@ class QROPSAddressSummarySpec extends SpecBase {
         .value
       val result  = QROPSAddressSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsAddress.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent("Line1<br>Line2<br>United Kingdom")
-      result.get.value.content.asHtml.body must not include "<br><br>"
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("qropsAddress.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent("Line1<br>Line2<br>United Kingdom")
+      result.get.value.content.asHtml.body     must not include "<br><br>"
       result.get.actions.get.items.head.href mustBe
         controllers.qropsDetails.routes.QROPSAddressController.onPageLoad(CheckMode).url
     }

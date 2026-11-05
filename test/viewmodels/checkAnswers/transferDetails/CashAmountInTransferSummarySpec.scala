@@ -33,9 +33,9 @@ class CashAmountInTransferSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(CashAmountInTransferPage, BigDecimal(12345.33)).success.value
       val result  = CashAmountInTransferSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("cashAmountInTransfer.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£12,345.33")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("cashAmountInTransfer.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£12,345.33")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(CheckMode).url
     }

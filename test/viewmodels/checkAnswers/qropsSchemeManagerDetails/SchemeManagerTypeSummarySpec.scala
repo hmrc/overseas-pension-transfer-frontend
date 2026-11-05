@@ -33,9 +33,9 @@ class SchemeManagerTypeSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
       val result  = SchemeManagerTypeSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent(
         messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}")
       )
       result.get.actions.get.items.head.href mustBe

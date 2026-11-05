@@ -33,8 +33,8 @@ class SchemeManagersContactSummarySpec extends SpecBase {
       val answers     = emptyUserAnswers.set(SchemeManagersContactPage, phoneNumber).success.value
       val result      = SchemeManagersContactSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagersContact.checkYourAnswersLabel"))
+      result                   mustBe defined
+      result.get.key.content   mustBe Text(messages("schemeManagersContact.checkYourAnswersLabel"))
       result.get.value.content mustBe Text(phoneNumber)
 
       result.get.actions.get.items.head.href mustBe

@@ -66,7 +66,7 @@ class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: Htt
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND && e.message.contains("no match found") =>
           Left(DetailsNotFound)
         case e                                                                                             =>
-          logger.error(s"[MinimalDetailsConnector][fetch] Upstream error occurred ${e.getMessage}", e)
+          logger.error(s"Upstream error occurred ${e.getMessage}", e)
           Left(UpstreamError)
       }
 }

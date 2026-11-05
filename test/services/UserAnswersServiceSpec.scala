@@ -126,7 +126,7 @@ class UserAnswersServiceSpec extends SpecBase {
     val authenticatedUser  = PsaUser(PsaId("psaId"), "internalId", affinityGroup = Individual)
     val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber"), now))
 
-    "should post submission when PSA is associated with scheme and is the authorising PSA" in {
+    "must post submission when PSA is associated with scheme and is the authorising PSA" in {
       val srn   = emptySessionData.schemeInformation.srnNumber.value
       val psaId = testPsaId.get
 
@@ -149,7 +149,7 @@ class UserAnswersServiceSpec extends SpecBase {
       result mustBe submissionResponse
     }
 
-    "should fail when PSA is not authorising PSA" in {
+    "must fail when PSA is not authorising PSA" in {
       when(
         mockAuthService.checkIsAuthorisingPsa(
           any[String],
@@ -167,7 +167,7 @@ class UserAnswersServiceSpec extends SpecBase {
 
   "toAllTransfersItem" - {
 
-    "should create AllTransfersItem with Submitted status including submissionDate" in {
+    "must create AllTransfersItem with Submitted status including submissionDate" in {
       val userAnswersJson = Json.obj(
         "reportDetails" -> Json.obj("qtStatus" -> "Submitted"),
         "memberDetails" -> Json.obj(
@@ -179,16 +179,16 @@ class UserAnswersServiceSpec extends SpecBase {
       val ua     = UserAnswers(testTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
-      result.transferId mustBe testTransferNumber
-      result.qtStatus mustBe Some(QtStatus.Submitted)
+      result.transferId      mustBe testTransferNumber
+      result.qtStatus        mustBe Some(QtStatus.Submitted)
       result.memberFirstName mustBe Some("John")
-      result.memberSurname mustBe Some("Doe")
-      result.nino mustBe Some("AA123456A")
-      result.submissionDate mustBe Some(now)
-      result.lastUpdated mustBe None
+      result.memberSurname   mustBe Some("Doe")
+      result.nino            mustBe Some("AA123456A")
+      result.submissionDate  mustBe Some(now)
+      result.lastUpdated     mustBe None
     }
 
-    "should create AllTransfersItem with InProgress status including lastUpdated" in {
+    "must create AllTransfersItem with InProgress status including lastUpdated" in {
       val userAnswersJson = Json.obj(
         "reportDetails" -> Json.obj("qtStatus" -> "InProgress"),
         "memberDetails" -> Json.obj(
@@ -200,15 +200,15 @@ class UserAnswersServiceSpec extends SpecBase {
       val ua     = UserAnswers(testTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
-      result.qtStatus mustBe Some(QtStatus.InProgress)
-      result.lastUpdated mustBe Some(now)
-      result.submissionDate mustBe None
+      result.qtStatus        mustBe Some(QtStatus.InProgress)
+      result.lastUpdated     mustBe Some(now)
+      result.submissionDate  mustBe None
       result.memberFirstName mustBe Some("Jane")
-      result.memberSurname mustBe Some("Smith")
-      result.nino mustBe Some("AA654321B")
+      result.memberSurname   mustBe Some("Smith")
+      result.nino            mustBe Some("AA654321B")
     }
 
-    "should default to InProgress when qtStatus missing" in {
+    "must default to InProgress when qtStatus missing" in {
       val userAnswersJson = Json.obj(
         "memberDetails" -> Json.obj("nino" -> "AA000000A")
       )
@@ -216,15 +216,15 @@ class UserAnswersServiceSpec extends SpecBase {
       val ua     = UserAnswers(testTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
-      result.qtStatus mustBe Some(QtStatus.InProgress)
-      result.lastUpdated mustBe Some(now)
+      result.qtStatus       mustBe Some(QtStatus.InProgress)
+      result.lastUpdated    mustBe Some(now)
       result.submissionDate mustBe None
     }
   }
 
   "clearEmptyUserAnswers" - {
 
-    "should clear userAnswers when user-answers.data is empty" in {
+    "must clear userAnswers when user-answers.data is empty" in {
       reset(mockUserAnswersConnector, mockSessionRepository)
       val emptyUserAnswers =
         UserAnswersDTO(emptySessionData.transferId, pstr, Json.obj(), now)
@@ -253,7 +253,7 @@ class UserAnswersServiceSpec extends SpecBase {
       )(any(), any())
     }
 
-    "should not clear userAnswers when user-answers.data is not empty" in {
+    "must not clear userAnswers when user-answers.data is not empty" in {
       reset(mockUserAnswersConnector, mockSessionRepository)
       when(mockSessionRepository.get("id"))
         .thenReturn(Future.successful(Some(emptySessionData)))

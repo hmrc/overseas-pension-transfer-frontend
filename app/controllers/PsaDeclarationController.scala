@@ -76,7 +76,7 @@ class PsaDeclarationController @Inject() (
               srnNumber = request.sessionData.schemeInformation.srnNumber
             )
           ).leftMap { e =>
-            logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
+            logger.warn(s"Failed to submit declaration: $e")
             Redirect(PsaDeclarationPage.nextPageRecovery())
           }
         updateWithQTNumberSD <-
@@ -92,7 +92,7 @@ class PsaDeclarationController @Inject() (
         psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
         minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
                                      logger.warn(
-                                       s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e"
+                                       s"Failed to fetch minimal details for psaId=${psaId.value}: $e"
                                      )
                                      Redirect(PsaDeclarationPage.nextPageRecovery())
                                    }

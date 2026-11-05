@@ -89,11 +89,11 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
         urlForPage = urlFor
       )
 
-      vm.pagination mustBe None
+      vm.pagination      mustBe None
       vm.table.rows.size mustBe items.size
-      vm.lockWarning mustBe None
-      vm.currentPage mustBe 1
-      vm.totalPages mustBe 1
+      vm.lockWarning     mustBe None
+      vm.currentPage     mustBe 1
+      vm.totalPages      mustBe 1
     }
 
     "must return pagination with correct items, current page marking, and prev/next links" in {
@@ -114,18 +114,18 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
       p.items.isDefined mustBe true
       val pagers = p.items.get
       pagers.map(_.number.get) mustBe Seq("1", "2", "3")
-      pagers.map(_.href) mustBe Seq("/dash?page=1", "/dash?page=2", "/dash?page=3")
-      pagers.map(_.current) mustBe Seq(Some(false), Some(true), Some(false))
+      pagers.map(_.href)       mustBe Seq("/dash?page=1", "/dash?page=2", "/dash?page=3")
+      pagers.map(_.current)    mustBe Seq(Some(false), Some(true), Some(false))
 
-      p.previous.isDefined mustBe true
-      p.previous.get.href mustBe "/dash?page=1"
+      p.previous.isDefined     mustBe true
+      p.previous.get.href      mustBe "/dash?page=1"
       p.previous.get.labelText mustBe Some("site.previous")
 
-      p.next.isDefined mustBe true
-      p.next.get.href mustBe "/dash?page=3"
+      p.next.isDefined     mustBe true
+      p.next.get.href      mustBe "/dash?page=3"
       p.next.get.labelText mustBe Some("site.next")
-      vm.currentPage mustBe 2
-      vm.totalPages mustBe 3
+      vm.currentPage       mustBe 2
+      vm.totalPages        mustBe 3
     }
 
     "must sort items by latest before paginating (newest first on page 1)" in {
@@ -151,7 +151,7 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
 
       val actualTop3: Seq[(String, String)] = getLastUpdatedCol(vm)
 
-      actualTop3 mustBe expectedTop3
+      actualTop3         mustBe expectedTop3
       vm.table.rows.size mustBe 3
     }
 
@@ -224,8 +224,8 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
       vm.pagination.isDefined mustBe true
       val pagers = vm.pagination.get.items.get
 
-      pagers.size mustBe 5
-      pagers.map(_.number) mustBe Seq(Some("1"), Some("2"), Some("3"), Some("4"), Some("5"))
+      pagers.size                       mustBe 5
+      pagers.map(_.number)              mustBe Seq(Some("1"), Some("2"), Some("3"), Some("4"), Some("5"))
       pagers.forall(_.ellipsis.isEmpty) mustBe true
     }
 
@@ -243,13 +243,13 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
       vm.pagination.isDefined mustBe true
       val pagers = vm.pagination.get.items.get
 
-      pagers.size mustBe 4
-      pagers(0).number mustBe Some("1")
-      pagers(0).current mustBe Some(true)
-      pagers(1).number mustBe Some("2")
+      pagers.size        mustBe 4
+      pagers(0).number   mustBe Some("1")
+      pagers(0).current  mustBe Some(true)
+      pagers(1).number   mustBe Some("2")
       pagers(2).ellipsis mustBe Some(true)
-      pagers(2).number mustBe None
-      pagers(3).number mustBe Some("10")
+      pagers(2).number   mustBe None
+      pagers(3).number   mustBe Some("10")
     }
 
     "must show ellipsis on both sides when in middle pages" in {
@@ -265,15 +265,15 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
 
       val pagers = vm.pagination.get.items.get
 
-      pagers.size mustBe 7
-      pagers(0).number mustBe Some("1")
+      pagers.size        mustBe 7
+      pagers(0).number   mustBe Some("1")
       pagers(1).ellipsis mustBe Some(true)
-      pagers(2).number mustBe Some("4")
-      pagers(3).number mustBe Some("5")
-      pagers(3).current mustBe Some(true)
-      pagers(4).number mustBe Some("6")
+      pagers(2).number   mustBe Some("4")
+      pagers(3).number   mustBe Some("5")
+      pagers(3).current  mustBe Some(true)
+      pagers(4).number   mustBe Some("6")
       pagers(5).ellipsis mustBe Some(true)
-      pagers(6).number mustBe Some("10")
+      pagers(6).number   mustBe Some("10")
     }
 
     "must show ellipsis at start when on last page" in {
@@ -289,12 +289,12 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
 
       val pagers = vm.pagination.get.items.get
 
-      pagers.size mustBe 4
-      pagers(0).number mustBe Some("1")
+      pagers.size        mustBe 4
+      pagers(0).number   mustBe Some("1")
       pagers(1).ellipsis mustBe Some(true)
-      pagers(2).number mustBe Some("9")
-      pagers(3).number mustBe Some("10")
-      pagers(3).current mustBe Some(true)
+      pagers(2).number   mustBe Some("9")
+      pagers(3).number   mustBe Some("10")
+      pagers(3).current  mustBe Some(true)
     }
 
     "must not show ellipsis when pages are consecutive" in {
@@ -310,7 +310,7 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
 
       val pagers = vm.pagination.get.items.get
 
-      pagers.size mustBe 6
+      pagers.size          mustBe 6
       pagers.map(_.number) mustBe Seq(Some("1"), Some("2"), Some("3"), Some("4"), None, Some("6"))
     }
 
@@ -330,8 +330,8 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
 
       ellipsisItems.size mustBe 2
       ellipsisItems.foreach { item =>
-        item.href mustBe ""
-        item.number mustBe None
+        item.href    mustBe ""
+        item.number  mustBe None
         item.current mustBe None
       }
     }
@@ -350,7 +350,7 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
       val pagers       = vm.pagination.get.items.get
       val currentPages = pagers.filter(_.current.contains(true))
 
-      currentPages.size mustBe 1
+      currentPages.size        mustBe 1
       currentPages.head.number mustBe Some("5")
     }
 
@@ -390,15 +390,15 @@ class PaginatedAllTransfersViewModelSpec extends SpecBase {
 
       val pagers = vm.pagination.get.items.get
 
-      pagers.size mustBe 7
-      pagers(0).number mustBe Some("1")
+      pagers.size        mustBe 7
+      pagers(0).number   mustBe Some("1")
       pagers(1).ellipsis mustBe Some(true)
-      pagers(2).number mustBe Some("24")
-      pagers(3).number mustBe Some("25")
-      pagers(3).current mustBe Some(true)
-      pagers(4).number mustBe Some("26")
+      pagers(2).number   mustBe Some("24")
+      pagers(3).number   mustBe Some("25")
+      pagers(3).current  mustBe Some(true)
+      pagers(4).number   mustBe Some("26")
       pagers(5).ellipsis mustBe Some(true)
-      pagers(6).number mustBe Some("50")
+      pagers(6).number   mustBe Some("50")
     }
   }
 }

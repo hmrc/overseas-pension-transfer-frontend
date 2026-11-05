@@ -16,18 +16,15 @@
 
 package connectors.parsers
 
-import models.responses._
-import utils.DownstreamLogging
+import connectors.parsers.UserAnswersParser.GetUserAnswersHttpReads.logger
 import models.dtos.UserAnswersDTO
+import models.responses.*
 import org.apache.pekko.Done
 import play.api.Logging
-import play.api.libs.json.JsError
-import play.api.libs.json.JsSuccess
-import play.api.http.Status.NOT_FOUND
-import play.api.http.Status.NO_CONTENT
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.HttpReads
-import uk.gov.hmrc.http.HttpResponse
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
+import play.api.libs.json.{JsError, JsSuccess}
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import utils.DownstreamLogging.{formatJsonErrors, withDownstreamErrorMessage}
 
 import scala.util.Try
 
@@ -37,7 +34,7 @@ object UserAnswersParser {
   type SubmissionType        = Either[SubmissionErrorResponse, SubmissionResponse]
   type DeleteUserAnswersType = Either[UserAnswersError, Done]
 
-  implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging with DownstreamLogging {
+  implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
@@ -48,33 +45,32 @@ object UserAnswersParser {
                 case JsSuccess(value, _) => Right(value)
                 case JsError(errors)     =>
                   val formatted = formatJsonErrors(errors)
-                  logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: $formatted")
+                  logger.warn(s"Unable to parse Json as UserAnswersDTO: $formatted")
                   Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some(formatted)))
               }
             case None       =>
-              logger.warn("[UserAnswersConnector][getAnswers] Empty response body")
+              logger.warn("Empty response body")
               Left(UserAnswersErrorResponse("Empty response body", None))
           }
         case NOT_FOUND  =>
-          logger.warn("[UserAnswersConnector][getAnswers] No record was found in save for later}")
+          logger.warn("No record was found in save for later}")
           Left(UserAnswersNotFoundResponse)
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[UserAnswersConnector][getAnswers] Downstream error $statusCode: ${value.error}")
+              logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[UserAnswersConnector][getAnswers]", response)
-              logger.warn(
-                s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted"
-              )
-              Left(UserAnswersErrorResponse(err.message, Some(err.body)))
+              withDownstreamErrorMessage(response) { errMessage =>
+                val formatted = formatJsonErrors(errors)
+                logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
+                Left(UserAnswersErrorResponse(errMessage, Some(response.body)))
+              }
           }
       }
   }
 
-  implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging with DownstreamLogging {
+  implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType =
       response.status match {
@@ -82,20 +78,19 @@ object UserAnswersParser {
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[UserAnswersConnector][putAnswers] Downstream error $statusCode: ${value.error}")
+              logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[UserAnswersConnector][putAnswers]", response)
-              logger.warn(
-                s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted"
-              )
-              Left(UserAnswersErrorResponse(err.message, Some(err.body)))
+              withDownstreamErrorMessage(response) { errMessage =>
+                val formatted = formatJsonErrors(errors)
+                logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
+                Left(UserAnswersErrorResponse(errMessage, Some(response.body)))
+              }
           }
       }
   }
 
-  implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging with DownstreamLogging {
+  implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): SubmissionType =
       response.status match {
@@ -105,30 +100,26 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               logger.warn(
-                s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: $formatted"
+                s"Unable to parse Json as SubmissionResponse: $formatted"
               )
               Left(SubmissionErrorResponse("Unable to parse Json as SubmissionResponse", Some(formatted)))
           }
         case statusCode =>
           response.json.validate[SubmissionErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[SubmissionConnector][postSubmission] Downstream error $statusCode: ${value.error}")
+              logger.warn(s"Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              val err       = logBackendError("[SubmissionConnector][postSubmission]", response)
-              logger.warn(
-                s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionErrorResponse: $formatted"
-              )
-              Left(SubmissionErrorResponse(err.message, Some(err.body)))
+              withDownstreamErrorMessage(response) { errMessage =>
+                val formatted = formatJsonErrors(errors)
+                logger.error(s"Downstream failure (unable to parse JSON): $errMessage body=$formatted")
+                Left(SubmissionErrorResponse(errMessage, Some(response.body)))
+              }
           }
       }
   }
 
-  implicit object DeleteUserAnswersHttpReads
-      extends HttpReads[DeleteUserAnswersType]
-      with Logging
-      with DownstreamLogging {
+  implicit object DeleteUserAnswersHttpReads extends HttpReads[DeleteUserAnswersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): DeleteUserAnswersType =
       response.status match {
@@ -138,12 +129,12 @@ object UserAnswersParser {
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
               logger.warn(
-                s"[UserAnswersConnector][deleteAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}"
+                s"Error returned: downstreamStatus: $statusCode, error: ${value.error}"
               )
               Left(value)
             case JsError(errors)     =>
               logger.warn(
-                s"[UserAnswersConnector][deleteAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}"
+                s"Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}"
               )
               Left(
                 UserAnswersErrorResponse(

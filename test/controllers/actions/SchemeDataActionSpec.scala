@@ -170,7 +170,7 @@ class SchemeDataActionSpec extends SpecBase {
           .futureValue
 
       inside(result) { case Left(r) =>
-        r.header.status mustBe SEE_OTHER
+        r.header.status                  mustBe SEE_OTHER
         r.header.headers.get("Location") mustBe Some(
           controllers.auth.routes.UnauthorisedController.onPageLoad().url
         )
@@ -200,7 +200,7 @@ class SchemeDataActionSpec extends SpecBase {
             .futureValue
 
         inside(result) { case Left(r) =>
-          r.header.status mustBe SEE_OTHER
+          r.header.status                  mustBe SEE_OTHER
           r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )
@@ -226,7 +226,7 @@ class SchemeDataActionSpec extends SpecBase {
             .futureValue
 
         inside(result) { case Left(r) =>
-          r.header.status mustBe SEE_OTHER
+          r.header.status                  mustBe SEE_OTHER
           r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )
@@ -252,7 +252,7 @@ class SchemeDataActionSpec extends SpecBase {
             .futureValue
 
         inside(result) { case Left(r) =>
-          r.header.status mustBe SEE_OTHER
+          r.header.status                  mustBe SEE_OTHER
           r.header.headers.get("Location") mustBe Some(
             controllers.auth.routes.UnauthorisedController.onPageLoad().url
           )
@@ -281,7 +281,7 @@ class SchemeDataActionSpec extends SpecBase {
             .futureValue
 
         inside(result) { case Left(r) =>
-          r.header.status mustBe SEE_OTHER
+          r.header.status                  mustBe SEE_OTHER
           r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )

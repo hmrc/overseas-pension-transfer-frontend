@@ -40,12 +40,12 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecB
 
       val result = TransferReportQueryParams.fromRequest(request)
 
-      result.transferId mustBe Some(QtNumber("QT456321"))
-      result.qtStatus mustBe Some(QtStatus.Submitted)
-      result.pstr mustBe Some(PstrNumber("12345678AB"))
+      result.transferId    mustBe Some(QtNumber("QT456321"))
+      result.qtStatus      mustBe Some(QtStatus.Submitted)
+      result.pstr          mustBe Some(PstrNumber("12345678AB"))
       result.versionNumber mustBe Some("7")
-      result.memberName mustBe "John Doe"
-      result.currentPage mustBe 3
+      result.memberName    mustBe "John Doe"
+      result.currentPage   mustBe 3
     }
 
     "must default memberName to '-' and currentPage to 1 when not present" in {
@@ -53,12 +53,12 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecB
 
       val result = TransferReportQueryParams.fromRequest(request)
 
-      result.transferId mustBe Some(testTransferNumber)
-      result.qtStatus mustBe None
-      result.pstr mustBe None
+      result.transferId    mustBe Some(testTransferNumber)
+      result.qtStatus      mustBe None
+      result.pstr          mustBe None
       result.versionNumber mustBe None
-      result.memberName mustBe "-"
-      result.currentPage mustBe 1
+      result.memberName    mustBe "-"
+      result.currentPage   mustBe 1
     }
 
     "must ignore invalid qtStatus values" in {

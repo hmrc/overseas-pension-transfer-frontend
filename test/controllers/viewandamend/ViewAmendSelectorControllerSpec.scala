@@ -98,7 +98,7 @@ class ViewAmendSelectorControllerSpec extends SpecBase {
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ViewAmendSubmittedController
           .view(qtReference, pstr, qtStatus, versionNumber)
           .url
@@ -121,7 +121,7 @@ class ViewAmendSelectorControllerSpec extends SpecBase {
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ViewAmendSubmittedController.amend().url
         app.stop()
       }
@@ -139,8 +139,8 @@ class ViewAmendSelectorControllerSpec extends SpecBase {
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ViewAmendSelectorController
+        status(result)                   mustBe SEE_OTHER
+        redirectLocation(result).value   mustBe routes.ViewAmendSelectorController
           .onPageLoad(qtReference, pstr, qtStatus, versionNumber)
           .url
         flash(result).get("lockWarning") mustBe defined

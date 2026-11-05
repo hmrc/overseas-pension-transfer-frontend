@@ -158,7 +158,7 @@ class EmailServiceSpec extends SpecBase {
 
       val result = await(service.sendConfirmationEmail(testMemberName, sessionData, minimalDetails))
 
-      result.isLeft mustBe true
+      result.isLeft            mustBe true
       result.left.toOption.get mustBe DownstreamError(nonAccepted.toString)
     }
 

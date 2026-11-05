@@ -32,9 +32,9 @@ class NetTransferAmountSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(NetTransferAmountPage, BigDecimal(12345.33)).success.value
       val result  = NetTransferAmountSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("netTransferAmount.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£12,345.33")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("netTransferAmount.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£12,345.33")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.NetTransferAmountController.onPageLoad(CheckMode).url
     }

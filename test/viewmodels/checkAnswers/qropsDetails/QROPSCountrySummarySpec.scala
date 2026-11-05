@@ -33,9 +33,9 @@ class QROPSCountrySummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
       val result  = QROPSCountrySummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsCountry.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("United Kingdom")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("qropsCountry.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("United Kingdom")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsDetails.routes.QROPSCountryController.onPageLoad(CheckMode).url
     }

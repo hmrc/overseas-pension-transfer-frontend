@@ -52,7 +52,7 @@ class SubmitToHMRCControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[SubmitToHMRCView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -73,7 +73,7 @@ class SubmitToHMRCControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -98,7 +98,7 @@ class SubmitToHMRCControllerSpec extends SpecBase {
 
         val ua = emptyUserAnswers.set(SubmitToHMRCPage, true).success.value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SubmitToHMRCPage.nextPageWith(NormalMode, ua, psaUser).url
       }
     }
@@ -118,7 +118,7 @@ class SubmitToHMRCControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -193,7 +193,7 @@ class SubmitToHMRCControllerSpec extends SpecBase {
 
         val ua = emptyUserAnswers.set(SubmitToHMRCPage, false).success.value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser).url
       }
     }

@@ -52,7 +52,7 @@ class OtherAssetsValueControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[OtherAssetsValueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -73,7 +73,7 @@ class OtherAssetsValueControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -96,7 +96,7 @@ class OtherAssetsValueControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual OtherAssetsValuePage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -116,7 +116,7 @@ class OtherAssetsValueControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual OtherAssetsValuePage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -138,7 +138,7 @@ class OtherAssetsValueControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

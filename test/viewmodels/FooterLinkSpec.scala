@@ -29,14 +29,14 @@ class FooterLinkSpec extends SpecBase {
     "return only returnDashboardLink when showStartFooter is true" in {
       val result = FooterLink.build(showStartFooter = true)
 
-      result must have length 1
+      result           must have length 1
       result.head.id mustBe "returnDashboardLink"
     }
 
     "return only returnDashboardLink when showCYAFooter is true" in {
       val result = FooterLink.build(showCYAFooter = true)
 
-      result must have length 1
+      result           must have length 1
       result.head.id mustBe "returnDashboardLink"
     }
 
@@ -50,7 +50,7 @@ class FooterLinkSpec extends SpecBase {
     "return returnTaskListLink when only showPageFooter is true" in {
       val result = FooterLink.build(showPageFooter = true)
 
-      result must have length 1
+      result           must have length 1
       result.head.id mustBe "returnTaskListLink"
     }
 

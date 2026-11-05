@@ -35,7 +35,6 @@ package utils
 import base.SpecBase
 import controllers.helpers.ErrorHandling
 import controllers.routes
-import models.BackendError
 import play.api.libs.typedmap.TypedMap
 import play.api.mvc.*
 import play.api.routing.{HandlerDef, Router}
@@ -47,8 +46,6 @@ import scala.concurrent.Future
 
 class DownstreamLoggingSpec extends SpecBase {
 
-  object TestLogging extends DownstreamLogging
-
   object TestController extends BaseController with ErrorHandling {
 
     override protected def controllerComponents: ControllerComponents =
@@ -59,9 +56,8 @@ class DownstreamLoggingSpec extends SpecBase {
     }
   }
 
-  "DownstreamLogging" - {
-
-    "build BackendError with correlation ID from response" in {
+  "withDownstreamErrorMessage" - {
+    "must build the error message with correlation ID from response" in {
       val response = HttpResponse(
         status = INTERNAL_SERVER_ERROR,
         body = "boom",
@@ -71,11 +67,8 @@ class DownstreamLoggingSpec extends SpecBase {
         )
       )
 
-      val err = TestLogging.logBackendError("TestOrigin", response)
-
-      err mustBe BackendError("corr-123", INTERNAL_SERVER_ERROR, "InternalServerError", "TestOrigin", "boom")
-      err.message must include("TestOrigin")
-      err.message must include("corr-123")
+      val err = DownstreamLogging.withDownstreamErrorMessage(response)(identity)
+      err mustBe "500 InternalServerError (correlationId=corr-123)"
     }
 
     "fallback to '-' correlation ID if none found" in {
@@ -85,48 +78,44 @@ class DownstreamLoggingSpec extends SpecBase {
         headers = Map.empty
       )
 
-      val err = TestLogging.logBackendError("AnotherOrigin", response)
+      val err = DownstreamLogging.withDownstreamErrorMessage(response)(identity)
 
-      err.correlationId mustBe "-"
-      err.status mustBe BAD_REQUEST
-      err.reason mustBe "Unknown"
+      err mustBe "400 Unknown (correlationId=-)"
     }
+  }
 
-    "logNonHttpError returns message with correlation ID from HeaderCarrier" in {
+  "getNonHttpErrorMessage" - {
+
+    "must return the message with correlation ID from HeaderCarrier" in {
       implicit val hc: HeaderCarrier = HeaderCarrier(requestId = Some(RequestId("req-999")))
       val ex                         = new RuntimeException("db down")
 
-      val message = TestLogging.logNonHttpError("DBService", hc, ex)
-
-      message must include("DBService")
+      val message = DownstreamLogging.withNonHttpErrorMessage(hc, ex)(identity)
       message must include("req-999")
       message must include("db down")
     }
 
-    "logNonHttpError falls back to '-' if no correlation ID" in {
+    "must fall back to '-' if no correlation ID" in {
       implicit val hc: HeaderCarrier = HeaderCarrier()
       val ex                         = new IllegalStateException("oops")
 
-      val message = TestLogging.logNonHttpError("NoCorrService", hc, ex)
-
-      message must include("NoCorrService")
+      val message = DownstreamLogging.withNonHttpErrorMessage(hc, ex)(identity)
       message must include("correlationId=-")
       message must include("oops")
     }
   }
 
   "ErrorHandling" - {
-
-    "redirect to JourneyRecoveryController when failing" in {
+    "must redirect to JourneyRecoveryController when failing" in {
       val request = FakeRequest(GET, "/test-url")
 
       val result = TestController.failingAction("SomeError")(request)
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.JourneyRecoveryController.onPageLoad().url)
     }
 
-    "include controller.method in logs if HandlerDef present" in {
+    "must include controller.method in logs if HandlerDef present" in {
       val handlerDef = HandlerDef(
         classLoader = getClass.getClassLoader,
         routerPackage = "router",
@@ -142,7 +131,7 @@ class DownstreamLoggingSpec extends SpecBase {
 
       val result = TestController.failingAction("SomeError")(request)
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.JourneyRecoveryController.onPageLoad().url)
     }
   }

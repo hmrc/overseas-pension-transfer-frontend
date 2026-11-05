@@ -290,13 +290,13 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
 
       val bound = result.value.value
 
-      bound.addressLine1 mustBe "10 Downing Street"
-      bound.addressLine2 mustBe "Westminster"
+      bound.addressLine1       mustBe "10 Downing Street"
+      bound.addressLine2       mustBe "Westminster"
       bound.addressLine3.value mustBe "London"
       bound.addressLine4.value mustBe "Greater London"
-      bound.countryCode mustBe "GB"
-      bound.postcode.value mustBe "SW1A 2AA"
-      bound.poBox.value mustBe "PO Box 123"
+      bound.countryCode        mustBe "GB"
+      bound.postcode.value     mustBe "SW1A 2AA"
+      bound.poBox.value        mustBe "PO Box 123"
     }
   }
 }

@@ -74,13 +74,13 @@ class OtherAssetsDescriptionPageSpec extends SpecBase {
       }
     }
 
-    "should go to CYA when mandatory fields complete" in {
+    "must go to CYA when mandatory fields complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Other))
       OtherAssetsDescriptionPage(index)
         .nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(NormalMode, index)
     }
 
-    "should go to Value page when incomplete" in {
+    "must go to Value page when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
       OtherAssetsDescriptionPage(index).nextPage(
         NormalMode,

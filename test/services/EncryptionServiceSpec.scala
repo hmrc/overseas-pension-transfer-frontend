@@ -36,14 +36,14 @@ class EncryptionServiceSpec extends SpecBase {
       encrypted must not be plainText
 
       val decrypted = service.decrypt(encrypted)
-      decrypted.isRight mustBe true
+      decrypted.isRight      mustBe true
       decrypted.toOption.get mustBe plainText
     }
 
     "must encrypt and decrypt an empty string" in {
       val encrypted = service.encrypt("")
       val decrypted = service.decrypt(encrypted)
-      decrypted.isRight mustBe true
+      decrypted.isRight      mustBe true
       decrypted.toOption.get mustBe ""
     }
 
@@ -52,7 +52,7 @@ class EncryptionServiceSpec extends SpecBase {
       val encrypted1 = service.encrypt(text)
       val encrypted2 = service.encrypt(text)
 
-      encrypted1 must not be encrypted2
+      encrypted1                                 must not be encrypted2
       service.decrypt(encrypted1).toOption.get mustBe text
       service.decrypt(encrypted2).toOption.get mustBe text
     }
@@ -95,7 +95,7 @@ class EncryptionServiceSpec extends SpecBase {
       val text      = "Base64 key test"
       val encrypted = serviceWithBase64.encrypt(text)
       val decrypted = serviceWithBase64.decrypt(encrypted)
-      decrypted.isRight mustBe true
+      decrypted.isRight      mustBe true
       decrypted.toOption.get mustBe text
     }
 
@@ -103,7 +103,7 @@ class EncryptionServiceSpec extends SpecBase {
       val longText  = "A" * (10 * 1024 * 1024) // 10 MB
       val encrypted = service.encrypt(longText)
       val decrypted = service.decrypt(encrypted)
-      decrypted.isRight mustBe true
+      decrypted.isRight      mustBe true
       decrypted.toOption.get mustBe longText
     }
 
@@ -112,7 +112,7 @@ class EncryptionServiceSpec extends SpecBase {
       texts.foreach { t =>
         val encrypted = service.encrypt(t)
         val decrypted = service.decrypt(encrypted)
-        decrypted.isRight mustBe true
+        decrypted.isRight      mustBe true
         decrypted.toOption.get mustBe t
       }
     }

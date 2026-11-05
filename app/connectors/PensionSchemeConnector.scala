@@ -16,27 +16,24 @@
 
 package connectors
 
-import models.authentication.AuthenticatedUser
-import models.authentication.PsaUser
-import models.authentication.PspUser
-import models.responses.PensionSchemeErrorResponse
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.StringContextOps
+import connectors.parsers.PensionSchemeParser.*
+import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
+import models.responses.PensionSchemeErrorResponse
+import play.api.Logging
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import utils.DownstreamLogging
-import connectors.parsers.PensionSchemeParser._
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import utils.DownstreamLogging.withNonHttpErrorMessage
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PensionSchemeConnector @Inject() (
   appConfig: FrontendAppConfig,
   http: HttpClientV2
 )(implicit ec: ExecutionContext)
-    extends DownstreamLogging {
+    extends Logging {
 
   def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
@@ -64,8 +61,10 @@ class PensionSchemeConnector @Inject() (
       )
       .execute[AuthorisingPsaIdType]
       .recover { case e: Exception =>
-        val errMsg = logNonHttpError("[PensionSchemeConnector][getAuthorisingPsa]", hc, e)
-        Left(PensionSchemeErrorResponse(errMsg, None))
+        withNonHttpErrorMessage(hc, e) { errMsg =>
+          logger.error(errMsg, e)
+          Left(PensionSchemeErrorResponse(errMsg, None))
+        }
       }
   }
 
@@ -85,8 +84,10 @@ class PensionSchemeConnector @Inject() (
       )
       .execute[PensionSchemeDetailsType]
       .recover { case e: Exception =>
-        val errMsg = logNonHttpError("[PensionSchemeConnector][getSchemeDetails]", hc, e)
-        Left(PensionSchemeErrorResponse(errMsg, None))
+        withNonHttpErrorMessage(hc, e) { errMsg =>
+          logger.error(errMsg, e)
+          Left(PensionSchemeErrorResponse(errMsg, None))
+        }
       }
   }
 }

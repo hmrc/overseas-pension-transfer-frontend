@@ -33,9 +33,9 @@ class MemberNameSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(MemberNamePage, PersonName("Member", "Name")).success.value
       val result  = MemberNameSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("memberName.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent("Member Name")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("memberName.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent("Member Name")
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberNameController.onPageLoad(CheckMode).url
     }

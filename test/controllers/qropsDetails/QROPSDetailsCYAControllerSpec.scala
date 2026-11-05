@@ -49,7 +49,7 @@ class QROPSDetailsCYAControllerSpec extends SpecBase {
             QROPSDetailsSummary.rows(CheckMode, userAnswers)
           )
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual
             view(summaryList)(fakeDisplayRequest(request, userAnswers), msgs).toString
         }
@@ -66,7 +66,7 @@ class QROPSDetailsCYAControllerSpec extends SpecBase {
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
         }
       }

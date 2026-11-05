@@ -52,13 +52,13 @@ class MpsOnRampController @Inject() (
           if (persisted) {
             Redirect(MpsOnRampPage.nextPage())
           } else {
-            logger.warn("[MpsOnRampController][onRamp] dashboardRepo.set returned false")
+            logger.warn("dashboardRepo.set returned false")
             Redirect(MpsOnRampPage.nextPageRecovery())
           }
         }
       }
       .recover { case t =>
-        logger.error("[MpsOnRampController][onRamp] Failed while setting/persisting dashboard data", t)
+        logger.error("Failed while setting/persisting dashboard data", t)
         Redirect(MpsOnRampPage.nextPageRecovery())
       }
   }

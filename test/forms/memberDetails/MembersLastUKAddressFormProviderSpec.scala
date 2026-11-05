@@ -229,11 +229,11 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
 
       val bound = result.value.value
 
-      bound.addressLine1 mustBe "10 Downing Street"
-      bound.addressLine2 mustBe "Westminster"
+      bound.addressLine1       mustBe "10 Downing Street"
+      bound.addressLine2       mustBe "Westminster"
       bound.addressLine3.value mustBe "London"
       bound.addressLine4.value mustBe "Greater London"
-      bound.postcode.value mustBe "SW1A 2AA"
+      bound.postcode.value     mustBe "SW1A 2AA"
     }
   }
 }

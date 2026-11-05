@@ -33,9 +33,9 @@ class PropertyDescriptionSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(PropertyDescriptionPage(0), "Property Description").success.value
       val result  = PropertyDescriptionSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("propertyDescription.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Property Description")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("propertyDescription.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Property Description")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, 0).url
     }

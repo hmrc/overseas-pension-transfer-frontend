@@ -47,7 +47,7 @@ class WhatWillBeNeededViewSpec extends ViewBaseSpec {
       val bulletLists       = doc(view().body).getElementsByClass("govuk-list--bullet")
       val memberDetailsList = bulletLists.get(0).getElementsByTag("li")
 
-      memberDetailsList.size() mustBe 5
+      memberDetailsList.size()        mustBe 5
       memberDetailsList.get(0).text() mustBe messages("requiredInfo.memberDetails.bullet1")
       memberDetailsList.get(4).text() mustBe messages("requiredInfo.memberDetails.bullet5")
     }
@@ -56,7 +56,7 @@ class WhatWillBeNeededViewSpec extends ViewBaseSpec {
       val bulletLists         = doc(view().body).getElementsByClass("govuk-list--bullet")
       val transferDetailsList = bulletLists.get(1).getElementsByTag("li")
 
-      transferDetailsList.size() mustBe 7
+      transferDetailsList.size()        mustBe 7
       transferDetailsList.get(0).text() mustBe messages("requiredInfo.transferDetails.bullet1")
       transferDetailsList.get(6).text() mustBe messages("requiredInfo.transferDetails.bullet7")
     }
@@ -65,7 +65,7 @@ class WhatWillBeNeededViewSpec extends ViewBaseSpec {
       val bulletLists      = doc(view().body).getElementsByClass("govuk-list--bullet")
       val qropsDetailsList = bulletLists.get(2).getElementsByTag("li")
 
-      qropsDetailsList.size() mustBe 4
+      qropsDetailsList.size()        mustBe 4
       qropsDetailsList.get(0).text() mustBe messages("requiredInfo.qropsDetails.bullet1")
       qropsDetailsList.get(3).text() mustBe messages("requiredInfo.qropsDetails.bullet4")
     }
@@ -74,7 +74,7 @@ class WhatWillBeNeededViewSpec extends ViewBaseSpec {
       val bulletLists       = doc(view().body).getElementsByClass("govuk-list--bullet")
       val schemeManagerList = bulletLists.get(3).getElementsByTag("li")
 
-      schemeManagerList.size() mustBe 2
+      schemeManagerList.size()        mustBe 2
       schemeManagerList.get(0).text() mustBe messages("requiredInfo.schemeManager.bullet1")
       schemeManagerList.get(1).text() mustBe messages("requiredInfo.schemeManager.bullet2")
     }

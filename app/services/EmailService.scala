@@ -88,16 +88,16 @@ class EmailService @Inject() (
               case EmailAccepted => Future.successful(Right(EmailSentSuccess))
               case err           =>
                 logger.warn(
-                  s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}"
+                  s"Email not sent due to downstream error: ${err.toString}"
                 )
                 Future.successful(Left(DownstreamError(err.toString)))
             }
           case _               =>
-            logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in minimal details")
+            logger.warn("Email not sent due to missing data in minimal details")
             Future.successful(Left(MinimalDetailsError))
         }
       case _                                  =>
-        logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in sd")
+        logger.warn("Email not sent due to missing data in sd")
         Future.successful(Left(SessionDataError))
     }
   }

@@ -240,7 +240,7 @@ class TaskJourneyViewModelSpec extends SpecBase {
               .value
 
             QropsDetailsJourneyViewModel.status(userAnswers) mustBe Completed
-            QropsDetailsJourneyViewModel.entry(userAnswers) mustBe
+            QropsDetailsJourneyViewModel.entry(userAnswers)  mustBe
               controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
           }
 
@@ -411,7 +411,7 @@ class TaskJourneyViewModelSpec extends SpecBase {
             .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
-          SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
+          SchemeManagerDetailsJourneyViewModel.entry(userAnswers)  mustBe
             controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
         }
 
@@ -448,7 +448,7 @@ class TaskJourneyViewModelSpec extends SpecBase {
             .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
-          SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
+          SchemeManagerDetailsJourneyViewModel.entry(userAnswers)  mustBe
             controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
         }
 

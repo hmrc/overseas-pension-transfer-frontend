@@ -107,7 +107,7 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
       val updatedRecord = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
 
       isStoredValueEncrypted mustBe isEncrypted
-      updatedRecord mustEqual expectedResult
+      updatedRecord       mustEqual expectedResult
     }
 
     mustPreserveMdc(repository.set(sessionData))
@@ -122,7 +122,7 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
         val result         = repository.get(sessionData.sessionId).futureValue
         val expectedResult = sessionData copy (lastUpdated = instant)
         isStoredValueEncrypted mustBe isEncrypted
-        result.value mustEqual expectedResult
+        result.value        mustEqual expectedResult
       }
     }
 
@@ -162,12 +162,12 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
       "must update its lastUpdated to `now` and return true" in {
         insert(sessionData).futureValue
 
-        val result         = repository.keepAlive(sessionData.sessionId).futureValue
-        result mustBe true
+        val result = repository.keepAlive(sessionData.sessionId).futureValue
+        result                 mustBe true
         isStoredValueEncrypted mustBe isEncrypted
         val updatedAnswers = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
 
-        updatedAnswers.lastUpdated mustEqual instant
+        updatedAnswers.lastUpdated                                 mustEqual instant
         updatedAnswers.copy(lastUpdated = sessionData.lastUpdated) mustEqual sessionData
       }
     }

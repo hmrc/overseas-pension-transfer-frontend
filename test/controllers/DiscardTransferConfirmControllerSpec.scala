@@ -75,7 +75,7 @@ class DiscardTransferConfirmControllerSpec extends SpecBase {
 
             val view = application.injector.instanceOf[DiscardTransferConfirmView]
 
-            status(result) mustEqual OK
+            status(result)          mustEqual OK
             contentAsString(result) mustEqual view(form, mode)(request, messages(application)).toString
           }
         }
@@ -93,7 +93,7 @@ class DiscardTransferConfirmControllerSpec extends SpecBase {
 
             val result = route(application, request).value
 
-            status(result) mustEqual OK
+            status(result)          mustEqual OK
             contentAsString(result) mustEqual view(form.fill(true), mode)(request, messages(application)).toString
           }
         }
@@ -124,7 +124,7 @@ class DiscardTransferConfirmControllerSpec extends SpecBase {
 
             val result = route(application, request).value
 
-            status(result) mustEqual SEE_OTHER
+            status(result)                 mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual controllers.routes.DashboardController.onPageLoad().url
 
             verify(mockLockService, times(1)).isLocked(any(), any())
@@ -157,7 +157,7 @@ class DiscardTransferConfirmControllerSpec extends SpecBase {
 
             val result = route(application, request).value
 
-            status(result) mustBe SEE_OTHER
+            status(result)                 mustBe SEE_OTHER
             redirectLocation(result).value mustBe redirectUrl(userAnswers)
 
             verify(mockLockService, times(1)).isLocked(any(), any())
@@ -211,7 +211,7 @@ class DiscardTransferConfirmControllerSpec extends SpecBase {
 
             val result = route(application, request).value
 
-            status(result) mustEqual BAD_REQUEST
+            status(result)          mustEqual BAD_REQUEST
             contentAsString(result) mustEqual view(boundForm, mode)(request, messages(application)).toString
           }
         }

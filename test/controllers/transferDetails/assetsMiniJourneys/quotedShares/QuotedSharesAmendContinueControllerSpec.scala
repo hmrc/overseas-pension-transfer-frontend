@@ -57,7 +57,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[QuotedSharesAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +74,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[QuotedSharesAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
           fakeDisplayRequest(request, userAnswers),
           messages(application)
@@ -120,7 +120,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val expected  =
           QuotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -146,7 +146,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val expected  =
           QuotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -172,7 +172,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val expected  =
           QuotedSharesAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -198,7 +198,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val expected  =
           QuotedSharesAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -222,7 +222,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val ua2       = userAnswers.set(QuotedSharesAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesAmendContinueAssetPage
           .nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex))
           .url
@@ -242,7 +242,7 @@ class QuotedSharesAmendContinueControllerSpec extends SpecBase {
         val view   = application.injector.instanceOf[QuotedSharesAmendContinueView]
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

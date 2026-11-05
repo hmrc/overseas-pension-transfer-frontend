@@ -33,9 +33,9 @@ class PropertyValueSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(PropertyValuePage(0), BigDecimal(12345.99)).success.value
       val result  = PropertyValueSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("propertyValue.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£12,345.99")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("propertyValue.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£12,345.99")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, 0).url
     }

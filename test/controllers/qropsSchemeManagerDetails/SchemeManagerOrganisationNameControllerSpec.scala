@@ -53,7 +53,7 @@ class SchemeManagerOrganisationNameControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[SchemeManagerOrganisationNameView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +74,7 @@ class SchemeManagerOrganisationNameControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -103,7 +103,7 @@ class SchemeManagerOrganisationNameControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeManagerOrganisationNamePage
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -125,7 +125,7 @@ class SchemeManagerOrganisationNameControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -154,7 +154,7 @@ class SchemeManagerOrganisationNameControllerSpec extends SpecBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

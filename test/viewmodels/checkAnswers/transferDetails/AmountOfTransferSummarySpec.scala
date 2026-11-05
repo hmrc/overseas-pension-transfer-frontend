@@ -32,9 +32,9 @@ class AmountOfTransferSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(AmountOfTransferPage, BigDecimal(12345.33)).success.value
       val result  = AmountOfTransferSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("amountOfTransfer.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£12,345.33")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("amountOfTransfer.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£12,345.33")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.AmountOfTransferController.onPageLoad(CheckMode).url
     }

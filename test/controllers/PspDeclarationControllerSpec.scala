@@ -69,7 +69,7 @@ class PspDeclarationControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[PspDeclarationView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -120,7 +120,7 @@ class PspDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, ua).url
       }
     }
@@ -140,7 +140,7 @@ class PspDeclarationControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

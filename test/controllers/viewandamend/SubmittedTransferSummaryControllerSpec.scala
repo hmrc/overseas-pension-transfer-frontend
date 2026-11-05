@@ -71,7 +71,7 @@ class SubmittedTransferSummaryControllerSpec extends SpecBase {
         val summaryList =
           SubmittedTransferSummaryViewModel.rows(None, List(emptyUserAnswers), "001")(testMessages)
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view("", testQtNumber.value, summaryList)(
           fakeSchemeRequest(request),
           testMessages

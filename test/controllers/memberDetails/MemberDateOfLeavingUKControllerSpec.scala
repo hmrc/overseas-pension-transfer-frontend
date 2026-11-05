@@ -66,7 +66,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase {
         val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -83,7 +83,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase {
         val view    = application.injector.instanceOf[MemberDateOfLeavingUKView]
         val result  = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -108,7 +108,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase {
       running(application) {
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -125,7 +125,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase {
         val view      = application.injector.instanceOf[MemberDateOfLeavingUKView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -153,7 +153,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase {
 
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

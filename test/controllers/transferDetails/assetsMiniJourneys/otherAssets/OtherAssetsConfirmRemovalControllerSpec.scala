@@ -51,7 +51,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[OtherAssetsConfirmRemovalView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -78,7 +78,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController
           .onPageLoad(NormalMode)
           .url
@@ -100,7 +100,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, 1)(
           fakeDisplayRequest(request),
           messages(application)
@@ -129,7 +129,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }

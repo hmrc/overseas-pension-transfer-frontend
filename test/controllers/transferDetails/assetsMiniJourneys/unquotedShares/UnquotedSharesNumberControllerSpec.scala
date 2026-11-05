@@ -53,7 +53,7 @@ class UnquotedSharesNumberControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[UnquotedSharesNumberView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +74,7 @@ class UnquotedSharesNumberControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -97,7 +97,7 @@ class UnquotedSharesNumberControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual UnquotedSharesNumberPage(index)
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -122,7 +122,7 @@ class UnquotedSharesNumberControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual UnquotedSharesNumberPage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -144,7 +144,7 @@ class UnquotedSharesNumberControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

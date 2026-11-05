@@ -37,9 +37,9 @@ class ApplicableTaxExclusionsSummarySpec extends SpecBase {
         .value
       val result  = ApplicableTaxExclusionsSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("applicableTaxExclusions.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("applicableTaxExclusions.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent(
         messages(
           "applicableTaxExclusions.occupational<br><br>applicableTaxExclusions.publicService<br><br>applicableTaxExclusions.resident"
         )

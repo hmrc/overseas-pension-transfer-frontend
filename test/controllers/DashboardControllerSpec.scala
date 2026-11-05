@@ -111,7 +111,7 @@ class DashboardControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
         val result  = route(application, request).value
 
-        status(result) mustBe OK
+        status(result)        mustBe OK
         contentAsString(result) must include("dashboard view")
 
         verify(mockDashboardSessionRepository).get(any())
@@ -175,7 +175,7 @@ class DashboardControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)               mustBe SEE_OTHER
         redirectLocation(result).value must include(routes.DashboardController.onPageLoad(2).url.split('?').head)
 
         flash(result).get("lockWarning") mustBe Some("LockedScheme")
@@ -265,7 +265,7 @@ class DashboardControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
         val result  = route(application, request).value
 
-        status(result) mustBe OK
+        status(result)        mustBe OK
         contentAsString(result) must include("dashboard")
 
         // verify releaseLock called for the two items that had references
@@ -443,7 +443,7 @@ class DashboardControllerSpec extends SpecBase {
         clearLink.text() must include(messages(application)("dashboard.search.clear"))
 
         val hiddenSpan = clearLink.select("span.govuk-visually-hidden").first()
-        hiddenSpan must not be null
+        hiddenSpan               must not be null
         hiddenSpan.text().trim mustBe messages(application)("dashboard.search.clear.hiddenText")
       }
     }
@@ -592,7 +592,7 @@ class DashboardControllerSpec extends SpecBase {
         val request = FakeRequest(GET, routes.DashboardController.clearAndExit("/some-url").url)
         val result  = route(application, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe "/some-url"
 
         verify(mockDashboardSessionRepository, times(1)).clear(eqTo(testInternalId))

@@ -131,8 +131,8 @@ class MemberIsResidentUKPageSpec extends SpecBase {
       val cleaned = MemberIsResidentUKPage.cleanup(Some(true), uaWithDeps).success.value
 
       cleaned.get(MemberHasEverBeenResidentUKPage) mustBe None
-      cleaned.get(MembersLastUKAddressPage) mustBe None
-      cleaned.get(MemberDateOfLeavingUKPage) mustBe None
+      cleaned.get(MembersLastUKAddressPage)        mustBe None
+      cleaned.get(MemberDateOfLeavingUKPage)       mustBe None
     }
 
     "must not remove dependent pages when isResidentUk is false" in {
@@ -159,9 +159,9 @@ class MemberIsResidentUKPageSpec extends SpecBase {
 
       val cleaned = MemberIsResidentUKPage.cleanup(Some(false), uaWithDeps).success.value
 
-      cleaned.get(MemberHasEverBeenResidentUKPage) mustBe Some(false)
+      cleaned.get(MemberHasEverBeenResidentUKPage)    mustBe Some(false)
       cleaned.get(MembersLastUKAddressPage).isDefined mustBe true
-      cleaned.get(MemberDateOfLeavingUKPage) mustBe Some(LocalDate.of(2020, 1, 2))
+      cleaned.get(MemberDateOfLeavingUKPage)          mustBe Some(LocalDate.of(2020, 1, 2))
     }
   }
 }

@@ -39,10 +39,10 @@ class EmailConnector @Inject() (appConfig: FrontendAppConfig, httpClientV2: Http
   def send(email: EmailToSendRequest)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[EmailSendingResult] =
     httpClientV2.post(url"${appConfig.emailService}").withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
       case e: BadGatewayException     =>
-        logger.warn(s"[EmailConnector][send] Error sending email: ${e.message}")
+        logger.warn(s"Error sending email: ${e.message}")
         EmailNotSent
       case e: GatewayTimeoutException =>
-        logger.warn(s"[EmailConnector][send] Gateway timed out: ${e.message}")
+        logger.warn(s"Gateway timed out: ${e.message}")
         EmailNotSent
     }
 }

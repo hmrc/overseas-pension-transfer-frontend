@@ -37,7 +37,7 @@ class OtherAssetsStartControllerSpec extends SpecBase {
         val view     = application.injector.instanceOf[OtherAssetsStartView]
         val nextPage = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, 0).url
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString
       }
     }

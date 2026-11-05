@@ -49,21 +49,21 @@ class QuotedSharesAmendContinueSummarySpec extends SpecBase {
 
       val result = QuotedSharesAmendContinueSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("quotedSharesAmendContinue.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text(messages("quotedSharesAmendContinue.summary.value"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("quotedSharesAmendContinue.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text(messages("quotedSharesAmendContinue.summary.value"))
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(CheckMode).url
     }
 
     "moreThanFiveQuotedSharesRow" - {
-      "should return Some when user has selected more than 5 quoted shares" in {
+      "must return Some when user has selected more than 5 quoted shares" in {
         val userAnswers = emptyUserAnswers.set(MoreQuotedSharesDeclarationPage, true).success.value
         val result      = QuotedSharesAmendContinueSummary.moreThanFiveQuotedSharesRow(CheckMode, userAnswers, true)
         result mustBe defined
       }
 
-      "should return None when user has not selected more than 5 unquoted shares" in {
+      "must return None when user has not selected more than 5 unquoted shares" in {
         val userAnswers = emptyUserAnswers.set(MoreQuotedSharesDeclarationPage, false).success.value
         val result      = QuotedSharesAmendContinueSummary.moreThanFiveQuotedSharesRow(CheckMode, userAnswers, true)
         result mustBe None

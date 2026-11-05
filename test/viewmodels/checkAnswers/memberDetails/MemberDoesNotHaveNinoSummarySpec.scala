@@ -32,9 +32,9 @@ class MemberDoesNotHaveNinoSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(MemberDoesNotHaveNinoPage, "Member No Nino reason").success.value
       val result  = MemberDoesNotHaveNinoSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("memberDoesNotHaveNino.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text(messages("Member No Nino reason"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("memberDoesNotHaveNino.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text(messages("Member No Nino reason"))
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberDoesNotHaveNinoController.onPageLoad(CheckMode).url
     }

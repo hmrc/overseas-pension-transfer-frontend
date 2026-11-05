@@ -73,7 +73,7 @@ class SchemeManagersAddressControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
@@ -98,7 +98,7 @@ class SchemeManagersAddressControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
@@ -138,7 +138,7 @@ class SchemeManagersAddressControllerSpec extends AddressBase {
             )
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           SchemeManagersAddressPage.nextPage(NormalMode, emptyUserAnswers).url
       }
@@ -164,7 +164,7 @@ class SchemeManagersAddressControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
           countrySelectViewModel,
@@ -204,7 +204,7 @@ class SchemeManagersAddressControllerSpec extends AddressBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllerRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }

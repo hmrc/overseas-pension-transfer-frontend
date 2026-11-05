@@ -71,7 +71,7 @@ class QROPSCountryControllerSpec extends AddressBase {
 
         val view = application.injector.instanceOf[QROPSCountryView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode)(
           request,
           messages(application)
@@ -96,7 +96,7 @@ class QROPSCountryControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode)(
           request,
           messages(application)
@@ -125,7 +125,7 @@ class QROPSCountryControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QROPSCountryPage
           .nextPage(
             NormalMode,
@@ -154,7 +154,7 @@ class QROPSCountryControllerSpec extends AddressBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
           request,
           messages(application)
@@ -183,7 +183,7 @@ class QROPSCountryControllerSpec extends AddressBase {
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

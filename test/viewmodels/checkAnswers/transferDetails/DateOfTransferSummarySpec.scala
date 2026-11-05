@@ -34,9 +34,9 @@ class DateOfTransferSummarySpec extends SpecBase {
       val answers = emptyUserAnswers.set(DateOfTransferPage, LocalDate.of(2025, 12, 12)).success.value
       val result  = DateOfTransferSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("dateOfTransfer.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("12 December 2025")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("dateOfTransfer.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("12 December 2025")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.DateOfTransferController.onPageLoad(CheckMode).url
     }

@@ -54,7 +54,7 @@ class ViewAmendSelectorViewSpec extends ViewBaseSpec {
         doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
           .select("input[type=radio][name=viewOrAmend]")
 
-      radios.size() mustBe 2
+      radios.size()               mustBe 2
       radios.get(0).attr("value") mustBe "view"
       radios.get(1).attr("value") mustBe "amend"
     }
