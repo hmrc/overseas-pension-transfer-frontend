@@ -18,10 +18,8 @@ package pages.qropsDetails
 
 import base.SpecBase
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class QROPSOtherCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class QROPSOtherCountryPageSpec extends SpecBase {
 
   ".nextPage" - {
 

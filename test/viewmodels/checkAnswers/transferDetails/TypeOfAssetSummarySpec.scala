@@ -19,14 +19,13 @@ package viewmodels.checkAnswers.transferDetails
 import base.SpecBase
 import models.CheckMode
 import models.assets.TypeOfAsset.{Cash, Property}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class TypeOfAssetSummarySpec extends AnyFreeSpec with SpecBase {
+class TypeOfAssetSummarySpec extends SpecBase {
 
   "TypeOfAssetSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -35,9 +34,9 @@ class TypeOfAssetSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(TypeOfAssetPage, Seq(Cash, Property)).success.value
       val result  = TypeOfAssetSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("typeOfAsset.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages("typeOfAsset.cashAssets<br>typeOfAsset.propertyAsset"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("typeOfAsset.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent(messages("typeOfAsset.cashAssets<br>typeOfAsset.propertyAsset"))
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.TypeOfAssetController.onPageLoad(CheckMode).url
     }

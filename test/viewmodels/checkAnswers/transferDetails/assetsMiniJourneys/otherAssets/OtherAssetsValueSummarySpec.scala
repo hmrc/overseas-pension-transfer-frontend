@@ -19,13 +19,12 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class OtherAssetsValueSummarySpec extends AnyFreeSpec with SpecBase {
+class OtherAssetsValueSummarySpec extends SpecBase {
 
   "OtherAssetsValueSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -34,9 +33,9 @@ class OtherAssetsValueSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(OtherAssetsValuePage(0), BigDecimal(12345.99)).success.value
       val result  = OtherAssetsValueSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("valueOfAsset.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£12,345.99")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("valueOfAsset.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£12,345.99")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(CheckMode, 0).url
     }

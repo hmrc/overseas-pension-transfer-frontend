@@ -17,17 +17,16 @@
 package base
 
 import controllers.actions.*
+import data.TestData
+import models.{PensionSchemeDetails, SessionData, UserAnswers}
 import models.address.{Countries, PropertyAddress}
 import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.mockito.Mockito.reset
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
-import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.memberDetails.MemberNamePage
+import org.scalatest.{BeforeAndAfterEach, Inside, OptionValues, TryValues}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
@@ -38,102 +37,26 @@ import play.api.inject.{Binding, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
-import queries.{DateSubmittedQuery, QtNumberQuery}
+import queries.QtNumberQuery
 import repositories.{DashboardSessionRepository, ExpiringMongoLockRepository, SessionRepository}
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import utils.DateTimeFormats.localDateTimeFormatter
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.mongo.play.PlayMongoModule
 
-import java.time.{Clock, Instant, LocalDate, ZoneId}
-import java.util.UUID
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable}
-import scala.util.Random
 
 trait SpecBase
     extends AnyFreeSpec
     with Matchers
+    with MockitoSugar
     with TryValues
     with OptionValues
     with ScalaFutures
     with IntegrationPatience
-    with BeforeAndAfterEach {
-  protected final val minYear: Int  = 1901
-  private val clockMillis: Long     = 1718118467838L
-  val clock: Clock                  = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
-  protected val maxCurrency: Double = config.Constants.MaxCurrency
-  protected val minCurrency: Double = config.Constants.MinCurrency
-
-  val now: Instant     = Instant.now(clock)
-  val today: LocalDate = LocalDate.now(clock)
-
-  val testMemberName: PersonName = PersonName("User", "McUser")
-
-  val testQtNumber: QtNumber = QtNumber("QT123456")
-
-  val userAnswersTransferNumber: TransferNumber = TransferNumber(UUID.randomUUID().toString)
-  val pstr: PstrNumber                          = PstrNumber("12345678AB")
-
-  val psaId: PsaId = PsaId("A123456")
-
-  val psaUser: PsaUser = PsaUser(psaId, internalId = "id", affinityGroup = Individual)
-
-  val pspId = PspId("X7654321")
-
-  val pspUser: PspUser = PspUser(pspId, internalId = "id", affinityGroup = Individual)
-
-  val schemeDetails = PensionSchemeDetails(
-    SrnNumber("S1234567"),
-    PstrNumber("12345678AB"),
-    "SchemeName"
-  )
-
-  val formattedTestDateTransferSubmitted: String =
-    localDateTimeFormatter.withZone(ZoneId.systemDefault()).format(now)
-
-  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, Json.obj(), now)
-
-  val emptySessionData: SessionData = SessionData(
-    "sessionId",
-    userAnswersTransferNumber,
-    PensionSchemeDetails(
-      SrnNumber("1234567890"),
-      PstrNumber("12345678AB"),
-      "SchemeName"
-    ),
-    PsaUser(
-      PsaId("A123456"),
-      "internalId",
-      Individual
-    ),
-    Json.obj(),
-    now
-  )
-
-  private def generateNino(prefix: String = "AA"): String = {
-    val num    = Random.nextInt(1000000)
-    val suffix = "C"
-    val nino   = f"$prefix$num%06d$suffix"
-    nino
-  }
-
-  val testNino: String = generateNino()
-
-  def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
-  def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value
-
-  def sessionDataMemberNameQtNumber: SessionData = sessionDataMemberName.set(QtNumberQuery, testQtNumber).success.value
-
-  def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
-
-  def sessionDataMemberNameQtNumberTransferSubmitted: SessionData =
-    sessionDataMemberNameQtNumber.set(DateSubmittedQuery, now).success.value
-
-  def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
-    userAnswersMemberNameQtNumber.set(DateSubmittedQuery, now).success.value
-
+    with BeforeAndAfterEach
+    with Inside
+    with TestData {
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
@@ -289,24 +212,6 @@ trait SpecBase
 
       withQuotedShares
     }
-
-  val transferItem = AllTransfersItem(
-    transferId = userAnswersTransferNumber,
-    qtVersion = Some("v1"),
-    qtStatus = Some(QtStatus.InProgress),
-    nino = Some("AA123456A"),
-    memberFirstName = Some("John"),
-    memberSurname = Some("Doe"),
-    qtDate = Some(today),
-    lastUpdated = Some(now),
-    pstrNumber = Some(PstrNumber("12345678AB")),
-    submissionDate = None
-  )
-
-  val individualSubmitterDetails = IndividualDetails("David", None, "Frost")
-
-  val minimalDetailsIndividual =
-    MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
 
   def completeJson(assetType: TypeOfAsset): JsObject =
     assetType match {

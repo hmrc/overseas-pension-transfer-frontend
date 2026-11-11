@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberDateOfLeavingUKPage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -37,7 +35,7 @@ import views.html.memberDetails.MemberDateOfLeavingUKView
 
 import scala.concurrent.Future
 
-class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberDateOfLeavingUKControllerSpec extends SpecBase {
 
   implicit private val messages: Messages = stubMessages()
 
@@ -68,7 +66,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -85,7 +83,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
         val view    = application.injector.instanceOf[MemberDateOfLeavingUKView]
         val result  = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -110,7 +108,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       running(application) {
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -127,7 +125,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
         val view      = application.injector.instanceOf[MemberDateOfLeavingUKView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -155,7 +153,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

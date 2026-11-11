@@ -16,16 +16,11 @@
 
 package stubs
 
-import base.SpecBase
+import base.ISpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import models.TransferNumber
 
-import java.util.UUID
 
-object TransferBackendStub extends SpecBase {
-
-  val transferNumber: TransferNumber = TransferNumber(UUID.randomUUID().toString)
-
+object TransferBackendStub extends ISpecBase {
   private def allTransfersUrl(pstr: String) =
     s"/overseas-pension-transfer-backend/get-all-transfers/$pstr"
 
@@ -114,7 +109,7 @@ object TransferBackendStub extends SpecBase {
        |  "lastUpdated": "2025-09-24T10:00:00Z",
        |  "transfers": [
        |    {
-       |      "transferId": "${transferNumber.value}",
+       |      "transferId": "${testTransferNumber.value}",
        |      "nino": "$nino",
        |      "memberFirstName": "Alice",
        |      "memberSurname": "Adams",
@@ -123,7 +118,7 @@ object TransferBackendStub extends SpecBase {
        |      "pstrNumber": "$pstr"
        |    },
        |    {
-       |      "transferId": "${transferNumber.value}",
+       |      "transferId": "${testTransferNumber.value}",
        |      "nino": "$nino",
        |      "memberFirstName": "Bob",
        |      "memberSurname": "Brown",
@@ -132,7 +127,7 @@ object TransferBackendStub extends SpecBase {
        |      "pstrNumber": "$pstr"
        |    },
        |    {
-       |      "transferId": "${transferNumber.value}",
+       |      "transferId": "${testTransferNumber.value}",
        |      "nino": "$nino",
        |      "memberFirstName": "Charlie",
        |      "memberSurname": "Clark",

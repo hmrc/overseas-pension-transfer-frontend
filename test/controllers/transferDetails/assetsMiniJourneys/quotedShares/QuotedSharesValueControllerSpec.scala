@@ -22,8 +22,6 @@ import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueFo
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesVa
 
 import scala.concurrent.Future
 
-class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedSharesValueControllerSpec extends SpecBase {
 
   val formProvider = new QuotedSharesValueFormProvider()
   val form         = formProvider()
@@ -55,7 +53,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val view = application.injector.instanceOf[QuotedSharesValueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -76,7 +74,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -99,7 +97,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesValuePage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -119,7 +117,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesValuePage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -141,7 +139,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

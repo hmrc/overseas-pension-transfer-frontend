@@ -16,15 +16,16 @@
 
 package connectors
 
-import base.BaseISpec
+import base.ISpecBase
 import models.email.*
 import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, UNAUTHORIZED}
 import play.api.libs.json.Json
+import play.api.test.Helpers.*
 import stubs.EmailStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EmailConnectorISpec extends BaseISpec {
+class EmailConnectorISpec extends ISpecBase {
 
   val connector: EmailConnector = app.injector.instanceOf[EmailConnector]
 
@@ -40,7 +41,7 @@ class EmailConnectorISpec extends BaseISpec {
             expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
           )
 
-          await(connector.send(emailRequest)) shouldBe EmailAccepted
+          await(connector.send(emailRequest)) mustBe EmailAccepted
         }
 
         "the response status is outside of normal responses" when {
@@ -51,7 +52,7 @@ class EmailConnectorISpec extends BaseISpec {
               expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
             )
 
-            await(connector.send(emailRequest)) shouldBe EmailAccepted
+            await(connector.send(emailRequest)) mustBe EmailAccepted
           }
         }
       }
@@ -62,7 +63,7 @@ class EmailConnectorISpec extends BaseISpec {
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
-        await(connector.send(emailRequest)) shouldBe EmailUnsendable
+        await(connector.send(emailRequest)) mustBe EmailUnsendable
       }
 
       "return EmailNotSent when downstream responds 502 BAD_GATEWAY (500 - 599)" in {
@@ -71,7 +72,7 @@ class EmailConnectorISpec extends BaseISpec {
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
-        await(connector.send(emailRequest)) shouldBe EmailNotSent
+        await(connector.send(emailRequest)) mustBe EmailNotSent
       }
     }
   }

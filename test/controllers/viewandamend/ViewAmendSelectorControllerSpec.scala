@@ -20,8 +20,6 @@ import base.SpecBase
 import models.{PstrNumber, QtNumber, QtStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -31,7 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class ViewAmendSelectorControllerSpec extends SpecBase {
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
@@ -100,7 +98,7 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ViewAmendSubmittedController
           .view(qtReference, pstr, qtStatus, versionNumber)
           .url
@@ -123,7 +121,7 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ViewAmendSubmittedController.amend().url
         app.stop()
       }
@@ -141,8 +139,8 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ViewAmendSelectorController
+        status(result)                   mustBe SEE_OTHER
+        redirectLocation(result).value   mustBe routes.ViewAmendSelectorController
           .onPageLoad(qtReference, pstr, qtStatus, versionNumber)
           .url
         flash(result).get("lockWarning") mustBe defined

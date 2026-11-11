@@ -23,8 +23,6 @@ import models.assets.{PropertyEntry, PropertyMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -33,7 +31,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendConti
 
 import scala.concurrent.Future
 
-class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
+class PropertyAmendContinueControllerSpec extends AddressBase {
 
   private val formProvider = new PropertyAmendContinueFormProvider()
   private val form         = formProvider()
@@ -64,7 +62,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[PropertyAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -81,7 +79,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[PropertyAmendContinueView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
           fakeDisplayRequest(request, userAnswers),
           messages(application)
@@ -125,7 +123,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -150,7 +148,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -175,7 +173,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -201,7 +199,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val expected  =
           PropertyAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
       }
     }
@@ -225,7 +223,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PropertyAmendContinueAssetPage
           .nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex))
           .url
@@ -245,7 +243,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val view   = application.injector.instanceOf[PropertyAmendContinueView]
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

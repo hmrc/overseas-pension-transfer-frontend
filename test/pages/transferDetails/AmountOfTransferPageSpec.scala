@@ -19,12 +19,10 @@ package pages.transferDetails
 import base.SpecBase
 import controllers.transferDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 
-class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class AmountOfTransferPageSpec extends SpecBase {
 
   ".nextPage" - {
 
@@ -71,10 +69,10 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
           val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
 
-          result.get(IsTransferCashOnlyPage) mustBe Some(true)
-          result.get(CashAmountInTransferPage) mustBe Some(amount)
+          result.get(IsTransferCashOnlyPage)            mustBe Some(true)
+          result.get(CashAmountInTransferPage)          mustBe Some(amount)
           result.get(TransferDetailsRecordVersionQuery) mustBe None
-          result.get(TypeOfAssetsRecordVersionQuery) mustBe None
+          result.get(TypeOfAssetsRecordVersionQuery)    mustBe None
         }
 
         "only remove transfer details version when the transfer is not cash only" in {
@@ -87,10 +85,10 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
           val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
 
-          result.get(IsTransferCashOnlyPage) mustBe Some(false)
-          result.get(CashAmountInTransferPage) mustBe None
+          result.get(IsTransferCashOnlyPage)            mustBe Some(false)
+          result.get(CashAmountInTransferPage)          mustBe None
           result.get(TransferDetailsRecordVersionQuery) mustBe None
-          result.get(TypeOfAssetsRecordVersionQuery) mustBe Some("1")
+          result.get(TypeOfAssetsRecordVersionQuery)    mustBe Some("1")
         }
       }
     }

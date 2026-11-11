@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class QROPSOtherCountrySummarySpec extends AnyFreeSpec with SpecBase {
+class QROPSOtherCountrySummarySpec extends SpecBase {
 
   "QROPSOtherCountrySummary" - {
     implicit val messages: Messages = stubMessages()
@@ -33,9 +32,9 @@ class QROPSOtherCountrySummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(QROPSOtherCountryPage, "Other Country").success.value
       val result  = QROPSOtherCountrySummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsOtherCountry.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Other Country")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("qropsOtherCountry.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Other Country")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsDetails.routes.QROPSCountryController.onPageLoad(CheckMode).url
     }

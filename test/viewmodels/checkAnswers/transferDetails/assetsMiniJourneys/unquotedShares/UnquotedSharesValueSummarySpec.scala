@@ -19,13 +19,12 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShare
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class UnquotedSharesValueSummarySpec extends AnyFreeSpec with SpecBase {
+class UnquotedSharesValueSummarySpec extends SpecBase {
 
   "UnquotedSharesValueSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -34,9 +33,9 @@ class UnquotedSharesValueSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(UnquotedSharesValuePage(0), BigDecimal(19875.99)).success.value
       val result  = UnquotedSharesValueSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("unquotedSharesValue.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("£19,875.99")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("unquotedSharesValue.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("£19,875.99")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(CheckMode, 0).url
     }

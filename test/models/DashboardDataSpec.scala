@@ -41,7 +41,7 @@ class DashboardDataSpec extends AnyFreeSpec with SpecBase {
 
       val decrypted = format.reads(encryptedJson).get
       (decrypted.data \ "transfers" \ "qtStatus").as[String] mustEqual "InProgress"
-      decrypted.id mustEqual testData.id
+      decrypted.id                                           mustEqual testData.id
     }
 
     "fail to decrypt if ciphertext is invalid" in {
@@ -67,7 +67,7 @@ class DashboardDataSpec extends AnyFreeSpec with SpecBase {
       encryptedWrapper.encryptedString must not be JsObject.empty
 
       val decryptedBack = encryptedWrapper.decrypt(encryptionService)
-      decryptedBack.isRight mustBe true
+      decryptedBack.isRight                  mustBe true
       decryptedBack.getOrElse(Json.obj()) mustEqual Json.obj("foo" -> "bar")
     }
   }

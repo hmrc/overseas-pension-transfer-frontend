@@ -21,8 +21,6 @@ import forms.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDec
 import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedShar
 
 import scala.concurrent.Future
 
-class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MoreQuotedSharesDeclarationControllerSpec extends SpecBase {
 
   private val formProvider = new MoreQuotedSharesDeclarationFormProvider()
   private val form         = formProvider()
@@ -64,7 +62,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
 
         val rows = QuotedSharesAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual
           view(form, rows, NormalMode)(
             fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)),
@@ -84,7 +82,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
         val view   = application.injector.instanceOf[MoreQuotedSharesDeclarationView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -102,7 +100,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
           .onPageLoad()
           .url
@@ -119,7 +117,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
           .onPageLoad()
           .url
@@ -136,7 +134,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController
           .onPageLoad()
           .url
@@ -157,7 +155,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

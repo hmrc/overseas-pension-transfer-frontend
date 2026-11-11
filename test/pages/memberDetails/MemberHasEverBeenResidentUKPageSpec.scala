@@ -20,12 +20,10 @@ import base.SpecBase
 import controllers.memberDetails.routes
 import models.address.MembersLastUKAddress
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
 import java.time.LocalDate
 
-class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers {
+class MemberHasEverBeenResidentUKPageSpec extends SpecBase {
 
   ".nextPage" - {
 
@@ -131,7 +129,7 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
 
       val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(false), uaWithDeps).success.value
 
-      cleaned.get(MembersLastUKAddressPage) mustBe None
+      cleaned.get(MembersLastUKAddressPage)  mustBe None
       cleaned.get(MemberDateOfLeavingUKPage) mustBe None
     }
 
@@ -157,7 +155,7 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
       val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(true), uaWithDeps).success.value
 
       cleaned.get(MembersLastUKAddressPage).isDefined mustBe true
-      cleaned.get(MemberDateOfLeavingUKPage) mustBe Some(LocalDate.of(2020, 1, 2))
+      cleaned.get(MemberDateOfLeavingUKPage)          mustBe Some(LocalDate.of(2020, 1, 2))
     }
   }
 }

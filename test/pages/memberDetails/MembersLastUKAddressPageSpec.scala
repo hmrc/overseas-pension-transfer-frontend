@@ -19,10 +19,8 @@ package pages.memberDetails
 import base.SpecBase
 import controllers.memberDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class MembersLastUKAddressPageSpec extends SpecBase {
 
   ".nextPage" - {
 

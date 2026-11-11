@@ -21,14 +21,13 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import models.address.{Country, PropertyAddress}
 import models.assets.PropertyEntry
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import queries.assets.PropertyQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class PropertyAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyAmendContinueSummarySpec extends SpecBase {
 
   "PropertyAmendContinueSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -50,21 +49,21 @@ class PropertyAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
 
       val result = PropertyAmendContinueSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("propertyAmendContinue.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text(messages("propertyAmendContinue.summary.value"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("propertyAmendContinue.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text(messages("propertyAmendContinue.summary.value"))
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url
     }
 
     "moreThanFivePropertiesRow" - {
-      "should return Some when user has selected more than 5 properties" in {
+      "must return Some when user has selected more than 5 properties" in {
         val userAnswers = emptyUserAnswers.set(MorePropertyDeclarationPage, true).success.value
         val result      = PropertyAmendContinueSummary.moreThanFivePropertiesRow(CheckMode, userAnswers, true)
         result mustBe defined
       }
 
-      "should return None when user has not selected more than 5 properties" in {
+      "must return None when user has not selected more than 5 properties" in {
         val userAnswers = emptyUserAnswers.set(MorePropertyDeclarationPage, false).success.value
         val result      = PropertyAmendContinueSummary.moreThanFivePropertiesRow(CheckMode, userAnswers, true)
         result mustBe None

@@ -22,8 +22,6 @@ import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompany
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNamePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCo
 
 import scala.concurrent.Future
 
-class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedSharesCompanyNameControllerSpec extends SpecBase {
 
   private val formProvider = new QuotedSharesCompanyNameFormProvider()
   private val form         = formProvider()
@@ -75,7 +73,7 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -98,7 +96,7 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -123,7 +121,7 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -145,7 +143,7 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

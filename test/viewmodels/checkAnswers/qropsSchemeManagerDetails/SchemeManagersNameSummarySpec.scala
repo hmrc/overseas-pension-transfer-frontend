@@ -18,14 +18,13 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import models.{CheckMode, PersonName}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagersNameSummarySpec extends AnyFreeSpec with SpecBase {
+class SchemeManagersNameSummarySpec extends SpecBase {
 
   "Scheme manager's name Summary" - {
     implicit val messages: Messages = stubMessages()
@@ -34,9 +33,9 @@ class SchemeManagersNameSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(SchemeManagersNamePage, PersonName("FirstName", "LastName")).success.value
       val result  = SchemeManagersNameSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagersName.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent("FirstName LastName")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("schemeManagersName.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent("FirstName LastName")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersNameController.onPageLoad(CheckMode).url
     }

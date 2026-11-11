@@ -21,10 +21,7 @@ import models.requests.{DisplayRequest, SchemeRequest}
 import models.responses.UserAnswersErrorResponse
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.*
-import org.scalatest.Inside
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.Json
 import play.api.mvc.Result
@@ -36,13 +33,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar with Inside {
+class DataRetrievalActionSpec extends SpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val sessionData = SessionData(
     "sessionId",
-    userAnswersTransferNumber,
+    testTransferNumber,
     PensionSchemeDetails(
       SrnNumber("12345"),
       PstrNumber("12345678AB"),
@@ -73,7 +70,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
         inside(result) { case Left(r) =>
-          r.header.status mustBe SEE_OTHER
+          r.header.status                  mustBe SEE_OTHER
           r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )
@@ -95,7 +92,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
         inside(result) { case Left(r) =>
-          r.header.status mustBe SEE_OTHER
+          r.header.status                  mustBe SEE_OTHER
           r.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url
           )
@@ -108,7 +105,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       "must build a userAnswers, memberName, qtNumber and dateTransferSubmitted object and add it to the request" in {
         val userAnswersService = mock[UserAnswersService]
 
-        when(mockSessionRepository.get("id")) thenReturn Future(Some(sessionData))
+        when(mockSessionRepository.get(testInternalId)) thenReturn Future(Some(sessionData))
         when(userAnswersService.getExternalUserAnswers(any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
         val action = new Harness(mockSessionRepository, userAnswersService)

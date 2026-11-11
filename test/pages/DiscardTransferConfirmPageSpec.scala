@@ -20,16 +20,14 @@ import base.SpecBase
 import controllers.routes
 import models.QtStatus.AmendInProgress
 import models.{AmendCheckMode, NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class DiscardTransferConfirmPageSpec extends SpecBase {
 
   ".nextPage" -
     Seq(
       NormalMode     -> controllers.routes.TaskListController.onPageLoad(),
       AmendCheckMode -> controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
-        qtReference = userAnswersTransferNumber,
+        qtReference = testTransferNumber,
         pstr = PstrNumber("12345678AB"),
         qtStatus = AmendInProgress,
         versionNumber = "1000"

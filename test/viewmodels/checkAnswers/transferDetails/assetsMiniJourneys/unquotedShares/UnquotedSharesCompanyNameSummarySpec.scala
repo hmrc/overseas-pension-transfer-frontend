@@ -19,13 +19,12 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShare
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class UnquotedSharesCompanyNameSummarySpec extends AnyFreeSpec with SpecBase {
+class UnquotedSharesCompanyNameSummarySpec extends SpecBase {
 
   "UnquotedSharesCompanyNameSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -34,9 +33,9 @@ class UnquotedSharesCompanyNameSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(UnquotedSharesCompanyNamePage(0), "Unquoted Shares Company Name").success.value
       val result  = UnquotedSharesCompanyNameSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("unquotedSharesCompanyName.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Unquoted Shares Company Name")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("unquotedSharesCompanyName.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Unquoted Shares Company Name")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(CheckMode, 0).url
     }

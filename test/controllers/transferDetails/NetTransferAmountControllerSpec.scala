@@ -21,8 +21,6 @@ import forms.transferDetails.NetTransferAmountFormProvider
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.NetTransferAmountPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -30,7 +28,7 @@ import views.html.transferDetails.NetTransferAmountView
 
 import scala.concurrent.Future
 
-class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class NetTransferAmountControllerSpec extends SpecBase {
 
   val formProvider = new NetTransferAmountFormProvider()
   val form         = formProvider()
@@ -52,7 +50,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val view = application.injector.instanceOf[NetTransferAmountView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -73,7 +71,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -96,7 +94,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual NetTransferAmountPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -116,7 +114,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual NetTransferAmountPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
@@ -136,7 +134,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

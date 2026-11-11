@@ -21,8 +21,6 @@ import forms.transferDetails.ApplicableTaxExclusionsFormProvider
 import models.{AmendCheckMode, ApplicableTaxExclusions, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -30,7 +28,7 @@ import views.html.transferDetails.ApplicableTaxExclusionsView
 
 import scala.concurrent.Future
 
-class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class ApplicableTaxExclusionsControllerSpec extends SpecBase {
 
   private lazy val applicableTaxExclusionsRoute = routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode).url
 
@@ -73,7 +71,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(ApplicableTaxExclusions.values.toSet), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -96,7 +94,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -116,7 +114,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ApplicableTaxExclusionsPage
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -138,7 +136,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

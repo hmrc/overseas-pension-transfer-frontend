@@ -21,8 +21,6 @@ import models.responses.UserAnswersErrorResponse
 import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, SrnNumber, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -40,7 +38,7 @@ import views.html.viewandamend.ViewSubmittedView
 import java.time.Clock
 import scala.concurrent.Future
 
-class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with SummaryListFluency {
+class ViewAmendSubmittedControllerSpec extends SpecBase with SummaryListFluency {
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
@@ -122,7 +120,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
         val view = app.injector.instanceOf[ViewSubmittedView]
 
-        status(result) mustBe OK
+        status(result)          mustBe OK
         contentAsString(result) mustBe view(
           AmendCheckMode,
           schemeSummaryList,
@@ -163,7 +161,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
           FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
 
         app.stop()
@@ -192,7 +190,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         )
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.ViewAmendSubmittedController.amend().url
 
         app.stop()
@@ -218,8 +216,8 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         )
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.SubmittedTransferSummaryController
+        status(result)                   mustBe SEE_OTHER
+        redirectLocation(result).value   mustBe routes.SubmittedTransferSummaryController
           .onPageLoad(testQtNumber, pstr, qtStatus, versionNumber)
           .url
         flash(result).get("lockWarning") mustBe defined
@@ -246,7 +244,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         )
         val result  = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)                 mustBe SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
 
         app.stop()
@@ -277,7 +275,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
         val result  = route(app, request).value
 
-        status(result) mustBe OK
+        status(result)                    mustBe OK
         contentAsString(result).toLowerCase must include("continue")
 
         app.stop()
@@ -299,7 +297,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
         val result  = route(app, request).value
 
-        status(result) mustBe OK
+        status(result)        mustBe OK
         contentAsString(result) must not include "continue"
 
         app.stop()
@@ -319,7 +317,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
         val result  = route(app, request).value
 
-        status(result) mustBe INTERNAL_SERVER_ERROR
+        status(result)        mustBe INTERNAL_SERVER_ERROR
         contentAsString(result) must include("Unable to fetch external user answers")
 
         app.stop()

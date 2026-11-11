@@ -19,13 +19,12 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class PropertyDescriptionSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyDescriptionSummarySpec extends SpecBase {
 
   "PropertyDescriptionSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -34,9 +33,9 @@ class PropertyDescriptionSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(PropertyDescriptionPage(0), "Property Description").success.value
       val result  = PropertyDescriptionSummary.row(CheckMode, answers, 0)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("propertyDescription.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Property Description")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("propertyDescription.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Property Description")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, 0).url
     }

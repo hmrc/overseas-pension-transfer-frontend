@@ -18,8 +18,6 @@ package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -27,7 +25,7 @@ import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSum
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagerDetailsCYAView
 
-class SchemeManagerDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagerDetailsCYAControllerSpec extends SpecBase {
 
   private lazy val onPageLoadRoute =
     controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad().url
@@ -53,7 +51,7 @@ class SchemeManagerDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase wi
             SchemeManagerDetailsSummary.rows(CheckMode, userAnswers)
           )
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual
             view(summaryList)(fakeDisplayRequest(request, userAnswers), msgs).toString
         }
@@ -70,7 +68,7 @@ class SchemeManagerDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase wi
           val request = FakeRequest(POST, onSubmitRoute)
           val result  = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
         }
       }

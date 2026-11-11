@@ -23,8 +23,6 @@ import models.NormalMode
 import models.authentication.{PspId, PspUser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.SubmitToHMRCPage
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
@@ -34,7 +32,7 @@ import views.html.SubmitToHMRCView
 
 import scala.concurrent.Future
 
-class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SubmitToHMRCControllerSpec extends SpecBase {
 
   private val formProvider = new SubmitToHMRCFormProvider()
   private val form         = formProvider()
@@ -54,7 +52,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
         val view = application.injector.instanceOf[SubmitToHMRCView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -75,7 +73,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -100,7 +98,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
         val ua = emptyUserAnswers.set(SubmitToHMRCPage, true).success.value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SubmitToHMRCPage.nextPageWith(NormalMode, ua, psaUser).url
       }
     }
@@ -120,7 +118,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -195,7 +193,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
         val ua = emptyUserAnswers.set(SubmitToHMRCPage, false).success.value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser).url
       }
     }
