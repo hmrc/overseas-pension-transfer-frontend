@@ -17,11 +17,11 @@
 package base
 
 import controllers.actions.*
-import models.address.{Countries, PropertyAddress}
+import models.address.{Countries, Country, PropertyAddress, QROPSAddress, SchemeManagersAddress}
 import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SchemeManagerType, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.mockito.Mockito.reset
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
@@ -36,14 +36,16 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Binding, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.test.FakeRequest
-import queries.{DateSubmittedQuery, QtNumberQuery}
+import queries.{DateSubmittedQuery, QtNumberQuery, Settable}
 import repositories.{DashboardSessionRepository, ExpiringMongoLockRepository, SessionRepository}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
+import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
+import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersAddressPage, SchemeManagersContactPage, SchemeManagersEmailPage, SchemeManagersNamePage}
 import uk.gov.hmrc.mongo.play.PlayMongoModule
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
@@ -93,7 +95,74 @@ trait SpecBase
   val formattedTestDateTransferSubmitted: String =
     localDateTimeFormatter.withZone(ZoneId.systemDefault()).format(now)
 
+  extension (ua: UserAnswers)
+    def setValue[A](page: Settable[A], value: A)(implicit writes: Writes[A]): UserAnswers =
+      ua.set(page, value).success.value
+
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, Json.obj(), now)
+
+  val validMemberDetails: JsObject = Json.obj(
+    "memberDetails" -> Json.obj(
+      "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+      "nino"                   -> "AA000000A",
+      "dateOfBirth"            -> "1993-11-11",
+      "principalResAddDetails" -> Json.obj(
+        "addressLine1" -> "line1",
+        "addressLine2" -> "line2",
+        "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+      ),
+      "memUkResident"          -> true
+    )
+  )
+
+  val validTransferDetails: JsObject = Json.obj(
+    "allowanceBeforeTransfer" -> 1000.25,
+    "transferAmount"          -> 2000.88,
+    "isTransferTaxable"       -> true,
+    "paymentTaxableOverseas"  -> true,
+    "whyTaxable"              -> "transferExceedsOTCAllowance",
+    "whyTaxableOT"            -> "transferExceedsOTCAllowance",
+    "applicableExclusion"     -> Set("occupational"),
+    "amountTaxDeducted"       -> 100.33,
+    "transferMinusTax"        -> 1900.99,
+    "dateMemberTransferred"   -> "2025-04-01",
+    "cashOnlyTransfer"        -> true,
+    "typeOfAsset"             -> Seq("cashAssets"),
+    "cashValue"               -> 2000.88
+  )
+
+  private val ukCountry = Country("GB", "United Kingdom")
+
+  private val qropsAddress = QROPSAddress(
+    "line1",
+    "line2",
+    None,
+    None,
+    None,
+    ukCountry
+  )
+
+  private val managerAddress = SchemeManagersAddress(
+    "line1",
+    "line2",
+    None,
+    None,
+    None,
+    ukCountry
+  )
+
+  val canSubmitUserAnswers: UserAnswers =
+    emptyUserAnswers
+      .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
+      .setValue(QROPSNamePage, "Test QROPS")
+      .setValue(QROPSReferencePage, "Q123456")
+      .setValue(QROPSAddressPage, qropsAddress)
+      .setValue(QROPSCountryPage, ukCountry)
+      .setValue(SchemeManagerTypePage, SchemeManagerType.Individual)
+      .setValue(SchemeManagersNamePage, PersonName("John", "Doe"))
+      .setValue(SchemeManagersAddressPage, managerAddress)
+      .setValue(SchemeManagersEmailPage, "test@gmail.co.uk")
+      .setValue(SchemeManagersContactPage, "0121456789")
 
   val emptySessionData: SessionData = SessionData(
     "sessionId",

@@ -44,7 +44,9 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   "PsaDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder().build()
+      val application =
+        applicationBuilder(userAnswers = canSubmitUserAnswers)
+          .build()
 
       running(application) {
         val request = FakeRequest(GET, psaDeclarationRoute)
@@ -157,5 +159,24 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
+
+    "must redirect to the task list when submission cannot be made for a GET" in {
+
+      val application =
+        applicationBuilder(userAnswers = emptyUserAnswers)
+          .build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, psaDeclarationRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual
+          routes.TaskListController.onPageLoad().url
+      }
+    }
+
   }
 }
