@@ -83,6 +83,27 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
         TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
           .canSubmit(userAnswers) mustBe false
       }
+
+      "return false when any section is incomplete" in {
+
+        val incompleteAnswers = Seq[(String, UserAnswers => UserAnswers)](
+          "member details"         ->
+            ((ua: UserAnswers) => ua.copy(data = ua.data - "memberDetails")),
+          "transfer details"       ->
+            ((ua: UserAnswers) => ua.copy(data = ua.data - "transferDetails")),
+          "qrops details"          ->
+            ((ua: UserAnswers) => ua.remove(QROPSNamePage).success.value),
+          "scheme manager details" ->
+            ((ua: UserAnswers) => ua.remove(SchemeManagerTypePage).success.value)
+        )
+
+        incompleteAnswers.foreach { case (section, removeSection) =>
+          withClue(s"Section: $section") {
+            SubmissionDetailsJourneyViewModel
+              .canSubmit(removeSection(canSubmitUserAnswers)) mustBe false
+          }
+        }
+      }
     }
 
     "TransferDetailsJourneyViewModel" - {
