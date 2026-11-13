@@ -20,10 +20,10 @@ import models.authentication.PsaId
 import models.authentication.PspUser
 import queries.DateSubmittedQuery
 import queries.QtNumberQuery
-import play.api.mvc._
+import play.api.mvc.*
 import connectors.MinimalDetailsConnector
 import pages.PspDeclarationPage
-import controllers.actions._
+import controllers.actions.*
 import play.api.Logging
 import models.Mode
 import models.PersonName
@@ -39,10 +39,10 @@ import forms.PspDeclarationFormProvider
 import play.api.i18n.I18nSupport
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
 import javax.inject.Inject
 
 class PspDeclarationController @Inject() (
@@ -67,61 +67,96 @@ class PspDeclarationController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
-      Ok(view(form, mode))
+      if (SubmissionDetailsJourneyViewModel.canSubmit(request.userAnswers)) {
+        Ok(view(form, mode))
+      } else {
+        Redirect(routes.TaskListController.onPageLoad())
+      }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-          psaIdString => {
-            val psaId = PsaId(psaIdString)
-            (for {
-              submissionResponse      <-
-                EitherT(
-                  userAnswersService.submitDeclaration(
-                    request.authenticatedUser,
-                    request.userAnswers,
-                    request.sessionData,
-                    Some(psaId),
-                    request.sessionData.schemeInformation.srnNumber
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (identify andThen schemeData andThen checkLock andThen getData).async { implicit request =>
+      if (SubmissionDetailsJourneyViewModel.canSubmit(request.userAnswers)) {
+
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+            psaIdString =>
+
+              val psaId = PsaId(psaIdString)
+
+              (
+                for {
+                  submissionResponse <- EitherT(
+                                          userAnswersService.submitDeclaration(
+                                            request.authenticatedUser,
+                                            request.userAnswers,
+                                            request.sessionData,
+                                            Some(psaId),
+                                            request.sessionData.schemeInformation.srnNumber
+                                          )
+                                        ).leftMap {
+                                          case NotAuthorisingPsaIdErrorResponse(_, _) =>
+                                            val formWithError =
+                                              form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
+
+                                            BadRequest(view(formWithError, mode))
+
+                                          case e =>
+                                            logger.warn(s"Failed to submit declaration: $e")
+                                            Redirect(PspDeclarationPage.nextPageRecovery())
+                                        }
+
+                  updatedSessionData <- EitherT.right[Result] {
+                                          Future.fromTry(
+                                            request.sessionData
+                                              .set(QtNumberQuery, submissionResponse.qtNumber)
+                                              .flatMap(_.set(DateSubmittedQuery, submissionResponse.receiptDate))
+                                          )
+                                        }
+
+                  name = request.userAnswers
+                           .get(MemberNamePage)
+                           .getOrElse(PersonName("Undefined", "Undefined"))
+
+                  _ <- EitherT.right(sessionRepository.set(updatedSessionData))
+
+                  pspId = request.authenticatedUser.asInstanceOf[PspUser].pspId
+
+                  minimalDetails <- EitherT(
+                                      minimalDetailsConnector.fetch(pspId)
+                                    ).leftMap { e =>
+                                      logger.warn(
+                                        s"Failed to fetch minimal details for pspId=${pspId.value}: $e"
+                                      )
+                                      Redirect(PspDeclarationPage.nextPageRecovery())
+                                    }
+
+                  _ <- EitherT.right(
+                         // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
+                         emailService
+                           .sendConfirmationEmail(
+                             name,
+                             updatedSessionData,
+                             minimalDetails
+                           )
+                           .map(_ => ())
+                       )
+
+                } yield Redirect(
+                  PspDeclarationPage.nextPage(
+                    mode,
+                    request.userAnswers
                   )
-                ).leftMap {
-                  case NotAuthorisingPsaIdErrorResponse(_, _) =>
-                    val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
-                    BadRequest(view(formWithError, mode))
-                  case e                                      =>
-                    logger.warn(s"Failed to submit declaration: $e")
-                    Redirect(PspDeclarationPage.nextPageRecovery())
-                }
-              updateWithQTNumberSD    <-
-                EitherT
-                  .right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
-              updateWithReceiptDateSD <-
-                EitherT.right[Result](
-                  Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate))
                 )
-              name                     = request.userAnswers
-                                           .get(MemberNamePage)
-                                           .getOrElse(PersonName("Undefined", "Undefined"))
-              _                       <- EitherT.right[Result](sessionRepository.set(updateWithReceiptDateSD))
-              pspId                    = request.authenticatedUser.asInstanceOf[PspUser].pspId
-              minimalDetails          <- EitherT(minimalDetailsConnector.fetch(pspId)).leftMap { e =>
-                                           logger.warn(
-                                             s"Failed to fetch minimal details for pspId=${pspId.value}: $e"
-                                           )
-                                           Redirect(PspDeclarationPage.nextPageRecovery())
-                                         }
-              _                       <- EitherT.right[Result](
-                                           // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
-                                           emailService
-                                             .sendConfirmationEmail(name, updateWithReceiptDateSD, minimalDetails)
-                                             .map(_ => ())
-                                         )
-            } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
-          }
+              ).merge
+          )
+
+      } else {
+        Future.successful(
+          Redirect(routes.TaskListController.onPageLoad())
         )
-  }
+      }
+    }
 }
