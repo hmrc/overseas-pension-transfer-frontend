@@ -19,7 +19,6 @@
 @import play.api.mvc.RequestHeader
 @import play.twirl.api.Html
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
@@ -32,7 +31,6 @@
         appConfig: FrontendAppConfig,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        betaBanner: StandardBetaBanner,
         hmrcStandardPage: HmrcStandardPage,
         appFooter: AppFooter,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
@@ -104,8 +102,7 @@
         signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut().url) else None
     ),
     banners = hmrcstandardpage.Banners(
-        displayHmrcBanner = showHmrcBanner,
-        phaseBanner = Some(betaBanner(appConfig.feedbackUrl))
+        displayHmrcBanner = showHmrcBanner
     ),
     isWelshTranslationAvailable = false,
     backLink = if (showBackLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None
