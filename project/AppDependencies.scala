@@ -3,7 +3,7 @@ import sbt.librarymanagement.InclExclRule
 
 object AppDependencies {
 
-  private val bootstrapVersion = "10.7.0"
+  private val bootstrapVersion = "10.9.0"
   private val hmrcMongoVersion = "2.14.0"
 
   val compile: Seq[ModuleID] = Seq(
@@ -20,7 +20,7 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"    %% "hmrc-mongo-test-play-30" % hmrcMongoVersion,
     "org.scalatestplus"    %% "scalacheck-1-17"         % "3.2.18.0",
     "io.github.wolfendale" %% "scalacheck-gen-regexp"   % "1.1.0",
-    "org.jsoup"             % "jsoup"                   % "1.23.2"
+    "org.jsoup"             % "jsoup"                   % "1.24.1"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID] = compile ++ test
