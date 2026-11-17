@@ -21,8 +21,6 @@ import config.FrontendAppConfig
 import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -41,7 +39,8 @@ import views.html.PrintSubmittedTransferView
 import java.time.ZoneId
 import scala.concurrent.Future
 
-class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
+class PrintSubmittedTransferControllerSpec extends SpecBase {
+
   private val mockUserAnswersService = mock[UserAnswersService]
 
   "TransferSubmitted Controller" - {
@@ -142,7 +141,7 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)        mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
       }
     }

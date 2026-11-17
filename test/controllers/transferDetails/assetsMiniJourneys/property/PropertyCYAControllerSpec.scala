@@ -22,8 +22,6 @@ import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyCYAView
 
 import scala.concurrent.Future
 
-class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PropertyCYAControllerSpec extends SpecBase {
 
   private lazy val propertyCyaRoute =
     controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController.onPageLoad(NormalMode, 0).url
@@ -62,7 +60,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
         val list = PropertySummary.rows(NormalMode, ua, 0)
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual
           view(SummaryList(rows = list), NormalMode, 0)(fakeDisplayRequest(request, ua), msgs).toString
       }
@@ -80,7 +78,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val request = FakeRequest(POST, propertyCyaRoute)
         val result  = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
             .onPageLoad(NormalMode)
@@ -100,7 +98,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val request = FakeRequest(POST, propertyCyaRoute)
         val result  = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
       }

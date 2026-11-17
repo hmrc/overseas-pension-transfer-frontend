@@ -64,7 +64,7 @@ class QROPSReferenceFormProviderSpec extends StringFieldBehaviours with Regex {
         val result = form.bind(Map(fieldName -> input))
 
         withClue(s"For input '$input': ") {
-          result.errors mustBe empty
+          result.errors      mustBe empty
           result.value.value mustBe "QROPS123456"
         }
       }

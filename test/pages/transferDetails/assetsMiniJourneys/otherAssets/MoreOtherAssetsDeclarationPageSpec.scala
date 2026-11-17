@@ -20,11 +20,9 @@ import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.{OtherAssetsMiniJourney, QuotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
-class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class MoreOtherAssetsDeclarationPageSpec extends SpecBase {
 
   ".nextPage" - {
 

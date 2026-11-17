@@ -20,10 +20,8 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.TypeOfAsset
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class UnquotedSharesCompanyNamePageSpec extends SpecBase {
   private val index = 0
 
   ".nextPage" - {
@@ -76,7 +74,7 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
       }
     }
 
-    "should go to CYA when complete" in {
+    "must go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.UnquotedShares))
       UnquotedSharesCompanyNamePage(index).nextPage(
         NormalMode,
@@ -84,7 +82,7 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
       ) mustBe AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(NormalMode, index)
     }
 
-    "should go to Value page when incomplete" in {
+    "must go to Value page when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
       UnquotedSharesCompanyNamePage(index).nextPage(
         NormalMode,

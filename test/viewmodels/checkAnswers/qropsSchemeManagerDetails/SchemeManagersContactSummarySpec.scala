@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
+class SchemeManagersContactSummarySpec extends SpecBase {
 
   "SchemeManagersContact" - {
     implicit val messages: Messages = stubMessages()
@@ -34,8 +33,8 @@ class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
       val answers     = emptyUserAnswers.set(SchemeManagersContactPage, phoneNumber).success.value
       val result      = SchemeManagersContactSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagersContact.checkYourAnswersLabel"))
+      result                   mustBe defined
+      result.get.key.content   mustBe Text(messages("schemeManagersContact.checkYourAnswersLabel"))
       result.get.value.content mustBe Text(phoneNumber)
 
       result.get.actions.get.items.head.href mustBe

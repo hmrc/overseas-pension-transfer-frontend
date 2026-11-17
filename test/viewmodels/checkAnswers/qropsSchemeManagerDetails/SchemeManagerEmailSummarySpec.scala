@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class SchemeManagerEmailSummarySpec extends AnyFreeSpec with SpecBase {
+class SchemeManagerEmailSummarySpec extends SpecBase {
 
   "Scheme Manager Email" - {
     implicit val messages: Messages = stubMessages()
@@ -33,9 +32,9 @@ class SchemeManagerEmailSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(SchemeManagersEmailPage, "Scheme Manager Sample Email").success.value
       val result  = SchemeManagersEmailSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagersEmail.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Scheme Manager Sample Email")
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("schemeManagersEmail.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text("Scheme Manager Sample Email")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersEmailController.onPageLoad(CheckMode).url
     }

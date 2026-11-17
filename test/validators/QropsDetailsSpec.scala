@@ -21,13 +21,10 @@ import cats.data.Validated.{Invalid, Valid}
 import models.*
 import models.address.Country
 import models.transferJourneys.QropsDetails
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import pages.qropsDetails.*
 import uaOps.UAOps.QropsAnswersOps
 
-final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues with AddressBase {
+final class QropsDetailsSpec extends AddressBase {
 
   private val country: Country =
     Country(
@@ -94,7 +91,7 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
 
       res match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must have size 1
+          nec.toNonEmptyList.toList        must have size 1
           nec.toNonEmptyList.toList.head mustBe GenericError(
             "Cannot have valid payload value of QROPS Country is not 'Other'"
           )
@@ -111,9 +108,9 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
 
       res match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must have size 2
+          nec.toNonEmptyList.toList        must have size 2
           nec.toNonEmptyList.toList.head mustBe DataMissingError(QROPSCountryPage)
-          nec.toNonEmptyList.toList(1) mustBe GenericError(
+          nec.toNonEmptyList.toList(1)   mustBe GenericError(
             "Cannot have a value for other Country where value of QROPS Country is None"
           )
 
@@ -132,7 +129,7 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
           case Invalid(nec) =>
             nec.toNonEmptyList.toList must contain(DataMissingError(QROPSCountryPage))
             nec.toNonEmptyList.toList must contain(DataMissingError(QROPSOtherCountryPage))
-            nec.length mustBe 2
+            nec.length              mustBe 2
 
           case Valid(v) =>
             fail(s"Expected Invalid due to missing country pair, but got Valid: $v")

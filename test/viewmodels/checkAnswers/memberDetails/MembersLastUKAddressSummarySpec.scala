@@ -19,14 +19,13 @@ package viewmodels.checkAnswers.memberDetails
 import base.SpecBase
 import models.CheckMode
 import models.address.MembersLastUKAddress
-import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MembersLastUKAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
+class MembersLastUKAddressSummarySpec extends SpecBase {
 
   "MembersLastUkAddress Summary" - {
     implicit val messages: Messages = stubMessages()
@@ -38,8 +37,8 @@ class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
       val row = MembersLastUKAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.key.content mustBe Text(messages("membersLastUKAddress.checkYourAnswersLabel"))
+      row                   mustBe defined
+      row.get.key.content   mustBe Text(messages("membersLastUKAddress.checkYourAnswersLabel"))
       row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Line3<br>Line4<br>Postcode")
     }
 
@@ -56,8 +55,8 @@ class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
       val row = MembersLastUKAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Postcode")
+      row                             mustBe defined
+      row.get.value.content           mustBe HtmlContent("Line1<br>Line2<br>Postcode")
       row.get.value.content.asHtml.body must not include "null"
     }
 
@@ -74,8 +73,8 @@ class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
       val row = MembersLastUKAddressSummary.row(CheckMode, answers)
 
-      row mustBe defined
-      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Postcode")
+      row                             mustBe defined
+      row.get.value.content           mustBe HtmlContent("Line1<br>Line2<br>Postcode")
       row.get.value.content.asHtml.body must not include "<br><br>"
     }
 

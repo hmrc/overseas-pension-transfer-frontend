@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberDateOfBirthPage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -37,7 +35,7 @@ import views.html.memberDetails.MemberDateOfBirthView
 
 import scala.concurrent.Future
 
-class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberDateOfBirthControllerSpec extends SpecBase {
 
   implicit private val messages: Messages = stubMessages()
 
@@ -69,7 +67,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val view = application.injector.instanceOf[MemberDateOfBirthView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request, userAnswersMemberName),
           messages(application)
@@ -87,7 +85,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view    = application.injector.instanceOf[MemberDateOfBirthView]
         val result  = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
           fakeDisplayRequest(request, userAnswers),
           messages(application)
@@ -112,7 +110,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       running(application) {
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -128,7 +126,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view      = application.injector.instanceOf[MemberDateOfBirthView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request, userAnswersMemberName),
           messages(application)
@@ -153,7 +151,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, postRequest()).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

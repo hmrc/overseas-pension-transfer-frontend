@@ -25,8 +25,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSCountryPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +35,7 @@ import views.html.qropsDetails.QROPSCountryView
 
 import scala.concurrent.Future
 
-class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
+class QROPSCountryControllerSpec extends AddressBase {
 
   private val formProvider = new QROPSCountryFormProvider()
   private val form         = formProvider()
@@ -73,7 +71,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
         val view = application.injector.instanceOf[QROPSCountryView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode)(
           request,
           messages(application)
@@ -98,7 +96,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode)(
           request,
           messages(application)
@@ -127,7 +125,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QROPSCountryPage
           .nextPage(
             NormalMode,
@@ -156,7 +154,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
           request,
           messages(application)
@@ -185,7 +183,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

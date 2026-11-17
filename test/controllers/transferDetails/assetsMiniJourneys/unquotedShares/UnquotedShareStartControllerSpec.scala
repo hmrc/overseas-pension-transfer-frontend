@@ -19,12 +19,11 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.NormalMode
-import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartView
 
-class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
+class UnquotedShareStartControllerSpec extends SpecBase {
 
   "UnquotedShareStart Controller" - {
 
@@ -39,7 +38,7 @@ class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
         val view     = application.injector.instanceOf[UnquotedSharesStartView]
         val nextPage = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, 0).url
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString
       }
     }

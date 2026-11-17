@@ -349,7 +349,7 @@ class DateMappingsSpec
       val result = form.bind(data)
 
       result.errors.size mustEqual 2
-      result.errors mustBe Seq(
+      result.errors         mustBe Seq(
         FormError("value", "error.real.date", Seq("day")),
         FormError("value", "error.real.date", Seq("month"))
       )
@@ -367,7 +367,7 @@ class DateMappingsSpec
         val result = form.bind(data)
 
         result.errors.size mustEqual 2
-        result.errors mustBe Seq(
+        result.errors         mustBe Seq(
           FormError("value", "error.invalid.character", Seq("day")),
           FormError("value", "error.invalid.character", Seq("month"))
         )
@@ -385,7 +385,7 @@ class DateMappingsSpec
         val result = form.bind(data)
 
         result.errors.size mustEqual 2
-        result.errors mustBe Seq(
+        result.errors         mustBe Seq(
           FormError("value", "error.invalid.character", Seq("day")),
           FormError("value", "error.invalid.character", Seq("year"))
         )
@@ -403,7 +403,7 @@ class DateMappingsSpec
         val result = form.bind(data)
 
         result.errors.size mustEqual 2
-        result.errors mustBe Seq(
+        result.errors         mustBe Seq(
           FormError("value", "error.invalid.character", Seq("month")),
           FormError("value", "error.invalid.character", Seq("year"))
         )
@@ -421,7 +421,7 @@ class DateMappingsSpec
         val result = form.bind(data)
 
         result.errors.size mustEqual 3
-        result.errors mustBe Seq(
+        result.errors         mustBe Seq(
           FormError("value", "error.invalid.character", Seq("day")),
           FormError("value", "error.invalid.character", Seq("month")),
           FormError("value", "error.invalid.character", Seq("year"))
@@ -447,8 +447,8 @@ class DateMappingsSpec
     forAll(validData -> "valid date") { date =>
       val filledForm = form.fill(date)
 
-      filledForm("value.day").value.value mustEqual date.getDayOfMonth.toString
+      filledForm("value.day").value.value   mustEqual date.getDayOfMonth.toString
       filledForm("value.month").value.value mustEqual date.getMonthValue.toString
-      filledForm("value.year").value.value mustEqual date.getYear.toString
+      filledForm("value.year").value.value  mustEqual date.getYear.toString
     }
 }

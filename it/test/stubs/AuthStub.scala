@@ -18,8 +18,9 @@ package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import data.TestData
 
-object AuthStub {
+object AuthStub extends TestData {
 
   private val PathRegex = "/auth/authorise"
 
@@ -30,12 +31,12 @@ object AuthStub {
           okJson(
             s"""
              |{
-             |"internalId": "internal-test-id",
+             |"internalId": "$testInternalId",
              |"affinityGroup": "Individual",
              |"allEnrolments": [
              |  {
              |    "key": "HMRC-PODS-ORG",
-             |    "identifiers": [{"key": "PSAID", "value": "A2100005"}],
+             |    "identifiers": [{"key": "PSAID", "value": "${psaId.value}"}],
              |    "state": "Activated"
              |  }
              |]

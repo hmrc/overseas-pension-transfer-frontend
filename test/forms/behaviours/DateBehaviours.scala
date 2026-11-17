@@ -37,7 +37,7 @@ class DateBehaviours extends FieldBehaviours {
         val result = form.bind(data)
 
         result.value.value mustEqual date
-        result.errors mustBe empty
+        result.errors         mustBe empty
       }
 
     "treat whitespace anywhere in the date fields as insignificant" in {
@@ -65,7 +65,7 @@ class DateBehaviours extends FieldBehaviours {
         val spacedResult = form.bind(spacedData)
 
         withClue(s"For date $date: ") {
-          baseResult.errors mustBe empty
+          baseResult.errors   mustBe empty
           spacedResult.errors mustBe empty
 
           spacedResult.value.value mustEqual baseResult.value.value

@@ -23,8 +23,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,7 +32,7 @@ import views.html.qropsDetails.QROPSOtherCountryView
 
 import scala.concurrent.Future
 
-class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSOtherCountryControllerSpec extends SpecBase {
 
   private val formProvider = new QROPSOtherCountryFormProvider()
   private val form         = formProvider()
@@ -54,7 +52,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val view = application.injector.instanceOf[QROPSOtherCountryView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -75,7 +73,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -104,7 +102,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QROPSOtherCountryPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -124,7 +122,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

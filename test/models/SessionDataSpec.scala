@@ -37,25 +37,25 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
   )
 
   "get" - {
-    "should get Some value from data Json when value is present" in {
+    "must get Some value from data Json when value is present" in {
       emptySessionData.copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value")).get(SubmitToHMRCPage) mustBe
         Some(true)
     }
 
-    "should get None when no value present in data Json" in {
+    "must get None when no value present in data Json" in {
       emptySessionData.get(SubmitToHMRCPage) mustBe None
     }
   }
 
   "set" - {
-    "should update Json in data field" in {
+    "must update Json in data field" in {
       emptySessionData.set(SubmitToHMRCPage, false).success.value.data mustBe
         Json.obj("submitToHMRC" -> false)
     }
   }
 
   "remove" - {
-    "should remove existing Json from data field" in {
+    "must remove existing Json from data field" in {
       emptySessionData
         .copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
         .remove(SubmitToHMRCPage)
@@ -68,7 +68,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "Encryption wrappers" - {
 
-    "should encrypt and decrypt session data correctly" in {
+    "must encrypt and decrypt session data correctly" in {
       import SessionData.*
 
       val decryptedWrapper = DecryptedSessionData(sessionData.data)
@@ -77,11 +77,11 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
       encryptedWrapper.encryptedString must not be empty
 
       val decryptedBack = encryptedWrapper.decrypt(encryptionService)
-      decryptedBack.isRight mustBe true
+      decryptedBack.isRight                  mustBe true
       decryptedBack.getOrElse(Json.obj()) mustEqual sessionData.data
     }
 
-    "should produce different ciphertexts for the same input (due to random IV)" in {
+    "must produce different ciphertexts for the same input (due to random IV)" in {
       import SessionData.*
 
       val enc1 = DecryptedSessionData(sessionData.data).encrypt(encryptionService)
@@ -90,7 +90,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
       enc1.encryptedString must not equal enc2.encryptedString
     }
 
-    "should return Left when decryption fails for invalid cipher text" in {
+    "must return Left when decryption fails for invalid cipher text" in {
       import SessionData.*
       val badEnc = EncryptedSessionData("invalid-cipher-text")
       val result = badEnc.decrypt(encryptionService)
@@ -100,7 +100,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "encryptedFormat" - {
 
-    "should encrypt and decrypt using encryptedFormat successfully" in {
+    "must encrypt and decrypt using encryptedFormat successfully" in {
       val format  = SessionData.encryptedFormat(encryptionService)
       val written = format.writes(sessionData)
 
@@ -109,11 +109,11 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       val readBack = format.reads(written).get
 
-      readBack.sessionId mustBe sessionData.sessionId
+      readBack.sessionId                                      mustBe sessionData.sessionId
       (readBack.data \ "memberDetails" \ "status").as[String] mustBe "inProgress"
     }
 
-    "should throw RuntimeException if decryption fails due to invalid cipher" in {
+    "must throw RuntimeException if decryption fails due to invalid cipher" in {
       val invalidJson = Json.obj(
         "_id"               -> sessionData.sessionId,
         "transferId"        -> sessionData.transferId,

@@ -25,25 +25,25 @@ import play.api.libs.json.*
 class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "get" - {
-    "should get Some value from data Json when value is present" in {
+    "must get Some value from data Json when value is present" in {
       emptyUserAnswers.copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value")).get(SubmitToHMRCPage) mustBe
         Some(true)
     }
 
-    "should get None when no value present in data Json" in {
+    "must get None when no value present in data Json" in {
       emptyUserAnswers.get(SubmitToHMRCPage) mustBe None
     }
   }
 
   "set" - {
-    "should update Json in data field" in {
+    "must update Json in data field" in {
       emptyUserAnswers.set(SubmitToHMRCPage, false).success.value.data mustBe
         Json.obj("submitToHMRC" -> false)
     }
   }
 
   "remove" - {
-    "should remove existing Json from data field" in {
+    "must remove existing Json from data field" in {
       emptyUserAnswers
         .copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
         .remove(SubmitToHMRCPage)

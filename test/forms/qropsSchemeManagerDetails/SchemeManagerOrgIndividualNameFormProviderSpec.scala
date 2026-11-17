@@ -110,7 +110,7 @@ class SchemeManagerOrgIndividualNameFormProviderSpec extends StringFieldBehaviou
       val PersonName(firstName, lastName) = result.value.value
 
       firstName mustBe "Jane"
-      lastName mustBe "Doe"
+      lastName  mustBe "Doe"
     }
   }
 
@@ -127,6 +127,6 @@ class SchemeManagerOrgIndividualNameFormProviderSpec extends StringFieldBehaviou
     val PersonName(firstName, lastName) = result.value.value
 
     firstName mustBe "Jimmy John"
-    lastName mustBe "Doe Ray Mee"
+    lastName  mustBe "Doe Ray Mee"
   }
 }

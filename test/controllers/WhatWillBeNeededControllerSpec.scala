@@ -24,8 +24,6 @@ import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -34,7 +32,7 @@ import views.html.WhatWillBeNeededView
 
 import scala.concurrent.Future
 
-class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class WhatWillBeNeededControllerSpec extends SpecBase {
 
   "onPageLoad" - {
     "must render the view with the correct form action" in {
@@ -45,7 +43,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val result  = route(application, request).value
         val view    = application.injector.instanceOf[WhatWillBeNeededView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
       }
     }
@@ -74,7 +72,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)              mustEqual SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.TaskListController.onPageLoad().url
 
         verify(mockSessionRepository, times(1)).set(any[SessionData])
@@ -82,7 +80,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val auditModel = eventCaptor.getValue.asInstanceOf[ReportStartedAuditModel]
         auditModel.journeyType mustEqual StartNewTransfer
-        auditModel.auditType mustEqual "OverseasPensionTransferReportStarted"
+        auditModel.auditType   mustEqual "OverseasPensionTransferReportStarted"
       }
     }
 
@@ -105,7 +103,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
         val result  = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)              mustEqual SEE_OTHER
         redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
       }
     }

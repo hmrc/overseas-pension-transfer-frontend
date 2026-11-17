@@ -25,11 +25,7 @@ import org.mongodb.scala.ObservableFuture
 import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.model.Filters
 import org.scalactic.source.Position
-import org.scalatest.OptionValues
-import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.concurrent.Eventually
 import org.slf4j.MDC
 import play.api.libs.json.{JsObject, Json}
 import services.EncryptionService
@@ -42,21 +38,15 @@ import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 trait SessionRepositorySpec(protected val isEncrypted: Boolean)
-    extends AnyFreeSpec
-    with Matchers
+    extends SpecBase
     with DefaultPlayMongoRepositorySupport[SessionData]
-    with ScalaFutures
-    with IntegrationPatience
-    with OptionValues
-    with MockitoSugar
-    with SpecBase
     with Eventually {
 
   protected val instant: Instant = now.truncatedTo(ChronoUnit.MILLIS)
 
   protected val sessionData = SessionData(
     "id",
-    userAnswersTransferNumber,
+    testTransferNumber,
     PensionSchemeDetails(
       SrnNumber("1234567890123"),
       PstrNumber("12345678AB"),
@@ -117,7 +107,7 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
       val updatedRecord = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
 
       isStoredValueEncrypted mustBe isEncrypted
-      updatedRecord mustEqual expectedResult
+      updatedRecord       mustEqual expectedResult
     }
 
     mustPreserveMdc(repository.set(sessionData))
@@ -125,7 +115,6 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
 
   s".get $encryptedMessage" - {
     "when there is a record for this id" - {
-
       "must update the lastUpdated time and get the record" in {
 
         insert(sessionData).futureValue
@@ -133,11 +122,11 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
         val result         = repository.get(sessionData.sessionId).futureValue
         val expectedResult = sessionData copy (lastUpdated = instant)
         isStoredValueEncrypted mustBe isEncrypted
-        result.value mustEqual expectedResult
+        result.value        mustEqual expectedResult
       }
     }
 
-    "when there is no record for this id" - {
+    "there is no record for this id" - {
 
       "must return None" in {
 
@@ -149,7 +138,6 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
   }
 
   s".clear $encryptedMessage" - {
-
     "must remove a record" in {
 
       insert(sessionData).futureValue
@@ -169,18 +157,17 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
   }
 
   s".keepAlive $encryptedMessage" - {
-
     "when there is a record for this id" - {
 
       "must update its lastUpdated to `now` and return true" in {
         insert(sessionData).futureValue
 
-        val result         = repository.keepAlive(sessionData.sessionId).futureValue
-        result mustBe true
+        val result = repository.keepAlive(sessionData.sessionId).futureValue
+        result                 mustBe true
         isStoredValueEncrypted mustBe isEncrypted
         val updatedAnswers = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
 
-        updatedAnswers.lastUpdated mustEqual instant
+        updatedAnswers.lastUpdated                                 mustEqual instant
         updatedAnswers.copy(lastUpdated = sessionData.lastUpdated) mustEqual sessionData
       }
     }
@@ -202,7 +189,7 @@ trait SessionRepositorySpec(protected val isEncrypted: Boolean)
 
       f.map { _ =>
         Option(MDC.get("test"))
-      }.futureValue mustEqual Some("foo")
+      }.futureValue mustBe Some("foo")
     }
 }
 

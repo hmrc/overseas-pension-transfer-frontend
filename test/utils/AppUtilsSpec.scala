@@ -18,15 +18,12 @@ package utils
 
 import base.SpecBase
 import models.{QtNumber, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import pages.memberDetails.MemberNamePage
-//import play.api.libs.json.{JsObject, JsString}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 
 import java.time.ZoneId
 
-class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils {
+class AppUtilsSpec extends SpecBase with AppUtils {
 
   "memberFullName" - {
 

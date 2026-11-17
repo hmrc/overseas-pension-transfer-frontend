@@ -24,16 +24,13 @@ import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks.*
-import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MoreAssetCompletionServiceSpec extends SpecBase with Matchers with MockitoSugar with BeforeAndAfterEach {
+class MoreAssetCompletionServiceSpec extends SpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -57,7 +54,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase with Matchers with Mockito
     "completeAsset" - {
 
       forAll(supportedAssets) { assetType =>
-        s"should mark $assetType completed, enrich (twice), persist enriched answers, and return updated SessionData" in {
+        s"must mark $assetType completed, enrich (twice), persist enriched answers, and return updated SessionData" in {
 
           val userAnswers: UserAnswers = userAnswersWithAssets(assetsCount = 5)
 
@@ -89,7 +86,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase with Matchers with Mockito
             }
         }
 
-        s"should handle case when userSelection is None for $assetType (enrich twice)" in {
+        s"must handle case when userSelection is None for $assetType (enrich twice)" in {
           val userAnswers          = userAnswersWithAssets()
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
@@ -117,7 +114,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase with Matchers with Mockito
         }
       }
 
-      "should propagate failure when persistence fails" in {
+      "must propagate failure when persistence fails" in {
         val userAnswers = userAnswersWithAssets()
         val asset       = TypeOfAsset.Property
 
@@ -125,7 +122,7 @@ class MoreAssetCompletionServiceSpec extends SpecBase with Matchers with Mockito
           .thenThrow(new RuntimeException("boom"))
         import scala.util.Try
         val result = Try(await(service.completeAsset(userAnswers, emptySessionData, asset, completed = true)))
-        result.isFailure mustBe true
+        result.isFailure                                mustBe true
         result.toEither.swap.toOption.map(_.getMessage) mustBe Some("boom")
       }
 

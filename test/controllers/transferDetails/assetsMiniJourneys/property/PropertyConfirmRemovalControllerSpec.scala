@@ -23,8 +23,6 @@ import models.NormalMode
 import models.assets.PropertyEntry
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.assets.PropertyQuery
@@ -32,7 +30,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRem
 
 import scala.concurrent.Future
 
-class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
+class PropertyConfirmRemovalControllerSpec extends AddressBase {
 
   private val formProvider = new PropertyConfirmRemovalFormProvider()
   private val form         = formProvider()
@@ -50,7 +48,7 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
 
         val view = application.injector.instanceOf[PropertyConfirmRemovalView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -69,7 +67,7 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController
           .onPageLoad(NormalMode)
           .url
@@ -91,7 +89,7 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, 1)(
           fakeDisplayRequest(request),
           messages(application)

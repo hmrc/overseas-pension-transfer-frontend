@@ -18,8 +18,6 @@ package controllers.checkYourAnswers
 
 import base.SpecBase
 import models.{FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, POST, contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
@@ -27,7 +25,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.checkYourAnswers.CheckYourAnswersView
 
-class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class CheckYourAnswersControllerSpec extends SpecBase {
 
   private val application = applicationBuilder().build()
 
@@ -49,7 +47,7 @@ class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val view = application.injector.instanceOf[CheckYourAnswersView]
 
-        status(result) mustBe OK
+        status(result)          mustBe OK
         contentAsString(result) mustBe view(
           memberDetailsSummaryList,
           transferDetailsSummaryList,
@@ -67,7 +65,7 @@ class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val request = FakeRequest(POST, checkYourAnswersRoute)
         val result  = route(application, request).value
 
-        status(result) mustBe SEE_OTHER
+        status(result)           mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SubmitToHMRCController.onPageLoad(NormalMode).url)
       }
     }

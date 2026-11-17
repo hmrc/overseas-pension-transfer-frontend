@@ -19,11 +19,9 @@ package services
 import base.SpecBase
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
 import models.{CheckMode, NormalMode, SessionData, TaskCategory, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import queries.TaskStatusQuery
 
-class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
+class TaskServiceSpec extends SpecBase {
 
   private val service = TaskService
 
@@ -53,11 +51,11 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
         result.isSuccess mustBe true
         val ua = result.get
 
-        ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(Completed)
-        ua.get(TaskStatusQuery(TaskCategory.TransferDetails)) mustBe Some(NotStarted)
+        ua.get(TaskStatusQuery(TaskCategory.MemberDetails))        mustBe Some(Completed)
+        ua.get(TaskStatusQuery(TaskCategory.TransferDetails))      mustBe Some(NotStarted)
         ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(NotStarted)
-        ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(InProgress)
-        ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(CannotStart)
+        ua.get(TaskStatusQuery(TaskCategory.QROPSDetails))         mustBe Some(InProgress)
+        ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails))    mustBe Some(CannotStart)
       }
 
     "must set non-submission tasks to CannotStart when MemberDetails is not Completed " in {
@@ -83,11 +81,11 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
       result.isSuccess mustBe true
       val ua = result.get
 
-      ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(InProgress)
-      ua.get(TaskStatusQuery(TaskCategory.TransferDetails)) mustBe Some(CannotStart)
+      ua.get(TaskStatusQuery(TaskCategory.MemberDetails))        mustBe Some(InProgress)
+      ua.get(TaskStatusQuery(TaskCategory.TransferDetails))      mustBe Some(CannotStart)
       ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(CannotStart)
-      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(CannotStart)
-      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(CannotStart)
+      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails))         mustBe Some(CannotStart)
+      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails))    mustBe Some(CannotStart)
     }
   }
 
@@ -116,11 +114,11 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
       result.isSuccess mustBe true
       val ua = result.get
 
-      ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(Completed)
-      ua.get(TaskStatusQuery(TaskCategory.TransferDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.MemberDetails))        mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.TransferDetails))      mustBe Some(Completed)
       ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(Completed)
-      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(Completed)
-      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(NotStarted)
+      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails))         mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails))    mustBe Some(NotStarted)
     }
 
     "must set submission task to CannotStart when other task is not Completed " in {
@@ -146,11 +144,11 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
       result.isSuccess mustBe true
       val ua = result.get
 
-      ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(Completed)
-      ua.get(TaskStatusQuery(TaskCategory.TransferDetails)) mustBe Some(Completed)
-      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.MemberDetails))        mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.TransferDetails))      mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails))         mustBe Some(Completed)
       ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(InProgress)
-      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(CannotStart)
+      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails))    mustBe Some(CannotStart)
     }
   }
 

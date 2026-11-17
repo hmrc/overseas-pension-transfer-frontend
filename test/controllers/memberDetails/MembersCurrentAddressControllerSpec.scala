@@ -27,8 +27,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -40,7 +38,7 @@ import views.html.memberDetails.MembersCurrentAddressView
 
 import scala.concurrent.Future
 
-class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
+class MembersCurrentAddressControllerSpec extends AddressBase {
 
   private val formProvider = new MembersCurrentAddressFormProvider()
   private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
@@ -135,7 +133,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         val view   = application.injector.instanceOf[MembersCurrentAddressView]
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
@@ -176,7 +174,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           MembersCurrentAddressPage.nextPage(NormalMode, emptyUserAnswers).url
       }
@@ -204,7 +202,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         val view      = application.injector.instanceOf[MembersCurrentAddressView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
           displayRequest,
           messages(application)
@@ -252,7 +250,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         val view      = application.injector.instanceOf[MembersCurrentAddressView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
           displayRequest,
           messages(application)
@@ -285,7 +283,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }

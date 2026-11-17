@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.memberDetails.MemberDoesNotHaveNinoView
 
 import scala.concurrent.Future
 
-class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberDoesNotHaveNinoControllerSpec extends SpecBase {
 
   private val formProvider = new MemberDoesNotHaveNinoFormProvider()
   private val form         = formProvider()
@@ -54,7 +52,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
         val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -76,7 +74,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
         val view   = application.injector.instanceOf[MemberDoesNotHaveNinoView]
         val result = route(application, req).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
           fakeDisplayRequest(req, userAnswers),
           messages(application)
@@ -105,7 +103,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
       }
     }
@@ -123,7 +121,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
         val view      = application.injector.instanceOf[MemberDoesNotHaveNinoView]
         val result    = route(application, req).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
@@ -152,7 +150,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

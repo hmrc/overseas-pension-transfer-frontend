@@ -16,11 +16,10 @@
 
 package models.authentication
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import base.SpecBase
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
-class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
+class AuthenticatedUserSpec extends SpecBase {
 
   "PsaUser" - {
     "userType" - {

@@ -85,10 +85,10 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
         ).body
       ).getElementById("main-content").getElementsByTag("a")
 
-      links.get(0).text() mustBe messages("transferSubmitted.dashboardLink.text")
+      links.get(0).text()       mustBe messages("transferSubmitted.dashboardLink.text")
       links.get(0).attr("href") mustBe routes.DashboardController.onPageLoad().url
 
-      links.get(1).text() mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
+      links.get(1).text()       mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
       links.get(1).attr("href") mustBe routes.DashboardController.clearAndExit(mpsLink).url
     }
 

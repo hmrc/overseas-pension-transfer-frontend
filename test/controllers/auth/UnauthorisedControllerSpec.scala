@@ -17,12 +17,11 @@
 package controllers.auth
 
 import base.SpecBase
-import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.UnauthorisedView
 
-class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
+class UnauthorisedControllerSpec extends SpecBase {
 
   "Unauthorised Controller" - {
 
@@ -37,7 +36,7 @@ class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
 
         val view = application.injector.instanceOf[UnauthorisedView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
       }
     }

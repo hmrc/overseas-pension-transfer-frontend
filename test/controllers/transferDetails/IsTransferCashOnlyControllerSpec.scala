@@ -22,8 +22,6 @@ import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.IsTransferCashOnlyPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -33,7 +31,7 @@ import views.html.transferDetails.IsTransferCashOnlyView
 
 import scala.concurrent.Future
 
-class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class IsTransferCashOnlyControllerSpec extends SpecBase {
 
   private val formProvider = new IsTransferCashOnlyFormProvider()
   private val form         = formProvider()
@@ -53,7 +51,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
         val view = application.injector.instanceOf[IsTransferCashOnlyView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +72,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -106,7 +104,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(NormalMode, ua).url
       }
     }
@@ -126,7 +124,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
@@ -146,7 +144,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

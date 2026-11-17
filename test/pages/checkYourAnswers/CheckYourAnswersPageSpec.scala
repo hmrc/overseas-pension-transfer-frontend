@@ -18,9 +18,8 @@ package pages.checkYourAnswers
 
 import base.SpecBase
 import models.NormalMode
-import org.scalatest.freespec.AnyFreeSpec
 
-class CheckYourAnswersPageSpec extends AnyFreeSpec with SpecBase {
+class CheckYourAnswersPageSpec extends SpecBase {
 
   "CheckYourAnswersPage" - {
     "nextPage" - {

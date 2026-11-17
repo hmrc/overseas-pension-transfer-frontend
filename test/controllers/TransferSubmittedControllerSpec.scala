@@ -22,8 +22,6 @@ import connectors.MinimalDetailsConnector
 import models.authentication.PsaId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -36,7 +34,7 @@ import views.html.TransferSubmittedView
 import java.time.ZoneId
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
+class TransferSubmittedControllerSpec extends SpecBase {
 
   private val mockUserAnswersService = mock[UserAnswersService]
 
@@ -85,7 +83,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
             testMessages
           )
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           "QT123456",
           summaryList,
@@ -109,7 +107,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)        mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
       }
     }

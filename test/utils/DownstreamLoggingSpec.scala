@@ -32,10 +32,9 @@
 
 package utils
 
+import base.SpecBase
 import controllers.helpers.ErrorHandling
 import controllers.routes
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.typedmap.TypedMap
 import play.api.mvc.*
 import play.api.routing.{HandlerDef, Router}
@@ -45,7 +44,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, RequestId}
 
 import scala.concurrent.Future
 
-class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
+class DownstreamLoggingSpec extends SpecBase {
 
   object TestController extends BaseController with ErrorHandling {
 
@@ -57,8 +56,8 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "withDownstreamErrorMessage" should {
-    "build error message with correlation ID from response" in {
+  "withDownstreamErrorMessage" - {
+    "must build the error message with correlation ID from response" in {
       val response = HttpResponse(
         status = INTERNAL_SERVER_ERROR,
         body = "boom",
@@ -84,9 +83,10 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
       err mustBe "400 Unknown (correlationId=-)"
     }
   }
-  "getNonHttpErrorMessage"     should {
 
-    "return message with correlation ID from HeaderCarrier" in {
+  "getNonHttpErrorMessage" - {
+
+    "must return the message with correlation ID from HeaderCarrier" in {
       implicit val hc: HeaderCarrier = HeaderCarrier(requestId = Some(RequestId("req-999")))
       val ex                         = new RuntimeException("db down")
 
@@ -95,7 +95,7 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
       message must include("db down")
     }
 
-    "fall back to '-' if no correlation ID" in {
+    "must fall back to '-' if no correlation ID" in {
       implicit val hc: HeaderCarrier = HeaderCarrier()
       val ex                         = new IllegalStateException("oops")
 
@@ -105,18 +105,17 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "ErrorHandling" should {
-
-    "redirect to JourneyRecoveryController when failing" in {
+  "ErrorHandling" - {
+    "must redirect to JourneyRecoveryController when failing" in {
       val request = FakeRequest(GET, "/test-url")
 
       val result = TestController.failingAction("SomeError")(request)
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.JourneyRecoveryController.onPageLoad().url)
     }
 
-    "include controller.method in logs if HandlerDef present" in {
+    "must include controller.method in logs if HandlerDef present" in {
       val handlerDef = HandlerDef(
         classLoader = getClass.getClassLoader,
         routerPackage = "router",
@@ -132,7 +131,7 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
 
       val result = TestController.failingAction("SomeError")(request)
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.JourneyRecoveryController.onPageLoad().url)
     }
   }

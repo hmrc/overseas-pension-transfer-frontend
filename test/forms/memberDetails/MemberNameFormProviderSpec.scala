@@ -110,7 +110,7 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours with Regex {
       val PersonName(firstName, lastName) = result.value.value
 
       firstName mustBe "Jane"
-      lastName mustBe "Doe"
+      lastName  mustBe "Doe"
     }
 
     "must handle names with spaces, allow leading and trailing spaces and trim them on binding" in {
@@ -126,7 +126,7 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours with Regex {
       val PersonName(firstName, lastName) = result.value.value
 
       firstName mustBe "Jimmy John"
-      lastName mustBe "Doe Ray Mee"
+      lastName  mustBe "Doe Ray Mee"
     }
   }
 }

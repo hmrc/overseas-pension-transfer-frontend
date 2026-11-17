@@ -24,8 +24,6 @@ import models.{AllTransfersItem, DashboardData, PstrNumber, SrnNumber}
 import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
 import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -33,7 +31,7 @@ import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with MockitoSugar {
+class TransferServiceSpec extends SpecBase {
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
@@ -54,7 +52,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
         .value
         .set(
           TransfersOverviewQuery,
-          Seq(AllTransfersItem(userAnswersTransferNumber, None, None, None, None, None, None, None, None, None))
+          Seq(AllTransfersItem(testTransferNumber, None, None, None, None, None, None, None, None, None))
         )
         .success
         .value
@@ -70,9 +68,9 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       result.isRight mustBe true
       val updated = result.toOption.get
 
-      updated.get(TransfersOverviewQuery) mustBe Some(Seq.empty)
+      updated.get(TransfersOverviewQuery)           mustBe Some(Seq.empty)
       updated.get(TransfersSyncedAtQuery).isDefined mustBe true
-      updated.get(TransfersDataUpdatedAtQuery) mustBe Some(existingDataUpdatedAt)
+      updated.get(TransfersDataUpdatedAtQuery)      mustBe Some(existingDataUpdatedAt)
     }
 
     "must merge transfers and set both syncedAt (now) and dataUpdatedAt (from DTO) when connector returns Right(dto)" in {
@@ -84,7 +82,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
 
       val dtoTransfers: Seq[AllTransfersItem] = Seq(
         AllTransfersItem(
-          transferId = userAnswersTransferNumber,
+          transferId = testTransferNumber,
           qtVersion = None,
           nino = None,
           memberFirstName = Some("Ada"),
@@ -112,9 +110,9 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       result.isRight mustBe true
       val updated = result.toOption.get
 
-      updated.get(TransfersOverviewQuery) mustBe Some(dtoTransfers)
+      updated.get(TransfersOverviewQuery)           mustBe Some(dtoTransfers)
       updated.get(TransfersSyncedAtQuery).isDefined mustBe true
-      updated.get(TransfersDataUpdatedAtQuery) mustBe Some(dtoLastUpdated)
+      updated.get(TransfersDataUpdatedAtQuery)      mustBe Some(dtoLastUpdated)
     }
 
     "must remove transfers with missing first name or surname" in {
@@ -126,7 +124,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
 
       val rawTransfers: Seq[AllTransfersItem] = Seq(
         AllTransfersItem(
-          userAnswersTransferNumber,
+          testTransferNumber,
           None,
           None,
           None,
@@ -138,7 +136,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
           None
         ),
         AllTransfersItem(
-          userAnswersTransferNumber,
+          testTransferNumber,
           None,
           None,
           None,
@@ -150,7 +148,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
           None
         ), // invalid
         AllTransfersItem(
-          userAnswersTransferNumber,
+          testTransferNumber,
           None,
           None,
           None,

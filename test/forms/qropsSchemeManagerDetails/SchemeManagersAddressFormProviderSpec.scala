@@ -225,12 +225,12 @@ class SchemeManagersAddressFormProviderSpec extends StringFieldBehaviours with S
 
       val bound = result.value.value
 
-      bound.addressLine1 mustBe "10 Downing Street"
-      bound.addressLine2 mustBe "Westminster"
+      bound.addressLine1       mustBe "10 Downing Street"
+      bound.addressLine2       mustBe "Westminster"
       bound.addressLine3.value mustBe "London"
       bound.addressLine4.value mustBe "Greater London"
       bound.addressLine5.value mustBe "Greater London"
-      bound.countryCode mustBe "GB"
+      bound.countryCode        mustBe "GB"
     }
   }
 }

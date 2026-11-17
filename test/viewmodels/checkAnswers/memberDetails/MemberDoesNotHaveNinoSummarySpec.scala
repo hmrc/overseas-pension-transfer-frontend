@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class MemberDoesNotHaveNinoSummarySpec extends AnyFreeSpec with SpecBase {
+class MemberDoesNotHaveNinoSummarySpec extends SpecBase {
 
   "MemberDoesNotHaveNino" - {
     implicit val messages: Messages = stubMessages()
@@ -33,9 +32,9 @@ class MemberDoesNotHaveNinoSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(MemberDoesNotHaveNinoPage, "Member No Nino reason").success.value
       val result  = MemberDoesNotHaveNinoSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("memberDoesNotHaveNino.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text(messages("Member No Nino reason"))
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("memberDoesNotHaveNino.checkYourAnswersLabel"))
+      result.get.value.content               mustBe Text(messages("Member No Nino reason"))
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberDoesNotHaveNinoController.onPageLoad(CheckMode).url
     }

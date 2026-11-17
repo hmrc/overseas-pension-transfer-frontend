@@ -18,37 +18,35 @@ package controllers
 
 import models.NormalMode
 import stubs.{AuthStub, EmailStub, MinimalDetailsStub, PensionSchemeStub, TransferBackendStub}
-import base.BaseISpec
+import base.ISpecBase
 import models.dtos.UserAnswersDTO
 import models.responses.SubmissionResponse
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
-import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.dashboard.TransfersOverviewQuery
 
-class DashboardControllerISpec extends BaseISpec {
+class DashboardControllerISpec extends ISpecBase {
 
-  "DashboardController.onLoadPage" when {
+  "DashboardController.onLoadPage" must {
     "return full dashboard when PSA associated to the scheme and dashboard has entries" in {
       AuthStub.authorised()
-      PensionSchemeStub.checkAssociationPsaTrue(srnNumber.value)
+      PensionSchemeStub.checkAssociationPsaTrue(srn.value)
       dashBoardSessionRepository.set(testDashboardData).futureValue
-      TransferBackendStub.stubGetAllTransfersOk(pstrNumber.value, testNino)
+      TransferBackendStub.stubGetAllTransfersOk(pstr.value, testNino)
 
       val result =
         route(app, FakeRequest(routes.DashboardController.onPageLoad(1, None)).withSession(authSession)).value
 
       status(result) mustBe OK
-      contentAsString(result) should (include("QT564321") and include("QT564322"))
+      contentAsString(result) must (include("QT564321") and include("QT564322"))
     }
 
     "return OK and empty dashboard when PSA associated to the scheme and dashboard has no entries" in {
       AuthStub.authorised()
-      PensionSchemeStub.checkAssociationPsaTrue(srnNumber.value)
+      PensionSchemeStub.checkAssociationPsaTrue(srn.value)
       dashBoardSessionRepository.set(testDashboardData).futureValue
-      TransferBackendStub.stubGetAllTransfersNotFound(pstrNumber.value)
+      TransferBackendStub.stubGetAllTransfersNotFound(pstr.value)
 
       val result =
         route(app, FakeRequest(routes.DashboardController.onPageLoad(1, None)).withSession(authSession)).value
@@ -60,9 +58,9 @@ class DashboardControllerISpec extends BaseISpec {
 
     "redirect to recovery page when PSA is not associated to the scheme" in {
       AuthStub.authorised()
-      PensionSchemeStub.checkAssociationPsaFalse(srnNumber.value)
+      PensionSchemeStub.checkAssociationPsaFalse(srn.value)
       dashBoardSessionRepository.set(testDashboardData).futureValue
-      TransferBackendStub.stubGetAllTransfersOk(pstrNumber.value, testNino)
+      TransferBackendStub.stubGetAllTransfersOk(pstr.value, testNino)
 
       val result =
         route(app, FakeRequest(routes.DashboardController.onPageLoad(1, None)).withSession(authSession)).value
@@ -76,17 +74,17 @@ class DashboardControllerISpec extends BaseISpec {
     "a PSA submits a transfer" must {
       "submit, save the QT number, send the email and redirect" in {
         AuthStub.authorised()
-        PensionSchemeStub.checkAssociationPsaTrue(srnNumber.value)
+        PensionSchemeStub.checkAssociationPsaTrue(srn.value)
         dashBoardSessionRepository.set(testDashboardData).futureValue
         sessionRepository.set(testSessionData).futureValue
-        MinimalDetailsStub.psaSuccess(testPsaId.value, Json.toJson(minimalDetails).toString)
+        MinimalDetailsStub.psaSuccess(psaId.value, Json.toJson(minimalDetailsIndividual).toString)
         EmailStub.sendEmailResponse(OK, Json.toJson(emailRequest).toString)
         stubGet(
-          s"/overseas-pension-transfer-backend/save-for-later/${testTransferId.value}",
-          Json.toJson(UserAnswersDTO(testTransferId, pstrNumber, testUserAnswerData, now)).toString()
+          s"/overseas-pension-transfer-backend/save-for-later/${testTransferNumber.value}",
+          Json.toJson(UserAnswersDTO(testTransferNumber, pstr, testUserAnswerData, now)).toString()
         )
         stubPost(
-          s"/overseas-pension-transfer-backend/submit-declaration/${testTransferId.value}",
+          s"/overseas-pension-transfer-backend/submit-declaration/${testTransferNumber.value}",
           Json.toJson(SubmissionResponse(testQtNumber, now)).toString,
           OK
         )

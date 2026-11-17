@@ -103,7 +103,7 @@ class ViewSubmittedViewSpec extends ViewBaseSpec {
         ).body
       ).getElementsByClass("govuk-heading-m")
 
-      headings.size() mustBe 4
+      headings.size()        mustBe 4
       headings.get(0).text() mustBe messages("common.memberDetails.heading")
       headings.get(1).text() mustBe messages("common.transferDetails.heading")
       headings.get(2).text() mustBe messages("common.qropsDetails.heading")
@@ -186,7 +186,7 @@ class ViewSubmittedViewSpec extends ViewBaseSpec {
         ).body
       ).select("a.govuk-button")
 
-      buttons.size() mustBe 1
+      buttons.size()       mustBe 1
       buttons.first().text() must include(messages("site.continue"))
     }
 

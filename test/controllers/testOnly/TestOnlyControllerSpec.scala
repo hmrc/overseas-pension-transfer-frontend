@@ -20,9 +20,6 @@ import base.SpecBase
 import connectors.UserAnswersConnector
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Application
 import play.api.http.Status.{BAD_GATEWAY, NO_CONTENT, OK}
 import play.api.inject.bind
@@ -32,7 +29,7 @@ import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class TestOnlyControllerSpec extends AnyFreeSpec with Matchers with SpecBase {
+class TestOnlyControllerSpec extends SpecBase {
 
   val mockUserAnswersConnector: UserAnswersConnector = mock[UserAnswersConnector]
 
@@ -53,7 +50,7 @@ class TestOnlyControllerSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       val result = controller.resetDatabase(request)
 
-      status(result) mustBe OK
+      status(result)          mustBe OK
       contentAsString(result) mustBe "Success"
     }
 
@@ -65,7 +62,7 @@ class TestOnlyControllerSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       val result = controller.resetDatabase(request)
 
-      status(result) mustBe BAD_GATEWAY
+      status(result)          mustBe BAD_GATEWAY
       contentAsString(result) mustBe "Reset failed. Try again"
     }
   }

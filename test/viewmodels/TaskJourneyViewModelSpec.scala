@@ -20,14 +20,12 @@ import base.SpecBase
 import models.address.{Country, QROPSAddress, SchemeManagersAddress}
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
 import models.{NormalMode, PersonName, SchemeManagerType, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
 import pages.qropsSchemeManagerDetails.*
 import play.api.libs.json.Json
 import viewmodels.TaskJourneyViewModels.*
 
-class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
+class TaskJourneyViewModelSpec extends SpecBase {
 
   "MemberDetailsJourneyViewModel" - {
     "status" - {
@@ -249,7 +247,7 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
               .value
 
             QropsDetailsJourneyViewModel.status(userAnswers) mustBe Completed
-            QropsDetailsJourneyViewModel.entry(userAnswers) mustBe
+            QropsDetailsJourneyViewModel.entry(userAnswers)  mustBe
               controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
           }
 
@@ -420,7 +418,7 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
             .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
-          SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
+          SchemeManagerDetailsJourneyViewModel.entry(userAnswers)  mustBe
             controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
         }
 
@@ -457,7 +455,7 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
             .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
-          SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
+          SchemeManagerDetailsJourneyViewModel.entry(userAnswers)  mustBe
             controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
         }
 

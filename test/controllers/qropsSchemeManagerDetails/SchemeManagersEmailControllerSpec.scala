@@ -24,8 +24,6 @@ import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.qropsSchemeManagerDetails.SchemeManagersEmailView
 
 import scala.concurrent.Future
 
-class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagersEmailControllerSpec extends SpecBase {
 
   private val formProvider = new SchemeManagersEmailFormProvider()
   private val form         = formProvider()
@@ -55,7 +53,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val view = application.injector.instanceOf[SchemeManagersEmailView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
@@ -73,7 +71,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
       }
     }
@@ -99,7 +97,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual SchemeManagersEmailPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -119,7 +117,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
       }
     }
@@ -145,7 +143,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

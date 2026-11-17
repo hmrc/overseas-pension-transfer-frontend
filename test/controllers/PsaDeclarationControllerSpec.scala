@@ -23,8 +23,6 @@ import models.responses.{SubmissionErrorResponse, SubmissionResponse}
 import models.{MinimalDetails, NormalMode, PersonName, QtNumber, SessionData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.PsaDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.PsaDeclarationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PsaDeclarationControllerSpec extends SpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -55,7 +53,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         val view = application.injector.instanceOf[PsaDeclarationView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -99,7 +97,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PsaDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -120,7 +118,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
@@ -155,7 +153,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
@@ -172,7 +170,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           routes.TaskListController.onPageLoad().url
       }

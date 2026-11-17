@@ -24,8 +24,6 @@ import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.IsTransferTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,7 +33,7 @@ import views.html.transferDetails.IsTransferTaxableView
 
 import scala.concurrent.Future
 
-class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class IsTransferTaxableControllerSpec extends SpecBase {
 
   private val formProvider = new IsTransferTaxableFormProvider()
   private val form         = formProvider()
@@ -55,7 +53,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val view = application.injector.instanceOf[IsTransferTaxableView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -76,7 +74,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -107,7 +105,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual IsTransferTaxablePage.nextPage(NormalMode, ua).url
       }
     }
@@ -127,7 +125,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual IsTransferTaxablePage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
@@ -143,7 +141,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view      = application.injector.instanceOf[IsTransferTaxableView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -172,7 +170,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

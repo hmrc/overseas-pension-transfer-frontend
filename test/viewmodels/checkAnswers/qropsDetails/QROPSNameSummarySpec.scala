@@ -18,13 +18,12 @@ package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
 import models.CheckMode
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsDetails.QROPSNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
+class QROPSNameSummarySpec extends SpecBase {
 
   "QROPSName Summary" - {
     implicit val messages: Messages = stubMessages()
@@ -33,8 +32,8 @@ class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
       val answers = emptyUserAnswers.set(QROPSNamePage, "QROPS Sample Name").success.value
       val result  = QROPSNameSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsName.checkYourAnswersLabel"))
+      result                   mustBe defined
+      result.get.key.content   mustBe Text(messages("qropsName.checkYourAnswersLabel"))
       result.get.value.content mustBe Text("QROPS Sample Name")
     }
   }

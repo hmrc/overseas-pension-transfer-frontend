@@ -16,29 +16,24 @@
 
 package connectors
 
-import base.BaseISpec
+import base.ISpecBase
 import connectors.parsers.TransferParser.GetAllTransfersType
 import models.QtStatus.Submitted
 import models.responses.*
-import models.{PstrNumber, QtNumber, SrnNumber}
-import org.scalatest.OptionValues
+import models.{PstrNumber, QtNumber}
+import play.api.test.Helpers.*
 import stubs.TransferBackendStub
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TransferConnectorISpec extends BaseISpec with OptionValues {
+class TransferConnectorISpec extends ISpecBase {
 
   private val connector: TransferConnector = app.injector.instanceOf[TransferConnector]
-
-  private val pstr = PstrNumber("12345678AB")
-  private val srn  = SrnNumber("1234567890")
 
   "TransferConnector.getAllTransfers" when {
 
     "the backend returns 200" must {
-      val testNino = generateNino()
-
       "return Right(GetAllTransfersDTO) with the parsed transfers if payload valid" in {
         TransferBackendStub.stubGetAllTransfersOk(pstr.value, testNino)
 
@@ -46,19 +41,19 @@ class TransferConnectorISpec extends BaseISpec with OptionValues {
 
         result match {
           case Right(dto) =>
-            dto.pstr.value         shouldBe pstr.value
-            dto.transfers.nonEmpty shouldBe true
+            dto.pstr.value mustBe pstr.value
+            dto.transfers.nonEmpty mustBe true
 
             val first = dto.transfers.head
-            first.transferId            shouldBe QtNumber("QT564321")
-            first.qtVersion.value       shouldBe "001"
-            first.memberFirstName.value shouldBe "David"
-            first.memberSurname.value   shouldBe "Warne"
-            first.nino.value            shouldBe testNino
-            first.submissionDate.value  shouldBe Instant.parse("2025-03-14T00:00:00Z")
-            first.lastUpdated           shouldBe empty
-            first.qtStatus.value        shouldBe Submitted
-            first.pstrNumber.value      shouldBe pstr
+            first.transferId mustBe QtNumber("QT564321")
+            first.qtVersion.value mustBe "001"
+            first.memberFirstName.value mustBe "David"
+            first.memberSurname.value mustBe "Warne"
+            first.nino.value mustBe testNino
+            first.submissionDate.value mustBe Instant.parse("2025-03-14T00:00:00Z")
+            first.lastUpdated mustBe empty
+            first.qtStatus.value mustBe Submitted
+            first.pstrNumber.value mustBe pstr
 
           case Left(err) =>
             fail(s"Expected Right(dto) but got $err")
@@ -73,9 +68,9 @@ class TransferConnectorISpec extends BaseISpec with OptionValues {
 
         result match {
           case Right(dto) =>
-            dto.transfers.size                   shouldBe 2
-            all(dto.transfers.map(_.isValid))    shouldBe true
-            all(dto.transfers.map(_.nino.value)) shouldBe testNino
+            dto.transfers.size mustBe 2
+            all(dto.transfers.map(_.isValid)) mustBe true
+            all(dto.transfers.map(_.nino.value)) mustBe testNino
 
           case Left(err) =>
             fail(s"Expected Right(dto) but got $err")
@@ -100,7 +95,7 @@ class TransferConnectorISpec extends BaseISpec with OptionValues {
 
         val result = await(connector.getAllTransfers(srn, pstr))
 
-        result shouldBe Left(NoTransfersFound)
+        result mustBe Left(NoTransfersFound)
       }
     }
 
@@ -110,7 +105,7 @@ class TransferConnectorISpec extends BaseISpec with OptionValues {
 
         val result = await(connector.getAllTransfers(srn, pstr))
 
-        result shouldBe Left(InternalServerError)
+        result mustBe Left(InternalServerError)
       }
     }
   }

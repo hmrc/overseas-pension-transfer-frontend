@@ -24,8 +24,6 @@ import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.AmountOfTransferPage
 import play.api.data.Form
 import play.api.inject.bind
@@ -36,7 +34,7 @@ import views.html.transferDetails.AmountOfTransferView
 
 import scala.concurrent.Future
 
-class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class AmountOfTransferControllerSpec extends SpecBase {
 
   val formProvider           = new AmountOfTransferFormProvider()
   val form: Form[BigDecimal] = formProvider()
@@ -58,7 +56,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val view = application.injector.instanceOf[AmountOfTransferView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -79,7 +77,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -108,7 +106,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AmountOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -134,7 +132,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AmountOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
@@ -154,7 +152,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -183,7 +181,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

@@ -24,8 +24,6 @@ import models.requests.DisplayRequest
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -37,7 +35,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressVie
 
 import scala.concurrent.Future
 
-class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
+class PropertyAddressControllerSpec extends AddressBase {
   private val index = 0
 
   private val formProvider = new PropertyAddressFormProvider()
@@ -77,7 +75,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val view   = application.injector.instanceOf[PropertyAddressView]
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
@@ -114,7 +112,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           PropertyAddressPage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
@@ -142,7 +140,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PropertyAddressPage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -171,7 +169,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
           messages(application)
@@ -220,7 +218,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
           messages(application)

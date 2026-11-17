@@ -19,13 +19,11 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.NormalMode
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
 
-class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsStartControllerSpec extends SpecBase {
 
   "AddOtherAssets Controller" - {
 
@@ -39,7 +37,7 @@ class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val view     = application.injector.instanceOf[OtherAssetsStartView]
         val nextPage = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, 0).url
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString
       }
     }

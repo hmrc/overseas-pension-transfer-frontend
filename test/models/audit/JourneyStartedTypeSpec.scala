@@ -16,13 +16,12 @@
 
 package models.audit
 
+import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, JsSuccess, Json}
 
-class JourneyStartedTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks {
+class JourneyStartedTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   "must serialise and deserialise to and from all valid values" in
     JourneyStartedType.values.foreach { value =>

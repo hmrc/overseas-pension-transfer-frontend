@@ -21,8 +21,6 @@ import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclaration
 import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclar
 
 import scala.concurrent.Future
 
-class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MorePropertyDeclarationControllerSpec extends SpecBase {
 
   private val formProvider = new MorePropertyDeclarationFormProvider()
   private val form         = formProvider()
@@ -64,7 +62,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val rows = PropertyAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual
           view(form, rows, NormalMode)(
             fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)),
@@ -84,7 +82,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
         val view   = application.injector.instanceOf[MorePropertyDeclarationView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -102,7 +100,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
           .onPageLoad()
           .url
@@ -119,7 +117,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
           .onPageLoad()
           .url
@@ -136,7 +134,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController
           .onPageLoad()
           .url
@@ -157,7 +155,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

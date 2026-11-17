@@ -19,13 +19,12 @@ package viewmodels.checkAnswers.qropsDetails
 import base.SpecBase
 import models.CheckMode
 import models.address.{Country, QROPSAddress}
-import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsDetails.QROPSAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 
-class QROPSAddressSummarySpec extends AnyFreeSpec with SpecBase {
+class QROPSAddressSummarySpec extends SpecBase {
 
   "QROPSAddressSummary" - {
     implicit val messages: Messages = stubMessages()
@@ -37,10 +36,10 @@ class QROPSAddressSummarySpec extends AnyFreeSpec with SpecBase {
         .value
       val result  = QROPSAddressSummary.row(CheckMode, answers)
 
-      result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsAddress.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent("Line1<br>Line2<br>United Kingdom")
-      result.get.value.content.asHtml.body must not include "<br><br>"
+      result                                 mustBe defined
+      result.get.key.content                 mustBe Text(messages("qropsAddress.checkYourAnswersLabel"))
+      result.get.value.content               mustBe HtmlContent("Line1<br>Line2<br>United Kingdom")
+      result.get.value.content.asHtml.body     must not include "<br><br>"
       result.get.actions.get.items.head.href mustBe
         controllers.qropsDetails.routes.QROPSAddressController.onPageLoad(CheckMode).url
     }

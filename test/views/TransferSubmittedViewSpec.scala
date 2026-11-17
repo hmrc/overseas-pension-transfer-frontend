@@ -62,13 +62,13 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
           .getElementById("main-content")
           .getElementsByTag("a")
 
-      links.get(0).text() mustBe messages("transferSubmitted.printLink")
+      links.get(0).text()       mustBe messages("transferSubmitted.printLink")
       links.get(0).attr("href") mustBe routes.PrintSubmittedTransferController.onPageLoad().url
 
-      links.get(2).text() mustBe messages("transferSubmitted.dashboardLink.text")
+      links.get(2).text()       mustBe messages("transferSubmitted.dashboardLink.text")
       links.get(2).attr("href") mustBe routes.DashboardController.onPageLoad().url
 
-      links.get(3).text() mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
+      links.get(3).text()       mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
       links.get(3).attr("href") mustBe routes.DashboardController.clearAndExit(mpsLink).url
 
       val email               = minimalDetailsIndividual.email

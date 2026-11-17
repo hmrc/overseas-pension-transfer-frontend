@@ -22,8 +22,6 @@ import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.AmountOfTaxDeductedView
 
 import scala.concurrent.Future
 
-class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class AmountOfTaxDeductedControllerSpec extends SpecBase {
 
   val formProvider = new AmountOfTaxDeductedFormProvider()
   val form         = formProvider()
@@ -53,7 +51,7 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val view = application.injector.instanceOf[AmountOfTaxDeductedView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +72,7 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -97,7 +95,7 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AmountOfTaxDeductedPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
@@ -117,7 +115,7 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AmountOfTaxDeductedPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
@@ -137,7 +135,7 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)

@@ -24,8 +24,6 @@ import models.{AmendCheckMode, CheckMode, NormalMode, SessionData}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -38,7 +36,8 @@ import views.html.transferDetails.DateOfTransferView
 
 import java.time.{Instant, LocalDate, ZoneId}
 import scala.concurrent.Future
-class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+
+class DateOfTransferControllerSpec extends SpecBase {
 
   implicit private val messages: Messages = stubMessages()
 
@@ -74,7 +73,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val request = getRequest
           val view    = application.injector.instanceOf[DateOfTransferView]
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual view(form, NormalMode)(
             fakeDisplayRequest(request),
             messages(application)
@@ -92,7 +91,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val request = getRequest
           val result  = route(application, getRequest).value
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
             fakeDisplayRequest(request),
             messages(application)
@@ -101,7 +100,6 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
 
       "must return OK in CheckMode when the question has previously been answered" in {
-
         val previouslyEnteredDate = today.minusDays(5)
 
         val userAnswers = emptyUserAnswers
@@ -135,7 +133,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       "must return OK and use the amend form when in AmendCheckMode" in {
         val sessionData: SessionData = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(sessionData)))
 
         val currentUserAnswers = emptyUserAnswers
           .set(DateOfTransferPage, originalDate.minusDays(5))
@@ -152,7 +150,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val amendFormProvider = application.injector.instanceOf[forms.transferDetails.AmendDateOfTransferFormProvider]
           val amendForm         = amendFormProvider(originalDate)
 
-          status(result) mustEqual OK
+          status(result)          mustEqual OK
           contentAsString(result) mustEqual view(
             amendForm.fill(originalDate.minusDays(5)),
             AmendCheckMode
@@ -163,7 +161,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         }
       }
       "must redirect to journey recover when session data submitted date not present in AmendCheckMode" in {
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(emptySessionData)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(emptySessionData)))
 
         val currentUserAnswers = emptyUserAnswers
         val application        = applicationBuilder(userAnswers = currentUserAnswers).build()
@@ -171,7 +169,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         running(application) {
           val request = FakeRequest(GET, routes.DateOfTransferController.onPageLoad(AmendCheckMode).url)
           val result  = route(application, request).value
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
         }
       }
@@ -196,14 +194,14 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         running(application) {
           val result = route(application, postRequest()).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
         }
       }
 
       "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
         val sessionData: SessionData = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sessionData)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(sessionData)))
 
         val mockUserAnswersService = mock[UserAnswersService]
 
@@ -227,7 +225,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
           val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers).url
         }
       }
@@ -247,7 +245,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
           val result = route(application, request).value
 
-          status(result) mustEqual BAD_REQUEST
+          status(result)          mustEqual BAD_REQUEST
           contentAsString(result) mustEqual view(boundForm, NormalMode)(
             fakeDisplayRequest(request),
             messages(application)
@@ -258,7 +256,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       "must return a Bad Request when amending with a date after the original submission date" in {
         val newDate = originalDate.plusDays(1)
         val sd      = emptySessionData.set(DateSubmittedQuery, dateSubmittedAsInstant).get
-        when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(sd)))
+        when(mockSessionRepository.get(testInternalId)).thenReturn(Future.successful(Some(sd)))
 
         val mockUserAnswersService = mock[UserAnswersService]
         when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
@@ -303,7 +301,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         running(application) {
           val result = route(application, postRequest()).value
 
-          status(result) mustEqual SEE_OTHER
+          status(result)                 mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
         }
       }

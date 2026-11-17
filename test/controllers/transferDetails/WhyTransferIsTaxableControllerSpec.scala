@@ -25,8 +25,6 @@ import models.{AmendCheckMode, NormalMode, WhyTransferIsTaxable}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,7 +34,7 @@ import views.html.transferDetails.WhyTransferIsTaxableView
 
 import scala.concurrent.Future
 
-class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class WhyTransferIsTaxableControllerSpec extends SpecBase {
 
   private lazy val whyTransferIsTaxableRoute = routes.WhyTransferIsTaxableController.onPageLoad(NormalMode).url
 
@@ -56,7 +54,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
         val view = application.injector.instanceOf[WhyTransferIsTaxableView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -77,7 +75,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill(WhyTransferIsTaxable.values.head), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -108,7 +106,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(NormalMode, ua).url
       }
     }
@@ -128,7 +126,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
@@ -148,7 +146,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
@@ -177,7 +175,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
         val result = route(application, req).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }

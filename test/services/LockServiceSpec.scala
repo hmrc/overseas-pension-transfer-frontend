@@ -23,10 +23,7 @@ import models.authentication.{PsaId, PsaUser}
 import models.{AllTransfersItem, TransferId}
 import org.mockito.ArgumentMatchers.{any, argThat, eq as eqTo}
 import org.mockito.Mockito.*
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.Lock
@@ -34,7 +31,7 @@ import uk.gov.hmrc.mongo.lock.Lock
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
 
-class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with MockitoSugar with BeforeAndAfterEach {
+class LockServiceSpec extends SpecBase {
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 

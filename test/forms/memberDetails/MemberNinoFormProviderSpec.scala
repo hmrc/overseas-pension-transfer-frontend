@@ -79,7 +79,7 @@ class MemberNinoFormProviderSpec extends StringFieldBehaviours {
         val result = form.bind(Map("value" -> input))
 
         withClue(s"For input '$input': ") {
-          result.errors mustBe empty
+          result.errors      mustBe empty
           result.value.value mustBe expected
         }
       }

@@ -22,8 +22,6 @@ import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescripti
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDesc
 
 import scala.concurrent.Future
 
-class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsDescriptionControllerSpec extends SpecBase {
   private val index = 0
 
   private val formProvider = new OtherAssetsDescriptionFormProvider()
@@ -53,7 +51,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
         val view = application.injector.instanceOf[OtherAssetsDescriptionView]
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -74,7 +72,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
         val result = route(application, request).value
 
-        status(result) mustEqual OK
+        status(result)          mustEqual OK
         contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)
@@ -97,7 +95,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual OtherAssetsDescriptionPage(index)
           .nextPage(NormalMode, emptyUserAnswers)
           .url
@@ -122,7 +120,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        status(result)                 mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual OtherAssetsDescriptionPage(index)
           .nextPage(AmendCheckMode, emptyUserAnswers)
           .url
@@ -144,7 +142,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
         val result = route(application, request).value
 
-        status(result) mustEqual BAD_REQUEST
+        status(result)          mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
           fakeDisplayRequest(request),
           messages(application)

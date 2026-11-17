@@ -20,10 +20,8 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.TypeOfAsset
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
-class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class PropertyValuePageSpec extends SpecBase {
   private val index = 0
 
   ".nextPage" - {
@@ -78,13 +76,13 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
       }
     }
 
-    "should go to CYA when complete" in {
+    "must go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Property))
       PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyCYAController
         .onPageLoad(NormalMode, index)
     }
 
-    "should go to PropertyDescription when incomplete" in {
+    "must go to PropertyDescription when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
       PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyDescriptionController
         .onPageLoad(NormalMode, index)

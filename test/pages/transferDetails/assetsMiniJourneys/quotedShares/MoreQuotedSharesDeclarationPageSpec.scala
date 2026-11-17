@@ -20,11 +20,9 @@ import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.{QuotedSharesMiniJourney, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
-class MoreQuotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class MoreQuotedSharesDeclarationPageSpec extends SpecBase {
 
   ".nextPage" - {
 
