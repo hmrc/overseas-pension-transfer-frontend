@@ -22,6 +22,7 @@ import utils.DateTimeFormats.dateTimeFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import models.Mode
 import models.UserAnswers
+import play.api.i18n.Lang
 import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
 
@@ -31,6 +32,7 @@ object DateOfTransferSummary {
     messages: Messages
   ): Option[SummaryListRow] =
     answers.get(DateOfTransferPage).map { answer =>
+      implicit val lang: Lang = messages.lang
 
       val actions =
         if (showChangeLink) {
