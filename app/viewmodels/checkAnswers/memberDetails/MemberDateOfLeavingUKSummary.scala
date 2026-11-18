@@ -22,7 +22,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import models.Mode
 import models.UserAnswers
 import pages.memberDetails.MemberDateOfLeavingUKPage
-import play.api.i18n.Lang
 import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
 
@@ -32,7 +31,6 @@ object MemberDateOfLeavingUKSummary {
     messages: Messages
   ): Option[SummaryListRow] =
     answers.get(MemberDateOfLeavingUKPage).map { answer =>
-      implicit val lang: Lang = messages.lang
 
       val actions =
         if (showChangeLink) {
