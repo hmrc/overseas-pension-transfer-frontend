@@ -23,7 +23,7 @@ sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType
 
-  def owner(): String = this match {
+  val owner: String = this match {
     case PsaUser(psaId, _, _) => psaId.value
     case PspUser(pspId, _, _) => pspId.value
   }

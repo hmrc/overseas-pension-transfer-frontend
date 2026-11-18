@@ -105,7 +105,7 @@ class DashboardController @Inject() (
         allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
         lockAcquired      <- lockService.takeLockWithAudit(
                                transferId,
-                               request.authenticatedUser.owner(),
+                               request.authenticatedUser.owner,
                                request.authenticatedUser,
                                request.schemeDetails,
                                ContinueTransfer,
@@ -240,10 +240,10 @@ class DashboardController @Inject() (
           transfer.transferId match {
             case TransferNumber(transferRef) =>
               logger.info(s"lock released for $transferRef")
-              lockService.releaseLock(transferRef, request.authenticatedUser.owner())
+              lockService.releaseLock(transferRef, request.authenticatedUser.owner)
             case QtNumber(qtReference)       =>
               logger.info(s"lock released for $qtReference")
-              lockService.releaseLock(qtReference, request.authenticatedUser.owner())
+              lockService.releaseLock(qtReference, request.authenticatedUser.owner)
           }
         }
       }
