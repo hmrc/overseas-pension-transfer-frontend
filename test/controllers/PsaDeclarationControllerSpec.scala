@@ -84,7 +84,7 @@ class PsaDeclarationControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       val application =
-        applicationBuilder()
+        applicationBuilder(userAnswers = canSubmitUserAnswers)
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
@@ -109,7 +109,7 @@ class PsaDeclarationControllerSpec extends SpecBase {
         .thenReturn(Future.successful(Left(SubmissionErrorResponse("boom", None))))
 
       val application =
-        applicationBuilder()
+        applicationBuilder(userAnswers = canSubmitUserAnswers)
           .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
           .build()
 
@@ -140,7 +140,7 @@ class PsaDeclarationControllerSpec extends SpecBase {
         .thenReturn(Future.successful(true))
 
       val application =
-        applicationBuilder()
+        applicationBuilder(userAnswers = canSubmitUserAnswers)
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
