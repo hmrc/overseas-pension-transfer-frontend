@@ -16,7 +16,6 @@
 
 package config
 
-import play.api.mvc.RequestHeader
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -29,12 +28,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   import servicesConfig.*
 
   val appName: String = configuration.get[String]("appName")
-
-  private val contactHost                  = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = configuration.get[String]("contact-frontend.serviceId")
-
-  def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${request.uri}"
 
   val loginUrl: String                = configuration.get[String]("urls.login")
   val loginContinueUrl: String        = configuration.get[String]("urls.loginContinue")
