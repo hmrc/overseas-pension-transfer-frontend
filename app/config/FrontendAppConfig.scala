@@ -21,7 +21,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.Configuration
-import play.api.i18n.Lang
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
@@ -45,10 +44,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   private val exitSurveyBaseUrl: String = configuration.get[String]("feedback-frontend.host")
   val exitSurveyUrl: String             =
     s"$exitSurveyBaseUrl/feedback/report-transfer-qualifying-recognised-overseas-pension-scheme"
-
-  def languageMap: Map[String, Lang] = Map(
-    "en" -> Lang("en")
-  )
 
   case class EnrolmentConfig(serviceName: String, identifierKey: String)
 
