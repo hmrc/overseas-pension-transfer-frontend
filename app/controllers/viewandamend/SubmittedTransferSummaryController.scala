@@ -54,7 +54,7 @@ class SubmittedTransferSummaryController @Inject() (
     versionNumber: String
   ): Action[AnyContent] =
     (identify andThen schemeData).async { implicit request =>
-      val owner = request.authenticatedUser.owner()
+      val owner = request.authenticatedUser.owner
 
       for {
         isLocked <- lockService.isLocked(qtReference.value, owner)
