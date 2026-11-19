@@ -150,23 +150,25 @@ object TaskJourneyViewModels {
   }
 
   case object SubmissionDetailsJourneyViewModel extends TaskJourneyViewModel {
+
     val category    = TaskCategory.SubmissionDetails
     val id          = "submit"
     val linkTextKey = "taskList.submit.linkText"
 
     def start(m: Mode): Call = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
-    def cya(): Call          = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+
+    def cya(): Call = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+
+    def canSubmit(userAnswers: UserAnswers): Boolean = {
+      val member        = MemberDetailsJourneyViewModel.status(userAnswers)
+      val transfer      = TransferDetailsJourneyViewModel.status(userAnswers)
+      val qrops         = QropsDetailsJourneyViewModel.status(userAnswers)
+      val schemeManager = SchemeManagerDetailsJourneyViewModel.status(userAnswers)
+      Seq(member, transfer, qrops, schemeManager).forall(_ == Completed)
+    }
 
     override def status(userAnswers: UserAnswers): TaskStatus =
-      (
-        MemberDetailsJourneyViewModel.status(userAnswers),
-        TransferDetailsJourneyViewModel.status(userAnswers),
-        QropsDetailsJourneyViewModel.status(userAnswers),
-        SchemeManagerDetailsJourneyViewModel.status(userAnswers)
-      ) match {
-        case (Completed, Completed, Completed, Completed) => NotStarted
-        case _                                            => CannotStart
-      }
+      if (canSubmit(userAnswers)) NotStarted else CannotStart
   }
 
   val values: Seq[TaskJourneyViewModel] = Seq(

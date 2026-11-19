@@ -21,11 +21,11 @@ import services.EmailService
 import services.UserAnswersService
 import queries.DateSubmittedQuery
 import queries.QtNumberQuery
-import play.api.mvc._
+import play.api.mvc.*
 import connectors.MinimalDetailsConnector
 import pages.PsaDeclarationPage
 import pages.PspDeclarationPage
-import controllers.actions._
+import controllers.actions.*
 import play.api.Logging
 import repositories.SessionRepository
 import models.Mode
@@ -36,10 +36,10 @@ import views.html.PsaDeclarationView
 import play.api.i18n.I18nSupport
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
 import javax.inject.Inject
 
 class PsaDeclarationController @Inject() (
@@ -61,47 +61,60 @@ class PsaDeclarationController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen checkLock andThen getData) { implicit request =>
-      Ok(view(mode))
+      if (SubmissionDetailsJourneyViewModel.canSubmit(request.userAnswers)) {
+        Ok(view(mode))
+      } else {
+        Redirect(routes.TaskListController.onPageLoad())
+      }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
-      (for {
-        submissionResponse   <-
-          EitherT(
-            userAnswersService.submitDeclaration(
-              request.authenticatedUser,
-              request.userAnswers,
-              request.sessionData,
-              srnNumber = request.sessionData.schemeInformation.srnNumber
-            )
-          ).leftMap { e =>
-            logger.warn(s"Failed to submit declaration: $e")
-            Redirect(PsaDeclarationPage.nextPageRecovery())
-          }
-        updateWithQTNumberSD <-
-          EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
+      if (SubmissionDetailsJourneyViewModel.canSubmit(request.userAnswers)) {
+        Future.successful(
+          Redirect(routes.TaskListController.onPageLoad())
+        )
+      } else {
 
-        updateWithReceiptDateSD <-
-          EitherT
-            .right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate)))
-        name                     = request.userAnswers
-                                     .get(MemberNamePage)
-                                     .getOrElse(PersonName("Undefined", "Undefined"))
-        _                       <- EitherT.right[Result](sessionRepository.set(updateWithReceiptDateSD))
-        psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
-        minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
-                                     logger.warn(
-                                       s"Failed to fetch minimal details for psaId=${psaId.value}: $e"
+        (for {
+          submissionResponse   <-
+            EitherT(
+              userAnswersService.submitDeclaration(
+                request.authenticatedUser,
+                request.userAnswers,
+                request.sessionData,
+                srnNumber = request.sessionData.schemeInformation.srnNumber
+              )
+            ).leftMap { e =>
+              logger.warn(s"Failed to submit declaration: $e")
+              Redirect(PsaDeclarationPage.nextPageRecovery())
+            }
+          updateWithQTNumberSD <-
+            EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
+
+          updateWithReceiptDateSD <-
+            EitherT
+              .right[Result](
+                Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate))
+              )
+          name                     = request.userAnswers
+                                       .get(MemberNamePage)
+                                       .getOrElse(PersonName("Undefined", "Undefined"))
+          _                       <- EitherT.right[Result](sessionRepository.set(updateWithReceiptDateSD))
+          psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
+          minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
+                                       logger.warn(
+                                         s"Failed to fetch minimal details for psaId=${psaId.value}: $e"
+                                       )
+                                       Redirect(PsaDeclarationPage.nextPageRecovery())
+                                     }
+          _                       <- EitherT.right[Result](
+                                       // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
+                                       emailService
+                                         .sendConfirmationEmail(name, updateWithReceiptDateSD, minimalDetails)
+                                         .map(_ => ())
                                      )
-                                     Redirect(PsaDeclarationPage.nextPageRecovery())
-                                   }
-        _                       <- EitherT.right[Result](
-                                     // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
-                                     emailService
-                                       .sendConfirmationEmail(name, updateWithReceiptDateSD, minimalDetails)
-                                       .map(_ => ())
-                                   )
-      } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
+        } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
+      }
   }
 }

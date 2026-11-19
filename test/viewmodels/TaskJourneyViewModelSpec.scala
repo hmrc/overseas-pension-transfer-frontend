@@ -19,43 +19,13 @@ package viewmodels
 import base.SpecBase
 import models.address.{Country, QROPSAddress, SchemeManagersAddress}
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
-import models.{NormalMode, PersonName, SchemeManagerType}
+import models.{NormalMode, PersonName, SchemeManagerType, UserAnswers}
 import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
 import pages.qropsSchemeManagerDetails.*
 import play.api.libs.json.Json
 import viewmodels.TaskJourneyViewModels.*
 
 class TaskJourneyViewModelSpec extends SpecBase {
-
-  private val validMemberDetails = Json.obj(
-    "memberDetails" -> Json.obj(
-      "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-      "nino"                   -> "AA000000A",
-      "dateOfBirth"            -> "1993-11-11",
-      "principalResAddDetails" -> Json.obj(
-        "addressLine1" -> "line1",
-        "addressLine2" -> "line2",
-        "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-      ),
-      "memUkResident"          -> true
-    )
-  )
-
-  private val validTransferDetails = Json.obj(
-    "allowanceBeforeTransfer" -> 1000.25,
-    "transferAmount"          -> 2000.88,
-    "isTransferTaxable"       -> true,
-    "paymentTaxableOverseas"  -> true,
-    "whyTaxable"              -> "transferExceedsOTCAllowance",
-    "whyTaxableOT"            -> "transferExceedsOTCAllowance",
-    "applicableExclusion"     -> Set("occupational"),
-    "amountTaxDeducted"       -> 100.33,
-    "transferMinusTax"        -> 1900.99,
-    "dateMemberTransferred"   -> "2025-04-01",
-    "cashOnlyTransfer"        -> true,
-    "typeOfAsset"             -> Seq("cashAssets"),
-    "cashValue"               -> 2000.88
-  )
 
   "MemberDetailsJourneyViewModel" - {
     "status" - {
@@ -94,6 +64,43 @@ class TaskJourneyViewModelSpec extends SpecBase {
 
         MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson)) mustBe
           controllers.memberDetails.routes.MemberNameController.onPageLoad(NormalMode)
+      }
+    }
+
+    "canSubmit" - {
+
+      "return true when all sections are completed" in {
+
+        TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
+          .canSubmit(canSubmitUserAnswers) mustBe true
+      }
+
+      "return false when member details are incomplete" in {
+        val userAnswers = emptyUserAnswers
+
+        TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
+          .canSubmit(userAnswers) mustBe false
+      }
+
+      "return false when any section is incomplete" in {
+
+        val incompleteAnswers = Seq[(String, UserAnswers => UserAnswers)](
+          "member details"         ->
+            ((ua: UserAnswers) => ua.copy(data = ua.data - "memberDetails")),
+          "transfer details"       ->
+            ((ua: UserAnswers) => ua.copy(data = ua.data - "transferDetails")),
+          "qrops details"          ->
+            ((ua: UserAnswers) => ua.remove(QROPSNamePage).success.value),
+          "scheme manager details" ->
+            ((ua: UserAnswers) => ua.remove(SchemeManagerTypePage).success.value)
+        )
+
+        incompleteAnswers.foreach { case (section, removeSection) =>
+          withClue(s"Section: $section") {
+            SubmissionDetailsJourneyViewModel
+              .canSubmit(removeSection(canSubmitUserAnswers)) mustBe false
+          }
+        }
       }
     }
 

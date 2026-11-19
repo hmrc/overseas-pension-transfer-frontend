@@ -60,7 +60,7 @@ class PspDeclarationControllerSpec extends SpecBase {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder().build()
+      val application = applicationBuilder(userAnswers = canSubmitUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, pspDeclarationRoute)
@@ -103,7 +103,7 @@ class PspDeclarationControllerSpec extends SpecBase {
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))
 
-      val ua = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value
+      val ua = canSubmitUserAnswers.set(PspDeclarationPage, "A1234567").success.value
 
       val application = applicationBuilderPsp(userAnswers = ua)
         .overrides(
@@ -127,7 +127,7 @@ class PspDeclarationControllerSpec extends SpecBase {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilderPsp().build()
+      val application = applicationBuilderPsp(userAnswers = canSubmitUserAnswers).build()
 
       running(application) {
         val request =
@@ -154,7 +154,7 @@ class PspDeclarationControllerSpec extends SpecBase {
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(NotAuthorisingPsaIdErrorResponse("PSA is not PSP authorising PSA", None))))
 
-      val userAnswersWithPspDeclaration = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value
+      val userAnswersWithPspDeclaration = canSubmitUserAnswers.set(PspDeclarationPage, "A1234567").success.value
 
       val application = applicationBuilderPsp(userAnswersWithPspDeclaration)
         .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
@@ -175,6 +175,24 @@ class PspDeclarationControllerSpec extends SpecBase {
         val decodedContent = StringEscapeUtils.unescapeHtml4(actualContent)
 
         decodedContent must include(expectedErrorMessage)
+      }
+    }
+
+    "must redirect to the task list when submission cannot be made for a GET" in {
+
+      val application =
+        applicationBuilder(userAnswers = emptyUserAnswers)
+          .build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, pspDeclarationRoute)
+
+        val result = route(application, request).value
+
+        status(result)                 mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual
+          routes.TaskListController.onPageLoad().url
       }
     }
   }

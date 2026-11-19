@@ -18,8 +18,8 @@ package base
 
 import controllers.actions.*
 import data.TestData
-import models.{PensionSchemeDetails, SessionData, UserAnswers}
-import models.address.{Countries, PropertyAddress}
+import models.{PensionSchemeDetails, PersonName, SchemeManagerType, SessionData, UserAnswers}
+import models.address.{Countries, Country, PropertyAddress, QROPSAddress, SchemeManagersAddress}
 import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
@@ -35,13 +35,15 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Binding, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, Writes}
 import play.api.test.FakeRequest
-import queries.QtNumberQuery
+import queries.{QtNumberQuery, Settable}
 import repositories.{DashboardSessionRepository, ExpiringMongoLockRepository, SessionRepository}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.mongo.play.PlayMongoModule
+import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
+import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersAddressPage, SchemeManagersContactPage, SchemeManagersEmailPage, SchemeManagersNamePage}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable}
@@ -130,6 +132,73 @@ trait SpecBase
       qtNumber = testQtNumber,
       dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
+
+  extension (ua: UserAnswers)
+    def setValue[A](page: Settable[A], value: A)(implicit writes: Writes[A]): UserAnswers =
+      ua.set(page, value).success.value
+
+  val validMemberDetails: JsObject = Json.obj(
+    "memberDetails" -> Json.obj(
+      "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+      "nino"                   -> "AA000000A",
+      "dateOfBirth"            -> "1993-11-11",
+      "principalResAddDetails" -> Json.obj(
+        "addressLine1" -> "line1",
+        "addressLine2" -> "line2",
+        "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+      ),
+      "memUkResident"          -> true
+    )
+  )
+
+  val validTransferDetails: JsObject = Json.obj(
+    "allowanceBeforeTransfer" -> 1000.25,
+    "transferAmount"          -> 2000.88,
+    "isTransferTaxable"       -> true,
+    "paymentTaxableOverseas"  -> true,
+    "whyTaxable"              -> "transferExceedsOTCAllowance",
+    "whyTaxableOT"            -> "transferExceedsOTCAllowance",
+    "applicableExclusion"     -> Set("occupational"),
+    "amountTaxDeducted"       -> 100.33,
+    "transferMinusTax"        -> 1900.99,
+    "dateMemberTransferred"   -> "2025-04-01",
+    "cashOnlyTransfer"        -> true,
+    "typeOfAsset"             -> Seq("cashAssets"),
+    "cashValue"               -> 2000.88
+  )
+
+  private val ukCountry = Country("GB", "United Kingdom")
+
+  private val qropsAddress = QROPSAddress(
+    "line1",
+    "line2",
+    None,
+    None,
+    None,
+    ukCountry
+  )
+
+  private val managerAddress = SchemeManagersAddress(
+    "line1",
+    "line2",
+    None,
+    None,
+    None,
+    ukCountry
+  )
+
+  val canSubmitUserAnswers: UserAnswers =
+    emptyUserAnswers
+      .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
+      .setValue(QROPSNamePage, "Test QROPS")
+      .setValue(QROPSReferencePage, "Q123456")
+      .setValue(QROPSAddressPage, qropsAddress)
+      .setValue(QROPSCountryPage, ukCountry)
+      .setValue(SchemeManagerTypePage, SchemeManagerType.Individual)
+      .setValue(SchemeManagersNamePage, PersonName("John", "Doe"))
+      .setValue(SchemeManagersAddressPage, managerAddress)
+      .setValue(SchemeManagersEmailPage, "test@gmail.co.uk")
+      .setValue(SchemeManagersContactPage, "0121456789")
 
   def userAnswersWithAssets(assetsCount: Int = 1): UserAnswers =
     (0 until assetsCount).foldLeft(
