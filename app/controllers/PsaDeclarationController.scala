@@ -71,11 +71,6 @@ class PsaDeclarationController @Inject() (
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
       if (SubmissionDetailsJourneyViewModel.canSubmit(request.userAnswers)) {
-        Future.successful(
-          Redirect(routes.TaskListController.onPageLoad())
-        )
-      } else {
-
         (for {
           submissionResponse   <-
             EitherT(
@@ -115,6 +110,11 @@ class PsaDeclarationController @Inject() (
                                          .map(_ => ())
                                      )
         } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
+      } else {
+        Future.successful(
+          Redirect(routes.TaskListController.onPageLoad())
+        )
+
       }
   }
 }

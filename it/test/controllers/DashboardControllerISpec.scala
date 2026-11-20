@@ -81,7 +81,7 @@ class DashboardControllerISpec extends ISpecBase {
         EmailStub.sendEmailResponse(OK, Json.toJson(emailRequest).toString)
         stubGet(
           s"/overseas-pension-transfer-backend/save-for-later/${testTransferNumber.value}",
-          Json.toJson(UserAnswersDTO(testTransferNumber, pstr, testUserAnswerData, now)).toString()
+          Json.toJson(UserAnswersDTO(testTransferNumber, pstr, canSubmitUserAnswers.data, now)).toString()
         )
         stubPost(
           s"/overseas-pension-transfer-backend/submit-declaration/${testTransferNumber.value}",
