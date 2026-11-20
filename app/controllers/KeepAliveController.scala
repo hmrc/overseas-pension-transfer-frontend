@@ -43,11 +43,8 @@ class KeepAliveController @Inject() (
   def keepAlive(): Action[AnyContent] = (identify andThen getScheme andThen getData).async { implicit request =>
     sessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(value) =>
-        val lockId = value.transferId.value
-        val owner  = request.authenticatedUser.owner()
-
         for {
-          _         <- lockRepository.refreshExpiry(lockId, owner)
+          _         <- lockRepository.refreshExpiry(value.transferId.value, request.authenticatedUser.owner)
           keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
         } yield keepAlive
       case None        =>
