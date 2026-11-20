@@ -16,13 +16,16 @@
 
 package data
 
+import models.address.{Country, QROPSAddress, SchemeManagersAddress}
 import models.authentication.*
 import models.email.{EmailToSendRequest, SubmissionConfirmation}
-import models.{AllTransfersItem, DashboardData, IndividualDetails, MinimalDetails, PensionSchemeDetails, PensionSchemeResponse, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.{AllTransfersItem, DashboardData, IndividualDetails, MinimalDetails, PensionSchemeDetails, PensionSchemeResponse, PersonName, PstrNumber, QtNumber, QtStatus, SchemeManagerType, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.scalatest.TryValues
 import pages.memberDetails.MemberNamePage
-import play.api.libs.json.{JsObject, Json}
-import queries.{DateSubmittedQuery, PensionSchemeDetailsQuery, QtNumberQuery}
+import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
+import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersAddressPage, SchemeManagersContactPage, SchemeManagersEmailPage, SchemeManagersNamePage}
+import play.api.libs.json.{JsObject, Json, Writes}
+import queries.{DateSubmittedQuery, PensionSchemeDetailsQuery, QtNumberQuery, Settable}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
 
@@ -144,6 +147,73 @@ trait TestData extends TryValues {
 
   val minimalDetailsIndividual: MinimalDetails =
     MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
+
+  extension (ua: UserAnswers)
+    def setValue[A](page: Settable[A], value: A)(implicit writes: Writes[A]): UserAnswers =
+      ua.set(page, value).success.value
+
+  val validMemberDetails: JsObject = Json.obj(
+    "memberDetails" -> Json.obj(
+      "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+      "nino"                   -> "AA000000A",
+      "dateOfBirth"            -> "1993-11-11",
+      "principalResAddDetails" -> Json.obj(
+        "addressLine1" -> "line1",
+        "addressLine2" -> "line2",
+        "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+      ),
+      "memUkResident"          -> true
+    )
+  )
+
+  val validTransferDetails: JsObject = Json.obj(
+    "allowanceBeforeTransfer" -> 1000.25,
+    "transferAmount"          -> 2000.88,
+    "isTransferTaxable"       -> true,
+    "paymentTaxableOverseas"  -> true,
+    "whyTaxable"              -> "transferExceedsOTCAllowance",
+    "whyTaxableOT"            -> "transferExceedsOTCAllowance",
+    "applicableExclusion"     -> Set("occupational"),
+    "amountTaxDeducted"       -> 100.33,
+    "transferMinusTax"        -> 1900.99,
+    "dateMemberTransferred"   -> "2025-04-01",
+    "cashOnlyTransfer"        -> true,
+    "typeOfAsset"             -> Seq("cashAssets"),
+    "cashValue"               -> 2000.88
+  )
+
+  val ukCountry = Country("GB", "United Kingdom")
+
+  val qropsAddressTest = QROPSAddress(
+    "line1",
+    "line2",
+    None,
+    None,
+    None,
+    ukCountry
+  )
+
+  val managerAddress = SchemeManagersAddress(
+    "line1",
+    "line2",
+    None,
+    None,
+    None,
+    ukCountry
+  )
+
+  val canSubmitUserAnswers: UserAnswers =
+    emptyUserAnswers
+      .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
+      .setValue(QROPSNamePage, "Test QROPS")
+      .setValue(QROPSReferencePage, "Q123456")
+      .setValue(QROPSAddressPage, qropsAddressTest)
+      .setValue(QROPSCountryPage, ukCountry)
+      .setValue(SchemeManagerTypePage, SchemeManagerType.Individual)
+      .setValue(SchemeManagersNamePage, PersonName("John", "Doe"))
+      .setValue(SchemeManagersAddressPage, managerAddress)
+      .setValue(SchemeManagersEmailPage, "test@gmail.co.uk")
+      .setValue(SchemeManagersContactPage, "0121456789")
 
   val emailRequest: EmailToSendRequest =
     EmailToSendRequest(
