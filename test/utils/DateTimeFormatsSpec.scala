@@ -17,7 +17,6 @@
 package utils
 
 import base.SpecBase
-import play.api.i18n.Lang
 import utils.DateTimeFormats.dateTimeFormat
 
 import java.time.LocalDate
@@ -27,15 +26,8 @@ class DateTimeFormatsSpec extends SpecBase {
   ".dateTimeFormat" - {
 
     "must format dates in English" in {
-      val formatter = dateTimeFormat(Lang("en"))
-      val result    = LocalDate.of(2023, 1, 1).format(formatter)
-      result mustEqual "1 January 2023"
+      LocalDate.of(2023, 1, 1).format(dateTimeFormat) mustEqual "1 January 2023"
     }
 
-    "must default to English format" in {
-      val formatter = dateTimeFormat(Lang("de"))
-      val result    = LocalDate.of(2023, 1, 1).format(formatter)
-      result mustEqual "1 January 2023"
-    }
   }
 }
