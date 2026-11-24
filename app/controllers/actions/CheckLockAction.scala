@@ -40,7 +40,7 @@ class CheckLockActionImpl @Inject() (
     sessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(value) =>
         val lockId = value.transferId.value
-        val owner  = request.authenticatedUser.owner()
+        val owner  = request.authenticatedUser.owner
 
         for {
           refreshedLock <-

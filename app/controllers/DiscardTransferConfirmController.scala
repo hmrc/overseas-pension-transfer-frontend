@@ -16,8 +16,6 @@
 
 package controllers
 
-import models.authentication.PsaUser
-import models.authentication.PspUser
 import services.LockService
 import services.UserAnswersService
 import play.api.mvc.Action
@@ -72,11 +70,6 @@ class DiscardTransferConfirmController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen checkLock andThen getData).async {
     implicit request =>
-      val owner = request.authenticatedUser match {
-        case psaUser: PsaUser => psaUser.psaId.value
-        case pspUser: PspUser => pspUser.pspId.value
-      }
-
       form
         .bindFromRequest()
         .fold(
@@ -84,8 +77,9 @@ class DiscardTransferConfirmController @Inject() (
           value =>
             for {
               // Always release lock irrespective of YES or NO
-              isLocked <- lockService.isLocked(request.userAnswers.id.value, owner)
-              _        <- if (isLocked) lockService.releaseLock(request.userAnswers.id.value, owner) else Future.unit
+              isLocked <- lockService.isLocked(request.userAnswers.id.value, request.authenticatedUser.owner)
+              _        <- if (isLocked) lockService.releaseLock(request.userAnswers.id.value, request.authenticatedUser.owner)
+                          else Future.unit
               // Answers updated in the request but not needed storing in session. Answers required in request for page based navigation
               answers  <- Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value))
               result   <- generateResult(value, answers, mode)

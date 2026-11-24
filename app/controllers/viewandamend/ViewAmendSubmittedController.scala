@@ -112,7 +112,7 @@ class ViewAmendSubmittedController @Inject() (
         allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
         lockAcquired      <- lockService.takeLockWithAudit(
                                qtReference,
-                               request.authenticatedUser.owner(),
+                               request.authenticatedUser.owner,
                                request.authenticatedUser,
                                request.schemeDetails,
                                ContinueAmendmentOfTransfer,
