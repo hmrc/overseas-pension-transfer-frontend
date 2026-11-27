@@ -430,8 +430,8 @@ overseasTransferAllowance.heading = How much of the member''s overseas transfer 
 overseasTransferAllowance.checkYourAnswersLabel = Available transfer allowance
 overseasTransferAllowance.error.required = Enter the amount of the transfer allowance
 overseasTransferAllowance.error.nonNumeric = The transfer allowance must be an amount of money, like 123 or 123.00
-overseasTransferAllowance.error.aboveMaximum = The transfer amount must be {0} or less
-overseasTransferAllowance.error.belowMinimum = The transfer amount must be {0} or more
+overseasTransferAllowance.error.aboveMaximum = Transfer amount must be {0} or less
+overseasTransferAllowance.error.belowMinimum = Transfer amount must be {0} or more
 overseasTransferAllowance.change.hidden = Member's available transfer allowance
 overseasTransferAllowance.hint = For example, £60000 or £19,300.54.
 
@@ -509,8 +509,8 @@ amountOfTransfer.heading = What is the amount of the transfer?
 amountOfTransfer.checkYourAnswersLabel = Transfer amount
 amountOfTransfer.error.nonNumeric = The transfer amount must be an amount of money, like 123 or 123.00
 amountOfTransfer.error.required = Enter the transfer amount
-amountOfTransfer.error.aboveMaximum = The transfer amount must be {0} or less
-amountOfTransfer.error.belowMinimum = The transfer amount must be {0} or more
+amountOfTransfer.error.aboveMaximum = Transfer amount must be {0} or less
+amountOfTransfer.error.belowMinimum = Transfer amount must be {0} or more
 amountOfTransfer.change.hidden = Amount of transfer
 amountOfTransfer.hint = For example, £60000 or £19,300.54.
 
